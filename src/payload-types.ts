@@ -69,6 +69,14 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    macrocategories: Macrocategory;
+    categories: Category;
+    subcategories: Subcategory;
+    products: Product;
+    promotions: Promotion;
+    quotes: Quote;
+    'cat-combos': CatCombo;
+    'cat-categories': CatCategory;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,13 +86,21 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    macrocategories: MacrocategoriesSelect<false> | MacrocategoriesSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    subcategories: SubcategoriesSelect<false> | SubcategoriesSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    promotions: PromotionsSelect<false> | PromotionsSelect<true>;
+    quotes: QuotesSelect<false> | QuotesSelect<true>;
+    'cat-combos': CatCombosSelect<false> | CatCombosSelect<true>;
+    'cat-categories': CatCategoriesSelect<false> | CatCategoriesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   fallbackLocale: null;
   globals: {};
@@ -122,7 +138,7 @@ export interface UserAuthOperations {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -147,7 +163,7 @@ export interface User {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -163,10 +179,150 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "macrocategories".
+ */
+export interface Macrocategory {
+  id: number;
+  name: string;
+  image?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  name: string;
+  macroCategory: number | Macrocategory;
+  image?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subcategories".
+ */
+export interface Subcategory {
+  id: number;
+  name: string;
+  parentCategory: number | Category;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  status: 'active' | 'inactive' | 'draft';
+  sku: string;
+  name: string;
+  price: number;
+  macroCategory: number | Macrocategory;
+  categoryCatering?: (number | null) | CatCategory;
+  category: number | Category;
+  subCategory: number | Subcategory;
+  image: number | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cat-categories".
+ */
+export interface CatCategory {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "promotions".
+ */
+export interface Promotion {
+  id: number;
+  internalName: string;
+  isActive?: boolean | null;
+  slideContent?:
+    | (
+        | {
+            imagenFondo: number | Media;
+            tituloGrande: string;
+            colorTexto?: ('blanco' | 'negro') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'bannerPromo';
+          }
+        | {
+            mensajeCentral: string;
+            codigoDescuento?: string | null;
+            textoBoton: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'ofertaTexto';
+          }
+      )[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quotes".
+ */
+export interface Quote {
+  id: number;
+  fullName: string;
+  email: string;
+  phone: string;
+  eventDate: string;
+  guests: number;
+  description: string;
+  items:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  total: number;
+  status?: ('pending' | 'sent' | 'approved' | 'rejected') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cat-combos".
+ */
+export interface CatCombo {
+  id: number;
+  name: string;
+  description: string;
+  image?: (number | null) | Media;
+  pricePerPerson: number;
+  priceTenPeople?: number | null;
+  rules?:
+    | {
+        category: number | CatCategory;
+        allowedQuantity: number;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: string;
+  id: number;
   key: string;
   data:
     | {
@@ -183,20 +339,52 @@ export interface PayloadKv {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'macrocategories';
+        value: number | Macrocategory;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'subcategories';
+        value: number | Subcategory;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'promotions';
+        value: number | Promotion;
+      } | null)
+    | ({
+        relationTo: 'quotes';
+        value: number | Quote;
+      } | null)
+    | ({
+        relationTo: 'cat-combos';
+        value: number | CatCombo;
+      } | null)
+    | ({
+        relationTo: 'cat-categories';
+        value: number | CatCategory;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -206,10 +394,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -229,7 +417,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -274,6 +462,132 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "macrocategories_select".
+ */
+export interface MacrocategoriesSelect<T extends boolean = true> {
+  name?: T;
+  image?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  macroCategory?: T;
+  image?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subcategories_select".
+ */
+export interface SubcategoriesSelect<T extends boolean = true> {
+  name?: T;
+  parentCategory?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  status?: T;
+  sku?: T;
+  name?: T;
+  price?: T;
+  macroCategory?: T;
+  categoryCatering?: T;
+  category?: T;
+  subCategory?: T;
+  image?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "promotions_select".
+ */
+export interface PromotionsSelect<T extends boolean = true> {
+  internalName?: T;
+  isActive?: T;
+  slideContent?:
+    | T
+    | {
+        bannerPromo?:
+          | T
+          | {
+              imagenFondo?: T;
+              tituloGrande?: T;
+              colorTexto?: T;
+              id?: T;
+              blockName?: T;
+            };
+        ofertaTexto?:
+          | T
+          | {
+              mensajeCentral?: T;
+              codigoDescuento?: T;
+              textoBoton?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quotes_select".
+ */
+export interface QuotesSelect<T extends boolean = true> {
+  fullName?: T;
+  email?: T;
+  phone?: T;
+  eventDate?: T;
+  guests?: T;
+  description?: T;
+  items?: T;
+  total?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cat-combos_select".
+ */
+export interface CatCombosSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  image?: T;
+  pricePerPerson?: T;
+  priceTenPeople?: T;
+  rules?:
+    | T
+    | {
+        category?: T;
+        allowedQuantity?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cat-categories_select".
+ */
+export interface CatCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,0 +1,247 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { ShoppingBag, ArrowUpRight, Menu, X } from "lucide-react";
+import { useCartStore } from "@/lib/store/cart.store";
+
+interface HeaderProps {
+  activePage?: "home" | "catering";
+  /** Si el fondo debajo del header transparente es oscuro, los textos se muestran en claro */
+  heroIsDark?: boolean;
+}
+
+export function Header({
+  activePage = "home",
+  heroIsDark = false,
+}: HeaderProps) {
+  const { items, toggleDrawer } = useCartStore();
+  const cartCount = items.length;
+  const [scrolled, setScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isBouncing, setIsBouncing] = useState(false);
+  const prevCartCountRef = useRef(cartCount);
+
+  useEffect(() => {
+    if (cartCount > prevCartCountRef.current) {
+      setIsBouncing(true);
+      const timer = setTimeout(() => setIsBouncing(false), 300);
+      prevCartCountRef.current = cartCount;
+      return () => clearTimeout(timer);
+    }
+    prevCartCountRef.current = cartCount;
+  }, [cartCount]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    // Verificar estado inicial (por si la página ya está scrolleada al montar)
+    setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileMenuOpen]);
+
+  // Clases de fondo del header
+  const bgClass = scrolled
+    ? "bg-[#f2eae6]/95 backdrop-blur-md dark:bg-[#042430]/95 shadow-sm"
+    : "bg-transparent";
+
+  const isDarkText = scrolled || !heroIsDark;
+
+  // Colores unificados
+  const textColor = isDarkText
+    ? "text-[#063547] dark:text-[#f2eae6]"
+    : "text-white";
+
+  const navLinkBase = "transition-opacity hover:opacity-60";
+  const navLinkInactive = `${textColor} font-normal opacity-90`;
+  const navLinkActive = `${textColor} font-semibold`;
+
+  return (
+    <>
+      <header
+        className={`fixed top-0 left-0 z-50 w-full transition-all duration-300 ${bgClass}`}
+      >
+        <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between px-6 lg:px-12">
+          {/* Izquierda: Logo y Navegación alineada */}
+          <div className="flex items-center gap-10 lg:gap-14">
+            {/* Logo */}
+            <Link href="/" className="group flex items-center transition-opacity hover:opacity-80">
+              <Image
+                src={isDarkText ? "/icons/logo_oscuro.svg" : "/icons/logo_white.svg"}
+                alt="Socado Café Logo"
+                width={100}
+                height={84}
+                className="w-auto h-12"
+                priority
+              />
+            </Link>
+
+            {/* Nav */}
+            <nav className="hidden lg:flex gap-8 text-[14px] tracking-wide">
+              <Link
+                href="/"
+                className={`${navLinkBase} ${activePage === "home" ? navLinkActive : navLinkInactive}`}
+              >
+                Inicio
+              </Link>
+              <a href="/#promociones" className={`${navLinkBase} ${navLinkInactive}`}>
+                Promociones
+              </a>
+              <a href="/#tiendas" className={`${navLinkBase} ${navLinkInactive}`}>
+                Tiendas
+              </a>
+              
+              <a href="/#nosotros" className={`${navLinkBase} ${navLinkInactive}`}>
+                Nosotros
+              </a>
+              <a href="/#catering" className={`${navLinkBase} ${activePage === "catering" ? navLinkActive : navLinkInactive}`}>
+                Catering
+              </a>
+              <a href="/#contacto" className={`${navLinkBase} ${navLinkInactive}`}>
+                Contacto
+              </a>
+            </nav>
+          </div>
+
+          {/* Derecha: Acciones */}
+          <div className="flex items-center gap-6">
+            {activePage === "catering" && (
+              <button
+                onClick={toggleDrawer}
+                className={`relative p-2 transition-all duration-300 hover:opacity-60 ${textColor} ${isBouncing ? "scale-125 text-[#b45b38]" : "scale-100"}`}
+              >
+                <ShoppingBag className="h-5 w-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#b45b38] text-[9px] font-bold text-white">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+            )}
+            {activePage === "home" && (
+              <Link
+                href="https://latrinidad.socadocafe.com/"
+                target="_blank"
+                className={`group hidden lg:flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-widest transition-opacity hover:opacity-60 ${textColor}`}
+              >
+                Ecommerce
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+            )}
+            
+            {/* Menu Hamburguesa (Móvil) */}
+            <button
+              className={`lg:hidden p-2 transition-opacity hover:opacity-60 ${textColor}`}
+              onClick={() => setIsMobileMenuOpen(true)}
+              aria-label="Abrir menú"
+            >
+              <Menu className="h-6 w-6" />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Menú Móvil Pantalla Completa */}
+      <div 
+        className={`fixed inset-0 z-[100] flex flex-col bg-[#f2eae6]/98 backdrop-blur-xl dark:bg-[#042430]/98 transition-transform duration-300 ease-in-out lg:hidden ${
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="flex h-20 items-center justify-between px-6">
+          {/* Logo en menú móvil (siempre oscuro/claro según tema del sistema, independiente del scroll) */}
+          <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
+            <Image
+              src="/icons/logo_oscuro.svg"
+              alt="Socado Café Logo"
+              width={100}
+              height={84}
+              className="w-auto h-12 dark:hidden"
+            />
+            <Image
+              src="/icons/logo_white.svg"
+              alt="Socado Café Logo"
+              width={100}
+              height={84}
+              className="w-auto h-12 hidden dark:block"
+            />
+          </Link>
+          <button
+            className="p-2 text-[#063547] transition-opacity hover:opacity-60 dark:text-[#f2eae6]"
+            onClick={() => setIsMobileMenuOpen(false)}
+            aria-label="Cerrar menú"
+          >
+            <X className="h-7 w-7" />
+          </button>
+        </div>
+
+        <nav className="flex flex-1 flex-col items-center justify-center gap-10 text-2xl font-semibold tracking-wide text-[#063547] dark:text-[#f2eae6]">
+          <Link
+            href="/"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={`transition-colors hover:text-[#b45b38] ${activePage === "home" ? "text-[#b45b38]" : ""}`}
+          >
+            Inicio
+          </Link>
+          <a 
+            href="/#tiendas" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="transition-colors hover:text-[#b45b38]"
+          >
+            Tiendas
+          </a>
+          <a 
+            href="/#promociones" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="transition-colors hover:text-[#b45b38]"
+          >
+            Promociones
+          </a>
+          <a 
+            href="/#nosotros" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="transition-colors hover:text-[#b45b38]"
+          >
+            Nosotros
+          </a>
+          <a
+            href="/#catering"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={`transition-colors hover:text-[#b45b38] ${activePage === "catering" ? "text-[#b45b38]" : ""}`}
+          >
+            Catering
+          </a>
+          <a 
+            href="/#contacto" 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="transition-colors hover:text-[#b45b38]"
+          >
+            Contacto
+          </a>
+
+          {activePage === "home" && (
+            <Link
+              href="https://latrinidad.socadocafe.com/"
+              target="_blank"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="mt-6 flex items-center gap-2 rounded-full border-2 border-[#063547] px-8 py-3 text-lg font-bold transition-all hover:bg-[#063547] hover:text-white dark:border-[#f2eae6] dark:hover:bg-[#f2eae6] dark:hover:text-[#042430]"
+            >
+              IR A ECOMMERCE <ArrowUpRight className="h-5 w-5" />
+            </Link>
+          )}
+        </nav>
+      </div>
+    </>
+  );
+}
