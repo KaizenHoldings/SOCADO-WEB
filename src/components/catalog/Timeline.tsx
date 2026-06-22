@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "motion/react";
 
-const timelineData = [
+export const timelineData = [
   {
     year: "2018",
     title: "STARTED WITH AN IDEA",

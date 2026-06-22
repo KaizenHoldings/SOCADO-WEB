@@ -5,6 +5,7 @@ import { Header } from "@/components/catalog/Header";
 import { HeroLeft } from "@/components/catalog/HeroLeft";
 import { OurStory } from "@/components/catalog/OurStory";
 import { Timeline } from "@/components/catalog/Timeline";
+import { RadialTimeline } from "@/components/catalog/RadialTimeline";
 import { StoresCards } from "@/components/catalog/StoresCards";
 import { Footer } from "@/components/catalog/Footer";
 import { CateringPromo } from "@/components/catalog/CateringPromo";
@@ -21,7 +22,12 @@ export default function Home() {
         <Promotion />
         <StoresCards />
         <OurStory />
-        <Timeline />
+        <div className="block lg:hidden">
+          <Timeline />
+        </div>
+        <div className="hidden lg:block">
+          <RadialTimeline />
+        </div>
         <CateringPromo />
     
       </main>

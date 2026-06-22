@@ -21,7 +21,7 @@ export function CateringPromo() {
               Socado en tu evento
             </h2>
             <p className="font-outfit text-lg md:text-xl text-ivory/90 mb-10 leading-relaxed font-light">
-              Descubre nuestras nuevas opciones de Catering. Disfruta de la calidad y el sabor inconfundible de Socado Café en tus reuniones, celebraciones o eventos corporativos. ¿Buscas sorprender? Prueba nuestras bandejas especiales y delicias para compartir.
+              Descubre nuestras opciones de catering. Disfruta de la experiencia Socado en tus reuniones, celebraciones o eventos corporativos.
             </p>
             <Link 
               href="/catering" 
