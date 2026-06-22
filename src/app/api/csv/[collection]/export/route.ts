@@ -9,7 +9,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ collecti
     const payload = await getPayload({ config });
     
     // Validar colección
-    if (!payload.collections[collection]) {
+    const collectionKey = collection as keyof typeof payload.collections;
+    if (!payload.collections[collectionKey]) {
       return NextResponse.json({ error: 'Collection not found' }, { status: 404 });
     }
 

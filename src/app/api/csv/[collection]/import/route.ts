@@ -29,7 +29,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ collect
     }
 
     const payload = await getPayload({ config });
-    if (!payload.collections[collection]) {
+    const collectionKey = collection as keyof typeof payload.collections;
+    if (!payload.collections[collectionKey]) {
       return NextResponse.json({ error: 'Collection not found' }, { status: 404 });
     }
 

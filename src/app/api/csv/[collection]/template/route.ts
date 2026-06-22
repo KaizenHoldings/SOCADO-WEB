@@ -7,7 +7,8 @@ export async function GET(req: Request, { params }: { params: Promise<{ collecti
   try {
     const { collection } = await params;
     const payload = await getPayload({ config });
-    const collectionConfig = payload.collections[collection]?.config;
+    const collectionKey = collection as keyof typeof payload.collections;
+    const collectionConfig = payload.collections[collectionKey]?.config;
     
     if (!collectionConfig) {
       return NextResponse.json({ error: 'Collection not found' }, { status: 404 });
