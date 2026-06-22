@@ -15,11 +15,11 @@ export function ViewModeToggle({ viewMode, onChange }: ViewModeToggleProps) {
       >
         {viewMode === "libre" ? (
           <>
-            <Package className="h-4 w-4" /> Arma tu Box
+            <Package className="h-4 w-4" /> Box individual
           </>
         ) : (
           <>
-            <ListFilter className="h-4 w-4" />Selección Libre
+            <ListFilter className="h-4 w-4" /> Para compartir
           </>
         )}
       </button>

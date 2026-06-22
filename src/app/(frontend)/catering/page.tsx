@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Header } from "@/components/catalog/Header";
 import { CategoryFilter } from "@/components/catalog/CategoryFilter";
 import { ProductCard } from "@/components/catalog/ProductCard";
@@ -30,6 +31,7 @@ export default function CateringPage() {
 
   const [viewMode, setViewMode] = useState<"libre" | "box">("libre");
   const [selectedBoxName, setSelectedBoxName] = useState<string>("Desayuno");
+  const [hasSelectedMode, setHasSelectedMode] = useState(false);
 
   const addItem = useCartStore((state) => state.addItem);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -231,28 +233,46 @@ export default function CateringPage() {
         <section className="mx-auto max-w-[1400px] px-6 lg:px-12 ">
           <div className="">
             <h1 className="font-raleway text-4xl font-bold tracking-tight text-azul-socado md:text-5xl">
-              Catálogo de Catering
+              Catering Socado
             </h1>
           </div>
         </section>
 
-        <HowItWorksCatering />
+        {!hasSelectedMode ? (
+          <section className="mx-auto max-w-4xl px-6 lg:px-12 py-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
+               {/* Card 1: Individuales */}
+               <div onClick={() => { setViewMode("box"); setHasSelectedMode(true); }} className="cursor-pointer group flex flex-col items-center">
+                  <div className="relative w-full aspect-[4/5] overflow-hidden mb-6 shadow-md group-hover:shadow-2xl transition-all duration-500">
+                    <Image src="/images/promotion2.png" fill className="object-cover transition-transform duration-700 group-hover:scale-105" alt="Individuales" />
+                  </div>
+                  <h3 className="font-outfit text-2xl md:text-3xl font-light text-azul-socado dark:text-ivory group-hover:text-terra transition-colors lowercase tracking-wide">individuales</h3>
+               </div>
+               
+               {/* Card 2: Para compartir */}
+               <div onClick={() => { setViewMode("libre"); setHasSelectedMode(true); }} className="cursor-pointer group flex flex-col items-center">
+                  <div className="relative w-full aspect-[4/5] overflow-hidden mb-6 shadow-md group-hover:shadow-2xl transition-all duration-500">
+                    <Image src="/images/catering.jpg" fill className="object-cover transition-transform duration-700 group-hover:scale-105" alt="Para compartir" />
+                  </div>
+                  <h3 className="font-outfit text-2xl md:text-3xl font-light text-azul-socado dark:text-ivory group-hover:text-terra transition-colors lowercase tracking-wide">para compartir</h3>
+               </div>
+            </div>
+          </section>
+        ) : (
+          <>
+            <HowItWorksCatering />
 
-        {/* Barra Sticky (Macrocategorías + Toggle Button) */}
-        <div className="sticky top-20 mt-16 z-40 w-full py-4 border-b border-black/5 dark:border-white/5 mb-4 bg-white/95 backdrop-blur-md dark:bg-[#042430]/95">
-          <div className="mx-auto max-w-[1400px] px-6 lg:px-12 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            {/* Barra Sticky (Macrocategorías + Toggle Button) */}
+            <div className="sticky top-20 mt-16 z-40 w-full py-4 border-b border-black/5 dark:border-white/5 mb-4 bg-white/95 backdrop-blur-md dark:bg-[#042430]/95">
+          <div className="mx-auto max-w-[1400px] px-6 lg:px-12 flex flex-col gap-4">
             
-            {/* Contenido izquierdo */}
-            <div className="flex flex-wrap gap-2 md:gap-4 flex-1 items-center">
-              {/* Indicador de Modo */}
-              <div className="mr-2 hidden flex-col justify-center border-r border-black/10 pr-4 sm:flex dark:border-white/10">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#6e7c7c] dark:text-[#b2b5a9]">
-                  Modo Actual
-                </span>
-                <span className="text-sm font-bold uppercase tracking-wider text-[#063547] dark:text-[#f2eae6]">
-                  {viewMode === "libre" ? "Selección Libre" : "Arma tu Box"}
-                </span>
-              </div>
+            {/* Top row: Toggle Button */}
+            <div className="flex items-center">
+              <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+            </div>
+
+            {/* Bottom row: Categories */}
+            <div className="flex flex-wrap gap-2 md:gap-4 items-center border-t border-black/5 dark:border-white/5 pt-4">
 
               {viewMode === "libre" ? (
                 <>
@@ -269,13 +289,7 @@ export default function CateringPage() {
                       {macro.name}
                     </button>
                   ))}
-                  {/* Categoría Seleccionada */}
-                  {selectedCategory && categories.length > 0 && (
-                    <div className={`ml-2 hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#063547] dark:text-[#f2eae6] transition-all duration-300 ${showCategoryContext ? 'opacity-100' : 'opacity-0 invisible'}`}>
-                      <span className="opacity-50">Explorando:</span>
-                      <span className="text-[#b45b38]">{categories.find(c => String(c.id) === String(selectedCategory))?.name}</span>
-                    </div>
-                  )}
+
                 </>
               ) : (
                 <div className={`flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#063547] dark:text-[#f2eae6]`}>
@@ -285,8 +299,6 @@ export default function CateringPage() {
               )}
             </div>
 
-            {/* Toggle Mode Button */}
-            <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
 
           </div>
         </div>
@@ -340,6 +352,8 @@ export default function CateringPage() {
             subcategories={subcategories} 
             onBoxChange={setSelectedBoxName}
           />
+        )}
+          </>
         )}
       </main>
 
