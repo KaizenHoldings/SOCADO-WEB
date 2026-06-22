@@ -6,6 +6,9 @@ export const CatCombos: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     group: 'Catering',
+    components: {
+      beforeListTable: ['@/components/admin/CsvActions#CsvActions'],
+    },
   },
   access: {
     read: () => true,

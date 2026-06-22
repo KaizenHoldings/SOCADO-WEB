@@ -47,7 +47,7 @@ export function HeroLeft() {
         >
           <div className="max-w-2xl text-left">
             <h1 className="font-raleway text-5xl font-bold tracking-tighter text-ivory sm:text-7xl md:text-6xl leading-none drop-shadow-lg">
-              Social Café<div className=""> Conectados.</div>
+              Social Café<div className=""> Conectado.</div>
             </h1>
           </div>
         </motion.div>

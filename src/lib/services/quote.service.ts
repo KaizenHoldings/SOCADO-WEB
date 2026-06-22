@@ -1,6 +1,7 @@
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { EmailService } from "./email.service";
+import { SlackService } from "./slack.service";
 
 /**
  * Servicio para gestionar la lógica de negocio de las cotizaciones.
@@ -25,6 +26,9 @@ export class QuoteService {
           guests: Number(quoteData.guests),
           description: quoteData.description,
           items: quoteData.items, // JSON array of items
+          totalOriginal: quoteData.totalOriginal,
+          totalDiscount: quoteData.totalDiscount,
+          totalTax: quoteData.totalTax,
           total: quoteData.total,
           status: "pending",
         },
@@ -33,6 +37,9 @@ export class QuoteService {
       // 3. Orquestar el envío de correos (solo simulación en Etapa 1)
       await EmailService.sendQuoteConfirmation(newQuote);
       await EmailService.sendQuoteNotificationToAdmin(newQuote);
+
+      // 4. Enviar notificación a Slack
+      await SlackService.sendQuoteNotification(newQuote);
 
       return { success: true, quote: newQuote };
     } catch (error) {

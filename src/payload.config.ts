@@ -16,6 +16,9 @@ import { Promotions } from './collections/Promotions'
 import { Quotes } from './collections/Quotes'
 import { CatCombos } from './collections/Cat_combos'
 import { CatCategories } from './collections/Cat_categories'
+import { Stores } from './collections/Stores'
+import { DiscountRules } from './collections/DiscountRules'
+import { Taxes } from './collections/Taxes'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
@@ -48,7 +51,7 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Users, Media, Macrocategories, Categories,SubCategories, Products, Promotions, Quotes, CatCombos, CatCategories ],
+  collections: [Users, Media, Macrocategories, Categories,SubCategories, Products, Promotions, Quotes, CatCombos, CatCategories, Stores, DiscountRules, Taxes ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

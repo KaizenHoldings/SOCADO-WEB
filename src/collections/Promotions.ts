@@ -31,7 +31,9 @@ export const Promotions: CollectionConfig = {
   admin: {
     useAsTitle: 'internalName',
     group: 'General',
-
+    components: {
+      beforeListTable: ['@/components/admin/CsvActions#CsvActions'],
+    },
   },
   fields: [
     {

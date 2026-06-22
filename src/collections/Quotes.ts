@@ -6,6 +6,9 @@ export const Quotes: CollectionConfig = {
     useAsTitle: 'fullName',
     defaultColumns: ['fullName', 'email', 'eventDate', 'status', 'total'],
     group: 'General',
+    components: {
+      beforeListTable: ['@/components/admin/CsvActions#CsvActions'],
+    },
   },
   access: {
     // Only authenticated admins can manage quotes
@@ -58,10 +61,25 @@ export const Quotes: CollectionConfig = {
       label: 'Productos de la Cotización (JSON)',
     },
     {
+      name: 'totalOriginal',
+      type: 'number',
+      label: 'Subtotal (Sin Descuentos)',
+    },
+    {
+      name: 'totalDiscount',
+      type: 'number',
+      label: 'Descuento Aplicado',
+    },
+    {
+      name: 'totalTax',
+      type: 'number',
+      label: 'Impuestos Aplicados',
+    },
+    {
       name: 'total',
       type: 'number',
       required: true,
-      label: 'Total Estimado',
+      label: 'Total Estimado (Final)',
     },
     {
       name: 'status',

@@ -40,13 +40,13 @@ export function OurStory() {
               {/* Firma */}
               <div className="flex flex-col mt-4">
                 <span 
-                  className="font-raleway italic font-bold text-4xl text-[#cf8a00] mb-2" 
-                  style={{ transform: "rotate(-3deg)" }}
+                  className="font-raleway  font-light text-xl text-white mb-2" 
+                  
                 >
-                  Socado Café
+                  Ignacio Weill
                 </span>
                 <span className="font-outfit text-xs font-bold uppercase tracking-widest opacity-60">
-                  Fundadores
+                  fundador
                 </span>
               </div>
             </div>

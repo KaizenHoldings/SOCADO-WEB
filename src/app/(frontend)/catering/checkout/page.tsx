@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/lib/store/cart.store";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/catalog/Header";
@@ -8,10 +8,16 @@ import { Footer } from "@/components/catalog/Footer";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { calculateDiscounts } from "@/lib/utils/discount.utils";
 
 export default function CateringCheckoutPage() {
-  const { items, clearCart } = useCartStore();
+  const { items, clearCart, discountRules, fetchDiscountRules, taxes, fetchTaxes } = useCartStore();
   const router = useRouter();
+
+  useEffect(() => {
+    fetchDiscountRules();
+    fetchTaxes();
+  }, [fetchDiscountRules, fetchTaxes]);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -26,7 +32,7 @@ export default function CateringCheckoutPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const total = items.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const { totalOriginal, totalDiscount, totalTax, totalFinal, appliedRules, appliedTaxes } = calculateDiscounts(items, discountRules, taxes);
 
   // If cart is empty and not success, show empty state
   if (items.length === 0 && !isSuccess) {
@@ -65,7 +71,10 @@ export default function CateringCheckoutPage() {
             quantity: i.quantity,
             price: i.product.price
           })),
-          total
+          totalOriginal,
+          totalDiscount,
+          totalTax,
+          total: totalFinal
         })
       });
 
@@ -183,9 +192,28 @@ export default function CateringCheckoutPage() {
                   ))}
                 </div>
                 <div className="mt-6 border-t border-black/10 pt-6 dark:border-white/10">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between text-sm mb-2">
+                    <span className="text-[#6e7c7c] dark:text-[#b2b5a9]">Subtotal</span>
+                    <span className="font-bold text-[#063547] dark:text-[#f2eae6]">${totalOriginal.toFixed(2)}</span>
+                  </div>
+
+                  {appliedRules.length > 0 && appliedRules.map((rule, idx) => (
+                    <div key={idx} className="flex items-center justify-between text-sm mb-2 text-[#b45b38]">
+                      <span className="font-bold">{rule.ruleName} ({rule.percentage}%)</span>
+                      <span className="font-bold">-${rule.discountAmount.toFixed(2)}</span>
+                    </div>
+                  ))}
+
+                  {appliedTaxes && appliedTaxes.length > 0 && appliedTaxes.map((tax, idx) => (
+                    <div key={`tax-${idx}`} className="flex items-center justify-between text-sm mb-2 text-[#6e7c7c] dark:text-[#b2b5a9]">
+                      <span className="font-bold">{tax.taxName} ({tax.percentage}%)</span>
+                      <span className="font-bold">+${tax.taxAmount.toFixed(2)}</span>
+                    </div>
+                  ))}
+
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-black/5 dark:border-white/5">
                     <span className="font-bold text-[#063547] dark:text-[#f2eae6]">Total Estimado</span>
-                    <span className="font-raleway text-3xl font-bold text-[#b45b38]">${total.toFixed(2)}</span>
+                    <span className="font-raleway text-3xl font-bold text-[#b45b38]">${totalFinal.toFixed(2)}</span>
                   </div>
                   <p className="mt-2 text-xs text-[#6e7c7c] dark:text-[#b2b5a9]">
                     Este es un monto estimado. Un ejecutivo de ventas te contactará para confirmar detalles y darte el monto final.

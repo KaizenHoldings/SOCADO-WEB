@@ -6,6 +6,9 @@ export const Products: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['sku', 'name', 'status', 'price', 'category'],
     group: 'General',
+    components: {
+      beforeListTable: ['@/components/admin/CsvActions#CsvActions'],
+    },
   },
   access: {
     read: () => true,

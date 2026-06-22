@@ -4,14 +4,23 @@ import { useCartStore } from "@/lib/store/cart.store";
 import { X, Trash2, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { calculateDiscounts } from "@/lib/utils/discount.utils";
 
 export function CartDrawer() {
-  const { isDrawerOpen, closeDrawer, items, removeItem, updateQuantity } = useCartStore();
+  const { isDrawerOpen, closeDrawer, items, removeItem, updateQuantity, discountRules, fetchDiscountRules, taxes, fetchTaxes } = useCartStore();
   const router = useRouter();
+
+  useEffect(() => {
+    if (isDrawerOpen) {
+      fetchDiscountRules();
+      fetchTaxes();
+    }
+  }, [isDrawerOpen, fetchDiscountRules, fetchTaxes]);
 
   if (!isDrawerOpen) return null;
 
-  const total = items.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+  const { totalOriginal, totalDiscount, totalTax, totalFinal, appliedRules, appliedTaxes } = calculateDiscounts(items, discountRules, taxes);
 
   // Vista destacada de los últimos 3 productos agregados
   const recentItems = [...items].reverse().slice(0, 3);
@@ -117,10 +126,35 @@ export function CartDrawer() {
 
         {items.length > 0 && (
           <div className="border-t border-black/5 bg-black/5 p-6 dark:border-white/5 dark:bg-white/5">
-            <div className="mb-4 flex items-center justify-between">
-              <span className="font-bold text-[#6e7c7c] dark:text-[#b2b5a9]">Subtotal Estimado</span>
+            <div className="mb-2 flex items-center justify-between text-sm">
+              <span className="text-[#6e7c7c] dark:text-[#b2b5a9]">Subtotal</span>
+              <span className="font-bold text-[#063547] dark:text-[#f2eae6]">
+                ${totalOriginal.toFixed(2)}
+              </span>
+            </div>
+            
+            {appliedRules.length > 0 && appliedRules.map((rule, idx) => (
+              <div key={idx} className="mb-2 flex items-center justify-between text-sm text-[#b45b38]">
+                <span className="font-bold">{rule.ruleName} ({rule.percentage}%)</span>
+                <span className="font-bold">
+                  -${rule.discountAmount.toFixed(2)}
+                </span>
+              </div>
+            ))}
+
+            {appliedTaxes && appliedTaxes.length > 0 && appliedTaxes.map((tax, idx) => (
+              <div key={`tax-${idx}`} className="mb-2 flex items-center justify-between text-sm text-[#6e7c7c] dark:text-[#b2b5a9]">
+                <span className="font-bold">{tax.taxName} ({tax.percentage}%)</span>
+                <span className="font-bold">
+                  +${tax.taxAmount.toFixed(2)}
+                </span>
+              </div>
+            ))}
+
+            <div className="mb-4 mt-2 border-t border-black/5 pt-2 flex items-center justify-between">
+              <span className="font-bold text-[#6e7c7c] dark:text-[#b2b5a9]">Total Estimado</span>
               <span className="font-raleway text-2xl font-bold text-[#063547] dark:text-[#f2eae6]">
-                ${total.toFixed(2)}
+                ${totalFinal.toFixed(2)}
               </span>
             </div>
             <button 

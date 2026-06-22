@@ -5,6 +5,9 @@ export const Categories: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     group: 'General',
+    components: {
+      beforeListTable: ['@/components/admin/CsvActions#CsvActions'],
+    },
   },
   access: {
     read: () => true,

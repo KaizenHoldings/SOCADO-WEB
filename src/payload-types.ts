@@ -77,6 +77,9 @@ export interface Config {
     quotes: Quote;
     'cat-combos': CatCombo;
     'cat-categories': CatCategory;
+    stores: Store;
+    'discount-rules': DiscountRule;
+    taxes: Tax;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -94,6 +97,9 @@ export interface Config {
     quotes: QuotesSelect<false> | QuotesSelect<true>;
     'cat-combos': CatCombosSelect<false> | CatCombosSelect<true>;
     'cat-categories': CatCategoriesSelect<false> | CatCategoriesSelect<true>;
+    stores: StoresSelect<false> | StoresSelect<true>;
+    'discount-rules': DiscountRulesSelect<false> | DiscountRulesSelect<true>;
+    taxes: TaxesSelect<false> | TaxesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -291,6 +297,9 @@ export interface Quote {
     | number
     | boolean
     | null;
+  totalOriginal?: number | null;
+  totalDiscount?: number | null;
+  totalTax?: number | null;
   total: number;
   status?: ('pending' | 'sent' | 'approved' | 'rejected') | null;
   updatedAt: string;
@@ -314,6 +323,80 @@ export interface CatCombo {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stores".
+ */
+export interface Store {
+  id: number;
+  storeId: string;
+  title: string;
+  subtitle: string;
+  location: string;
+  schedule: string;
+  link: string;
+  images: {
+    image: number | Media;
+    id?: string | null;
+  }[];
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Tabla de descuentos por volumen para cada subcategoría.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "discount-rules".
+ */
+export interface DiscountRule {
+  id: number;
+  name: string;
+  isActive?: boolean | null;
+  /**
+   * Si se marca, esta regla se evaluará de forma independiente para CADA subcategoría disponible en el catálogo.
+   */
+  applyToAll?: boolean | null;
+  /**
+   * Selecciona las subcategorías específicas para las cuales aplicará esta tabla de descuentos por volumen. Las unidades de los productos dentro de cada subcategoría se sumarán juntas.
+   */
+  subcategories?: (number | Subcategory)[] | null;
+  tiers?:
+    | {
+        minUnits: number;
+        /**
+         * Dejar vacío para "Más de X unidades"
+         */
+        maxUnits?: number | null;
+        /**
+         * Ejemplo: 5 para un 5% de descuento
+         */
+        percentage: number;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "taxes".
+ */
+export interface Tax {
+  id: number;
+  name: string;
+  description?: string | null;
+  /**
+   * Ingresa el porcentaje del impuesto. Ejemplo: 16 para un 16%.
+   */
+  value: number;
+  /**
+   * Si se marca, este impuesto se aplicará en el carrito de compras.
+   */
+  isActive?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -380,6 +463,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'cat-categories';
         value: number | CatCategory;
+      } | null)
+    | ({
+        relationTo: 'stores';
+        value: number | Store;
+      } | null)
+    | ({
+        relationTo: 'discount-rules';
+        value: number | DiscountRule;
+      } | null)
+    | ({
+        relationTo: 'taxes';
+        value: number | Tax;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -555,6 +650,9 @@ export interface QuotesSelect<T extends boolean = true> {
   guests?: T;
   description?: T;
   items?: T;
+  totalOriginal?: T;
+  totalDiscount?: T;
+  totalTax?: T;
   total?: T;
   status?: T;
   updatedAt?: T;
@@ -586,6 +684,59 @@ export interface CatCombosSelect<T extends boolean = true> {
  */
 export interface CatCategoriesSelect<T extends boolean = true> {
   name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stores_select".
+ */
+export interface StoresSelect<T extends boolean = true> {
+  storeId?: T;
+  title?: T;
+  subtitle?: T;
+  location?: T;
+  schedule?: T;
+  link?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "discount-rules_select".
+ */
+export interface DiscountRulesSelect<T extends boolean = true> {
+  name?: T;
+  isActive?: T;
+  applyToAll?: T;
+  subcategories?: T;
+  tiers?:
+    | T
+    | {
+        minUnits?: T;
+        maxUnits?: T;
+        percentage?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "taxes_select".
+ */
+export interface TaxesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  value?: T;
+  isActive?: T;
   updatedAt?: T;
   createdAt?: T;
 }

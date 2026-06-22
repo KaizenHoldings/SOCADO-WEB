@@ -19,6 +19,9 @@ export function Header({
   const { items, toggleDrawer } = useCartStore();
   const cartCount = items.length;
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>(
+    activePage === "home" ? "inicio" : activePage
+  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBouncing, setIsBouncing] = useState(false);
   const prevCartCountRef = useRef(cartCount);
@@ -34,12 +37,31 @@ export function Header({
   }, [cartCount]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    // Verificar estado inicial (por si la página ya está scrolleada al montar)
-    setScrolled(window.scrollY > 10);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 10);
+
+      if (activePage === "home") {
+        const sections = ["tiendas", "nosotros", "catering", "contacto"];
+        let current = "inicio";
+
+        for (const section of sections) {
+          const el = document.getElementById(section);
+          if (el) {
+            const rect = el.getBoundingClientRect();
+            // Usamos un offset de la mitad de la pantalla para que cambie cuando la sección llegue al medio
+            if (rect.top <= window.innerHeight / 2) {
+              current = section;
+            }
+          }
+        }
+        setActiveSection(current);
+      }
+    };
+
+    onScroll(); // Initial check
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [activePage]);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -92,24 +114,21 @@ export function Header({
             <nav className="hidden lg:flex gap-8 text-[14px] tracking-wide">
               <Link
                 href="/"
-                className={`${navLinkBase} ${activePage === "home" ? navLinkActive : navLinkInactive}`}
+                className={`${navLinkBase} ${activeSection === "inicio" ? navLinkActive : navLinkInactive}`}
               >
                 Inicio
               </Link>
-              <a href="/#promociones" className={`${navLinkBase} ${navLinkInactive}`}>
-                Promociones
-              </a>
-              <a href="/#tiendas" className={`${navLinkBase} ${navLinkInactive}`}>
+              <a href="/#tiendas" className={`${navLinkBase} ${activeSection === "tiendas" ? navLinkActive : navLinkInactive}`}>
                 Tiendas
               </a>
               
-              <a href="/#nosotros" className={`${navLinkBase} ${navLinkInactive}`}>
+              <a href="/#nosotros" className={`${navLinkBase} ${activeSection === "nosotros" ? navLinkActive : navLinkInactive}`}>
                 Nosotros
               </a>
-              <a href="/#catering" className={`${navLinkBase} ${activePage === "catering" ? navLinkActive : navLinkInactive}`}>
+              <a href="/#catering" className={`${navLinkBase} ${activeSection === "catering" ? navLinkActive : navLinkInactive}`}>
                 Catering
               </a>
-              <a href="/#contacto" className={`${navLinkBase} ${navLinkInactive}`}>
+              <a href="/#contacto" className={`${navLinkBase} ${activeSection === "contacto" ? navLinkActive : navLinkInactive}`}>
                 Contacto
               </a>
             </nav>
@@ -190,42 +209,35 @@ export function Header({
           <Link
             href="/"
             onClick={() => setIsMobileMenuOpen(false)}
-            className={`transition-colors hover:text-[#b45b38] ${activePage === "home" ? "text-[#b45b38]" : ""}`}
+            className={`transition-colors hover:text-[#b45b38] ${activeSection === "inicio" ? "text-[#b45b38]" : ""}`}
           >
             Inicio
           </Link>
           <a 
             href="/#tiendas" 
             onClick={() => setIsMobileMenuOpen(false)}
-            className="transition-colors hover:text-[#b45b38]"
+            className={`transition-colors hover:text-[#b45b38] ${activeSection === "tiendas" ? "text-[#b45b38]" : ""}`}
           >
             Tiendas
           </a>
           <a 
-            href="/#promociones" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="transition-colors hover:text-[#b45b38]"
-          >
-            Promociones
-          </a>
-          <a 
             href="/#nosotros" 
             onClick={() => setIsMobileMenuOpen(false)}
-            className="transition-colors hover:text-[#b45b38]"
+            className={`transition-colors hover:text-[#b45b38] ${activeSection === "nosotros" ? "text-[#b45b38]" : ""}`}
           >
             Nosotros
           </a>
           <a
             href="/#catering"
             onClick={() => setIsMobileMenuOpen(false)}
-            className={`transition-colors hover:text-[#b45b38] ${activePage === "catering" ? "text-[#b45b38]" : ""}`}
+            className={`transition-colors hover:text-[#b45b38] ${activeSection === "catering" ? "text-[#b45b38]" : ""}`}
           >
             Catering
           </a>
           <a 
             href="/#contacto" 
             onClick={() => setIsMobileMenuOpen(false)}
-            className="transition-colors hover:text-[#b45b38]"
+            className={`transition-colors hover:text-[#b45b38] ${activeSection === "contacto" ? "text-[#b45b38]" : ""}`}
           >
             Contacto
           </a>

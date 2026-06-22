@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
@@ -9,27 +9,46 @@ export interface StoreData {
   id: string;
   title: string;
   subtitle: string;
-  description: string;
+  location: string;
+  schedule: string;
   link: string;
-  image: string;
+  images: string[];
+  order?: number;
 }
 
 export function StoreCard({ store }: { store: StoreData }) {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    if (!store.images || store.images.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % store.images.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [store.images]);
+
+  const images = store.images && store.images.length > 0 ? store.images : ["/images/placeholder.jpg"];
+
   return (
     <motion.div 
       layoutId={`card-${store.id}`}
-      className="relative h-[400px] sm:h-[450px] min-w-[85%] md:min-w-[calc(50%-0.75rem)] lg:min-w-[calc(33.333333%-1rem)] shrink-0 group flex flex-col  overflow-hidden shadow-sm hover:shadow-2xl transition-shadow duration-700 border border-black/5 dark:border-white/5"
+      className="relative h-[350px] sm:h-[400px] min-w-[85%] md:min-w-[calc(50%-0.75rem)] lg:min-w-[calc(33.333333%-1rem)] shrink-0 group flex flex-col  overflow-hidden shadow-sm hover:shadow-2xl transition-shadow duration-700 border border-black/5 dark:border-white/5"
     >
-      {/* Image Background */}
-      <motion.div layoutId={`image-${store.id}`} className="absolute inset-0">
-        <Image 
-          src={store.image} 
-          alt={`Socado ${store.title}`}
-          fill
-          draggable={false}
-          className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110 pointer-events-none"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
+      {/* Image Backgrounds (Slideshow) */}
+      <motion.div layoutId={`image-${store.id}`} className="absolute inset-0 bg-black/10">
+        {images.map((src, idx) => (
+          <Image  
+            key={idx}
+            src={src} 
+            alt={`Socado ${store.title} ${idx + 1}`}
+            fill
+            draggable={false}
+            className={`object-cover transition-all duration-1000 ease-in-out group-hover:scale-110 pointer-events-none ${
+              idx === currentImageIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        ))}
       </motion.div>
       
       {/* Gradient Overlay */}
@@ -51,7 +70,12 @@ export function StoreCard({ store }: { store: StoreData }) {
           <div className="overflow-hidden">
             <div className="pt-4 flex flex-col gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
               <p className="font-outfit text-white/80 whitespace-pre-line text-sm leading-relaxed">
-                {store.description}
+                <span className="font-bold text-white mb-1 block uppercase text-xs tracking-wider">Ubicación</span>
+                {store.location}
+              </p>
+              <p className="font-outfit text-white/80 whitespace-pre-line text-sm leading-relaxed">
+                <span className="font-bold text-white mb-1 block uppercase text-xs tracking-wider">Horario</span>
+                {store.schedule}
               </p>
             </div>
           </div>

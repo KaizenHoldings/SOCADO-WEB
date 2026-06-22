@@ -5,6 +5,9 @@ export const Macrocategories: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     group: 'General',
+    components: {
+      beforeListTable: ['@/components/admin/CsvActions#CsvActions'],
+    },
   },
   access: {
     read: () => true,

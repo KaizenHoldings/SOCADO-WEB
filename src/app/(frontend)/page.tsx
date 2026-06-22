@@ -23,7 +23,7 @@ export default function Home() {
         <OurStory />
         <Timeline />
         <CateringPromo />
-        <AboutUs />
+    
       </main>
 
       <Footer />
