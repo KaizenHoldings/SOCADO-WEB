@@ -36,7 +36,7 @@ export function CateringPromo() {
         {/* Right Side: Full Image */}
         <div className="w-full md:w-1/2 relative min-h-[400px] md:min-h-full">
           <Image 
-            src="/images/catering.jpg"
+            src="/images/servicio.jpg"
             alt="Socado Catering options"
             fill
             className="object-cover"
