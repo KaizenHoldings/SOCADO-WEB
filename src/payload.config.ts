@@ -64,16 +64,12 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
-    ...(process.env.STORAGE_MODE === 'BLOB'
-      ? [
-          vercelBlobStorage({
-            enabled: true,
-            collections: {
-              media: true,
-            },
-            token: process.env.BLOB_READ_WRITE_TOKEN || '',
-          }),
-        ]
-      : []),
+    vercelBlobStorage({
+      enabled: process.env.STORAGE_MODE === 'BLOB',
+      collections: {
+        media: true,
+      },
+      token: process.env.BLOB_READ_WRITE_TOKEN || '',
+    }),
   ],
 })
