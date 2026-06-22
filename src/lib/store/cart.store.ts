@@ -81,7 +81,7 @@ export const useCartStore = create<CartState>((set) => ({
 
   fetchTaxes: async () => {
     try {
-      const res = await fetch('/api/taxes');
+      const res = await fetch('/api/shop-taxes');
       const data = await res.json();
       if (Array.isArray(data)) {
         set({ taxes: data });
