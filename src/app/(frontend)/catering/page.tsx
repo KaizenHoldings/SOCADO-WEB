@@ -252,7 +252,7 @@ export default function CateringPage() {
                {/* Card 2: Para compartir */}
                <div onClick={() => { setViewMode("libre"); setHasSelectedMode(true); }} className="cursor-pointer group flex flex-col items-center">
                   <div className="relative w-full aspect-[4/5] overflow-hidden mb-6 shadow-md group-hover:shadow-2xl transition-all duration-500">
-                    <Image src="/images/catering.jpg" fill className="object-cover transition-transform duration-700 group-hover:scale-105" alt="Para compartir" />
+                    <Image src="/images/servicio.jpg" fill className="object-cover transition-transform duration-700 group-hover:scale-105" alt="Para compartir" />
                   </div>
                   <h3 className="font-outfit text-2xl md:text-3xl font-light text-azul-socado dark:text-ivory group-hover:text-terra transition-colors lowercase tracking-wide">para compartir</h3>
                </div>
