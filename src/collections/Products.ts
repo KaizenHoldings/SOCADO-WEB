@@ -97,7 +97,7 @@ export const Products: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       label: 'Imagen del Producto',
-      required: true,
+      required: false,
     },
   ],
 }
