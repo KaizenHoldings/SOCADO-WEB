@@ -20,7 +20,7 @@ export function HeroLeft() {
   const opacityText = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
-    <section ref={containerRef} className="relative h-[120vh] bg-black">
+    <section id="inicio" ref={containerRef} className="relative h-[120vh] bg-black">
       <div className="sticky top-0 flex h-screen w-full items-end pb-24 overflow-hidden">
         {/* Video Background */}
         <motion.div 
@@ -47,7 +47,7 @@ export function HeroLeft() {
         >
           <div className="max-w-2xl text-left">
             <h1 className="font-raleway text-5xl font-bold tracking-tighter text-ivory sm:text-7xl md:text-6xl leading-none drop-shadow-lg">
-              Social Café<div className=""> Conectado.</div>
+              Social. Café.<div className=""> Conectado.</div>
             </h1>
           </div>
         </motion.div>

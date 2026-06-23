@@ -231,7 +231,7 @@ export interface Product {
   categoryCatering?: (number | null) | CatCategory;
   category: number | Category;
   subCategory: number | Subcategory;
-  image: number | Media;
+  image?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
 }
@@ -320,6 +320,10 @@ export interface CatCombo {
     | {
         category: number | CatCategory;
         allowedQuantity: number;
+        /**
+         * Si se deja vacío, se mostrarán todos los productos de la categoría seleccionada.
+         */
+        allowedProducts?: (number | Product)[] | null;
         id?: string | null;
       }[]
     | null;
@@ -673,6 +677,7 @@ export interface CatCombosSelect<T extends boolean = true> {
     | {
         category?: T;
         allowedQuantity?: T;
+        allowedProducts?: T;
         id?: T;
       };
   updatedAt?: T;

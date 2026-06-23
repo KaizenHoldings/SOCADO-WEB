@@ -61,13 +61,16 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
     
     if (!requirement) return [];
 
-    // Filtramos los productos reales por el ID de la categoría (categoryCateringId)
-    const realProducts = products.filter(p => {
+    // Si el slot tiene productos explícitos, filtramos por esos IDs
+    if (requirement.allowedProductIds && requirement.allowedProductIds.length > 0) {
+      return products.filter(p => requirement.allowedProductIds!.includes(String(p.id)));
+    }
+
+    // Fallback: todos los productos de la categoría
+    return products.filter(p => {
       const pCatId = p.categoryCateringId;
       return pCatId && String(pCatId) === String(requirement.categoryId);
     });
-    
-    return realProducts;
   })();
 
   // Manejar adición de producto a la caja en construcción

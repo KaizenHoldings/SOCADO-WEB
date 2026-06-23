@@ -68,6 +68,17 @@ export const CatCombos: CollectionConfig = {
           min: 1,
           label: 'Cantidad de Elementos Permitidos',
         },
+        {
+          name: 'allowedProducts',
+          type: 'relationship',
+          relationTo: 'products',
+          hasMany: true,
+          required: false,
+          label: 'Productos permitidos en este slot',
+          admin: {
+            description: 'Si se deja vacío, se mostrarán todos los productos de la categoría seleccionada.',
+          },
+        },
       ],
     },
   ],

@@ -4,6 +4,7 @@ export interface BoxRequirement {
   categoryId: string; // ID en payload CMS (relación a cat-categories)
   subcategoryName: string; // Nombre de la categoría (ej. "Bollería")
   quantity: number;
+  allowedProductIds?: (string | number)[]; // Si está definido, solo estos productos son elegibles en este slot
 }
 
 export interface BoxDefinition {

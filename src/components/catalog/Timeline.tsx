@@ -6,33 +6,33 @@ import { motion, useScroll, useTransform } from "motion/react";
 
 export const timelineData = [
   {
-    year: "2018",
-    title: "STARTED WITH AN IDEA",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.",
+    year: "2021",
+    title: "NACE SOCADO",
+    description: "En una Caracas congestionada, luego de una pandemia mundial y de mucho aislamiento, Socado nace de una gran necesidad de reconectar a través de una buena taza de café, comida reconfortante y conversaciones enriquecedoras. Abrimos nuestras puertas en la Torre ABA de Las Mercedes el 21 de septiembre de 2021.",
     image: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=600&auto=format&fit=crop"
   },
   {
-    year: "2019",
-    title: "THE \"AHA!\" MOMENT",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.",
+    year: "2022",
+    title: "CONSOLIDANDO LA MARCA",
+    description: "Fue un año de darnos a conocer, de mucho aprendizaje y de consolidar nuestra marca. Confirmamos que Socado tenía un lugar en Caracas. Gracias a la gran receptividad que tuvimos, comenzamos a pensar en llegar a nuevos rincones de la ciudad.",
     image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=600&auto=format&fit=crop"
   },
   {
-    year: "2020",
-    title: "OUR FIRST LOCATION",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.",
+    year: "2023",
+    title: "EL PROYECTO DE EXPANSIÓN",
+    description: "Arrancamos el proyecto de expansión de Socado: el 1 de noviembre abrimos nuestra segunda tienda en el Pueblo de El Hatillo y nos planteamos el reto de crear más espacios de conexión para el 2024. Este gran reto requería de una mejor forma de comunicar lo que era Socado para nosotros, por lo que refrescamos nuestro logo y branding.",
     image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=600&auto=format&fit=crop"
   },
   {
-    year: "2021",
-    title: "CATERING SERVICE LAUNCH",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.",
+    year: "2024",
+    title: "UN GRAN FUTURO",
+    description: "El 6 de febrero abrimos nuestra tercera tienda en la Torre P&G en La Trinidad y nos mudamos a un nuevo Centro de Producción, un reto emocionante que consolida las bases del gran futuro que proyectamos para Socado. También realizamos la expansión de nuestra primera tienda en Las Mercedes, con el objetivo de ofrecer una mejor experiencia a nuestros clientes y abrimos nuestra tienda más grande hasta la fecha, en un nuevo municipio, Socado El Rosal el 15 de mayo.",
     image: "https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=600&auto=format&fit=crop"
   },
   {
-    year: "2023",
-    title: "SOCADO COMMUNITY GROWS",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.",
+    year: "2025",
+    title: "NACE SOCADITO",
+    description: "Dimos la bienvenida a un nuevo concepto dentro de la familia Socado: Socadito, una propuesta más ágil y de oferta reducida, pensada para nuevos espacios y momentos de consumo. El 23 de agosto abrimos nuestro primer Socadito en Parque Cerro Verde, marcando además nuestra primera experiencia dentro de un centro comercial. Luego, el 6 de septiembre, abrimos nuestro segundo Socadito en Locatel La Castellana, continuando así la expansión de la marca a través de formatos más compactos y versátiles.",
     image: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=600&auto=format&fit=crop"
   }
 ];

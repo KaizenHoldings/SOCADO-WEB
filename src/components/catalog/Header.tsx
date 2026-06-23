@@ -4,7 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ShoppingBag, ArrowUpRight, Menu, X } from "lucide-react";
+import { motion } from "motion/react";
 import { useCartStore } from "@/lib/store/cart.store";
+import { EcommerceModal } from "@/components/catalog/EcommerceModal";
 
 interface HeaderProps {
   activePage?: "home" | "catering";
@@ -24,6 +26,7 @@ export function Header({
   );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBouncing, setIsBouncing] = useState(false);
+  const [isEcommerceModalOpen, setIsEcommerceModalOpen] = useState(false);
   const prevCartCountRef = useRef(cartCount);
 
   useEffect(() => {
@@ -92,10 +95,17 @@ export function Header({
 
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 z-50 w-full transition-all duration-300 ${bgClass}`}
+      <motion.header
+        initial={{ y: "-100%" }}
+        animate={{ y: "0%" }}
+        transition={{ type: "spring", stiffness: 300, damping: 22 }}
+        className={`fixed top-0 left-0 z-50 w-full ${bgClass}`}
+        style={{ transition: "background-color 500ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 500ms cubic-bezier(0.34, 1.56, 0.64, 1), backdrop-filter 500ms cubic-bezier(0.34, 1.56, 0.64, 1)" }}
       >
-        <div className="mx-auto flex h-20 max-w-[1400px] items-center justify-between px-6 lg:px-12">
+        <div
+          className={`mx-auto flex max-w-[1400px] items-center justify-between px-6 lg:px-12 ${scrolled ? "py-[14px]" : "py-7"}`}
+          style={{ transition: "padding 500ms cubic-bezier(0.34, 1.56, 0.64, 1)" }}
+        >
           {/* Izquierda: Logo y Navegación alineada */}
           <div className="flex items-center gap-10 lg:gap-14">
             {/* Logo */}
@@ -112,12 +122,12 @@ export function Header({
 
             {/* Nav */}
             <nav className="hidden lg:flex gap-8 text-[14px] tracking-wide">
-              <Link
-                href="/"
+              <a
+                href="/#inicio"
                 className={`${navLinkBase} ${activeSection === "inicio" ? navLinkActive : navLinkInactive}`}
               >
                 Inicio
-              </Link>
+              </a>
               <a href="/#tiendas" className={`${navLinkBase} ${activeSection === "tiendas" ? navLinkActive : navLinkInactive}`}>
                 Tiendas
               </a>
@@ -150,14 +160,13 @@ export function Header({
               </button>
             )}
             {activePage === "home" && (
-              <Link
-                href="https://latrinidad.socadocafe.com/"
-                target="_blank"
+              <button
+                onClick={() => setIsEcommerceModalOpen(true)}
                 className={`group hidden lg:flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-widest transition-opacity hover:opacity-60 ${textColor}`}
               >
                 Ecommerce
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </Link>
+              </button>
             )}
             
             {/* Menu Hamburguesa (Móvil) */}
@@ -170,7 +179,12 @@ export function Header({
             </button>
           </div>
         </div>
-      </header>
+      </motion.header>
+
+      <EcommerceModal
+        isOpen={isEcommerceModalOpen}
+        onClose={() => setIsEcommerceModalOpen(false)}
+      />
 
       {/* Menú Móvil Pantalla Completa */}
       <div 
@@ -206,13 +220,13 @@ export function Header({
         </div>
 
         <nav className="flex flex-1 flex-col items-center justify-center gap-10 text-2xl font-semibold tracking-wide text-[#063547] dark:text-[#f2eae6]">
-          <Link
-            href="/"
+          <a
+            href="/#inicio"
             onClick={() => setIsMobileMenuOpen(false)}
             className={`transition-colors hover:text-[#b45b38] ${activeSection === "inicio" ? "text-[#b45b38]" : ""}`}
           >
             Inicio
-          </Link>
+          </a>
           <a 
             href="/#tiendas" 
             onClick={() => setIsMobileMenuOpen(false)}

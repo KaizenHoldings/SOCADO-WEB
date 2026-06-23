@@ -1,8 +1,9 @@
 import React from 'react'
+import type { Metadata } from 'next'
 import { Raleway, Outfit } from 'next/font/google'
 import './styles.css'
 
-export const metadata = {
+export const metadata: Metadata = {
   description: 'A blank template using Payload in a Next.js app.',
   title: 'Payload Blank Template',
   icons: {
@@ -29,7 +30,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
 
   return (
     <html lang="es" className={`scroll-smooth ${raleway.variable} ${outfit.variable}`}>
-      <body className="font-outfit antialiased">
+      <body className="font-outfit antialiased overflow-x-hidden">
         <main>{children}</main>
       </body>
     </html>

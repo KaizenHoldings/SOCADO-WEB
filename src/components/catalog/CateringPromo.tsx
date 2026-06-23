@@ -6,7 +6,7 @@ import { ArrowRight } from 'lucide-react';
 export function CateringPromo() {
   return (
     <section id="catering" className="relative w-full bg-terra overflow-hidden">
-      <div className="flex flex-col md:flex-row w-full min-h-[70vh]">
+      <div className="flex flex-col-reverse md:flex-row w-full min-h-[70vh]">
         
         {/* Left Side: Text Content */}
         <div className="w-full md:w-1/2 flex items-center justify-center p-12 md:p-20 lg:p-32 z-10 bg-terra">

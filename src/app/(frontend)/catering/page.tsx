@@ -196,7 +196,10 @@ export default function CateringPage() {
           requirements: (combo.rules || []).map((rule: any) => ({
             categoryId: rule.category?.id || rule.category,
             subcategoryName: rule.category?.name || "Categoría",
-            quantity: rule.allowedQuantity
+            quantity: rule.allowedQuantity,
+            allowedProductIds: (rule.allowedProducts || []).map((p: any) =>
+              typeof p === 'object' ? String(p.id) : String(p)
+            )
           }))
         }));
         setCombos(mappedCombos);
@@ -232,76 +235,100 @@ export default function CateringPage() {
         {/* Header de Catering */}
         <section className="mx-auto max-w-[1400px] px-6 lg:px-12 ">
           <div className="">
-            <h1 className="font-raleway text-4xl font-bold tracking-tight text-azul-socado md:text-5xl">
+            <h1 className="font-raleway text-4xl font-bold tracking-tight text-azul-socado md:text-5xl mb-2">
               Catering Socado
             </h1>
           </div>
         </section>
 
         {!hasSelectedMode ? (
-          <section className="mx-auto max-w-4xl px-6 lg:px-12 py-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
-               {/* Card 1: Individuales */}
-               <div onClick={() => { setViewMode("box"); setHasSelectedMode(true); }} className="cursor-pointer group flex flex-col items-center">
-                  <div className="relative w-full aspect-[4/5] overflow-hidden mb-6 shadow-md group-hover:shadow-2xl transition-all duration-500">
-                    <Image src="/images/promotion2.png" fill className="object-cover transition-transform duration-700 group-hover:scale-105" alt="Individuales" />
-                  </div>
-                  <h3 className="font-outfit text-2xl md:text-3xl font-light text-azul-socado dark:text-ivory group-hover:text-terra transition-colors lowercase tracking-wide">individuales</h3>
-               </div>
-               
-               {/* Card 2: Para compartir */}
-               <div onClick={() => { setViewMode("libre"); setHasSelectedMode(true); }} className="cursor-pointer group flex flex-col items-center">
-                  <div className="relative w-full aspect-[4/5] overflow-hidden mb-6 shadow-md group-hover:shadow-2xl transition-all duration-500">
-                    <Image src="/images/servicio.jpg" fill className="object-cover transition-transform duration-700 group-hover:scale-105" alt="Para compartir" />
-                  </div>
-                  <h3 className="font-outfit text-2xl md:text-3xl font-light text-azul-socado dark:text-ivory group-hover:text-terra transition-colors lowercase tracking-wide">para compartir</h3>
-               </div>
-            </div>
-          </section>
-        ) : (
           <>
             <HowItWorksCatering />
-
-            {/* Barra Sticky (Macrocategorías + Toggle Button) */}
-            <div className="sticky top-20 mt-16 z-40 w-full py-4 border-b border-black/5 dark:border-white/5 mb-4 bg-white/95 backdrop-blur-md dark:bg-[#042430]/95">
-          <div className="mx-auto max-w-[1400px] px-6 lg:px-12 flex flex-col gap-4">
-            
-            {/* Top row: Toggle Button */}
-            <div className="flex items-center">
-              <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+          <div className="flex flex-col md:flex-row w-full" style={{ minHeight: "70vh" }}>
+            {/* Mitad 1: Individuales */}
+            <div
+              onClick={() => { setViewMode("box"); setHasSelectedMode(true); }}
+              className="relative w-full md:w-1/2 min-h-[50vh] md:min-h-0 cursor-pointer group overflow-hidden"
+            >
+              <Image
+                src="/images/promotion2.png"
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                alt="Individuales"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+              <div className="absolute inset-0 flex flex-col justify-end p-10 lg:p-14">
+                <h3 className="font-outfit text-4xl lg:text-5xl font-light text-white lowercase tracking-wide transition-transform duration-300 group-hover:translate-y-[-4px]">
+                  individuales
+                </h3>
+                <p className="font-outfit text-white/60 text-sm mt-2 uppercase tracking-widest">
+                  Boxes por persona
+                </p>
+              </div>
             </div>
 
-            {/* Bottom row: Categories */}
-            <div className="flex flex-wrap gap-2 md:gap-4 items-center border-t border-black/5 dark:border-white/5 pt-4">
-
-              {viewMode === "libre" ? (
-                <>
-                  {(!isLoadingCategories && macrocategories.length > 0) && macrocategories.map((macro) => (
-                    <button
-                      key={macro.id}
-                      onClick={() => setSelectedMacrocategory(macro.id)}
-                      className={`rounded-full px-6 py-2.5 text-sm font-bold uppercase tracking-wider transition-all ${
-                        selectedMacrocategory === macro.id
-                          ? "bg-[#b45b38] text-white shadow-md"
-                          : "bg-black/5 text-[#6e7c7c] hover:bg-black/10 hover:text-[#063547] dark:bg-white/5 dark:text-[#b2b5a9] dark:hover:bg-white/10 dark:hover:text-[#f2eae6]"
-                      }`}
-                    >
-                      {macro.name}
-                    </button>
-                  ))}
-
-                </>
-              ) : (
-                <div className={`flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#063547] dark:text-[#f2eae6]`}>
-                  <span className="opacity-50">Armando:</span>
-                  <span className="text-[#b45b38]">{selectedBoxName}</span>
-                </div>
-              )}
+            {/* Mitad 2: Para compartir */}
+            <div
+              onClick={() => { setViewMode("libre"); setHasSelectedMode(true); }}
+              className="relative w-full md:w-1/2 min-h-[50vh] md:min-h-0 cursor-pointer group overflow-hidden"
+            >
+              <Image
+                src="/images/servicio.jpg"
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                alt="Para compartir"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+              <div className="absolute inset-0 flex flex-col justify-end p-10 lg:p-14">
+                <h3 className="font-outfit text-4xl lg:text-5xl font-light text-white lowercase tracking-wide transition-transform duration-300 group-hover:translate-y-[-4px]">
+                  para compartir
+                </h3>
+                <p className="font-outfit text-white/60 text-sm mt-2 uppercase tracking-widest">
+                  Bandejas y opciones grupales
+                </p>
+              </div>
             </div>
-
-
           </div>
-        </div>
+          </>
+        ) : (
+          <>
+
+            {/* Barra Sticky */}
+            <div className="sticky top-[76px] z-40 w-full border-b border-black/5 dark:border-white/5 bg-white/95 backdrop-blur-md dark:bg-[#042430]/95">
+              <div className="mx-auto max-w-[1400px] px-6 lg:px-12 flex flex-col">
+                {/* Fila 1: Toggle */}
+                <div className="flex items-center py-3">
+                  <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
+                </div>
+                {/* Fila 2: Macrocategorías — sin gap entre filas */}
+                <div className="flex flex-wrap gap-2 md:gap-3 items-center pb-3">
+                  {viewMode === "libre" ? (
+                    <>
+                      {(!isLoadingCategories && macrocategories.length > 0) && macrocategories.map((macro) => (
+                        <button
+                          key={macro.id}
+                          onClick={() => setSelectedMacrocategory(macro.id)}
+                          className={`rounded-full px-5 py-2 text-sm font-bold uppercase tracking-wider transition-all ${
+                            selectedMacrocategory === macro.id
+                              ? "bg-[#b45b38] text-white shadow-md"
+                              : "bg-black/5 text-[#6e7c7c] hover:bg-black/10 hover:text-[#063547] dark:bg-white/5 dark:text-[#b2b5a9] dark:hover:bg-white/10 dark:hover:text-[#f2eae6]"
+                          }`}
+                        >
+                          {macro.name}
+                        </button>
+                      ))}
+                    </>
+                  ) : (
+                    <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#063547] dark:text-[#f2eae6]">
+                      <span className="opacity-50">Armando:</span>
+                      <span className="text-[#b45b38]">{selectedBoxName}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
 
         {viewMode === "libre" ? (
           <>
