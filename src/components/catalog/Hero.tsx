@@ -14,7 +14,7 @@ export function Hero() {
         playsInline
         className="absolute inset-0 h-full w-full object-cover"
       >
-        <source src="/videos/peoplesocado.webm" type="video/webm" />
+        <source src="/videos/people.webm" type="video/webm" />
       </video>
 
       {/* Overlay oscuro para garantizar legibilidad del texto */}

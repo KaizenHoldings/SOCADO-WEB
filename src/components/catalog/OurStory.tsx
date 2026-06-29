@@ -54,7 +54,7 @@ export function OurStory() {
             className="w-full lg:w-[45%] relative h-[350px] lg:h-[450px] z-10"
           >
             <video
-              src="/videos/peoplesocado.webm"
+              src="/videos/people.webm"
               autoPlay
               loop
               muted

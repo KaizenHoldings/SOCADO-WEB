@@ -103,8 +103,7 @@ export function RadialTimeline() {
       {/* Background Video */}
       <div className="absolute inset-0 h-full w-full pointer-events-none">
         <video autoPlay loop muted playsInline className="h-full w-full object-cover">
-          <source src="/videos/inicioHero.mp4" type="video/webm" />
-          <source src="/videos/inicioHero.mp4" type="video/mp4" />
+          <source src="/videos/people.webm" type="video/webm" />
         </video>
         {/* Dark overlay requested by user */}
         <div className="absolute inset-0 bg-black/60" />

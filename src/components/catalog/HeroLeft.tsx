@@ -34,7 +34,7 @@ export function HeroLeft() {
             playsInline
             className="h-full w-full object-cover"
           >
-            <source src="/videos/inicioHero.mp4" type="video/webm" />
+            <source src="/videos/people.webm" type="video/webm" />
           </video>
         </motion.div>
 
