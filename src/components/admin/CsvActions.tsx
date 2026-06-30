@@ -80,10 +80,17 @@ export function CsvActions() {
       const data = await res.json();
       
       if (data.success) {
-        alert('Importación completada con éxito.');
-        window.location.reload(); // Recargar la tabla de Payload
+        if (data.summary.errors > 0) {
+          alert(`Importación completada parcialmente. Hubo ${data.summary.errors} errores. Revisa el reporte para más detalles.`);
+          setImportReport(data); // Actualizar el modal con los errores reales de la importación
+        } else {
+          alert('Importación completada con éxito.');
+          setIsModalOpen(false);
+          setSelectedFile(null);
+          window.location.reload(); // Recargar la tabla de Payload solo si no hubo errores
+        }
       } else {
-        alert('Hubo errores en la importación. Revisa la consola.');
+        alert('Hubo un error en la solicitud de importación.');
         console.error(data);
       }
     } catch (error) {
@@ -91,8 +98,6 @@ export function CsvActions() {
       console.error(error);
     } finally {
       setIsProcessing(false);
-      setIsModalOpen(false);
-      setSelectedFile(null);
     }
   };
 

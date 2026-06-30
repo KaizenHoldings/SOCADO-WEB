@@ -56,6 +56,58 @@ export async function POST(req: Request, { params }: { params: Promise<{ collect
     // Process rows
     for (const row of parsed.data as any[]) {
       try {
+        // Resolve relationship fields by name, and ignore upload fields completely
+        const fields = payload.collections[collectionKey].config.fields;
+        for (const field of fields) {
+          // Ignore upload fields (like 'image') to prevent ghost ID errors from external exports
+          if (field.type === 'upload') {
+            delete row[field.name];
+            continue;
+          }
+
+          if (
+            field.type === 'relationship' && 
+            row[field.name] && 
+            typeof row[field.name] === 'string'
+          ) {
+            const relationTo = Array.isArray(field.relationTo) ? field.relationTo[0] : field.relationTo;
+            
+            // Try to find the related record by name
+            const relationDocs = await payload.find({
+              collection: relationTo,
+              where: {
+                name: { equals: row[field.name] }
+              },
+              depth: 0,
+              limit: 1
+            });
+            
+            if (relationDocs.docs.length > 0) {
+              row[field.name] = relationDocs.docs[0].id;
+            } else {
+              throw new Error(`No se encontró el registro relacionado para el campo '${field.name}' con el valor '${row[field.name]}' en la colección '${relationTo}'. Asegúrate de que el nombre esté escrito exactamente igual.`);
+            }
+          } else if (
+            field.type === 'relationship' && 
+            row[field.name] && 
+            typeof row[field.name] === 'number'
+          ) {
+            // Verify if the ID actually exists to prevent Postgres foreign key constraint errors
+            const relationTo = Array.isArray(field.relationTo) ? field.relationTo[0] : field.relationTo;
+            try {
+              const checkDoc = await payload.findByID({
+                collection: relationTo,
+                id: row[field.name]
+              });
+              if (!checkDoc) {
+                throw new Error(`El ID ${row[field.name]} no existe en la colección ${relationTo}`);
+              }
+            } catch (err) {
+               throw new Error(`Error de validación: El ID ${row[field.name]} no existe en la colección '${relationTo}' para el campo '${field.name}'. (Si no deseas asignar una relación, deja la celda vacía o elimina la columna).`);
+            }
+          }
+        }
+
         const existing = matchRecord(row);
 
         if (existing) {

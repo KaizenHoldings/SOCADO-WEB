@@ -24,7 +24,7 @@ export const SubCategories: CollectionConfig = {
       type: 'relationship',
       relationTo: 'categories',
       label: 'Categoría a la que pertenece',
-      required: true,
+      required: false,
     },
   ],
 }

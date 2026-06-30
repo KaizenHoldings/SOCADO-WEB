@@ -24,7 +24,7 @@ export const Categories: CollectionConfig = {
       type: 'relationship',
       relationTo: 'macrocategories',
       label: 'Macrocategoría a la que pertenece',
-      required: true,
+      required: false,
     },
     {
       name: 'image',

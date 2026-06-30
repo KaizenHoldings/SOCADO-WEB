@@ -53,7 +53,7 @@ export const Products: CollectionConfig = {
       type: 'relationship',
       relationTo: 'macrocategories',
       label: 'Macrocategoría',
-      required: true,
+      required: false,
     },
     {
       name: 'categoryCatering',
@@ -67,7 +67,7 @@ export const Products: CollectionConfig = {
       type: 'relationship',
       relationTo: 'categories',
       label: 'Categoría',
-      required: true,
+      required: false,
       filterOptions: ({ data }) => {
         if (data.macroCategory) {
           return {
@@ -82,7 +82,7 @@ export const Products: CollectionConfig = {
       type: 'relationship',
       relationTo: 'subcategories',
       label: 'Subcategoría',
-      required: true,
+      required: false,
       filterOptions: ({ data }) => {
         if (data.category) {
           return {

@@ -14,9 +14,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ collecti
       return NextResponse.json({ error: 'Collection not found' }, { status: 404 });
     }
 
-    // Extraer nombres de los campos
+    // Extraer nombres de los campos excluyendo UI y Uploads
     const headers = collectionConfig.fields
-      .filter((f: any) => f.type !== 'ui' && f.name)
+      .filter((f: any) => f.type !== 'ui' && f.type !== 'upload' && f.name)
       .map((f: any) => f.name);
 
     const csvData = Papa.unparse({

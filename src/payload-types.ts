@@ -201,7 +201,7 @@ export interface Macrocategory {
 export interface Category {
   id: number;
   name: string;
-  macroCategory: number | Macrocategory;
+  macroCategory?: (number | null) | Macrocategory;
   image?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
@@ -213,7 +213,7 @@ export interface Category {
 export interface Subcategory {
   id: number;
   name: string;
-  parentCategory: number | Category;
+  parentCategory?: (number | null) | Category;
   updatedAt: string;
   createdAt: string;
 }
@@ -227,10 +227,10 @@ export interface Product {
   sku: string;
   name: string;
   price: number;
-  macroCategory: number | Macrocategory;
+  macroCategory?: (number | null) | Macrocategory;
   categoryCatering?: (number | null) | CatCategory;
-  category: number | Category;
-  subCategory: number | Subcategory;
+  category?: (number | null) | Category;
+  subCategory?: (number | null) | Subcategory;
   image?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
