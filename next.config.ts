@@ -7,6 +7,7 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
+
   images: {
     localPatterns: [
       {
@@ -39,6 +40,11 @@ const nextConfig: NextConfig = {
   },
   turbopack: {
     root: path.resolve(dirname),
+  },
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['72.167.42.216', 'localhost:3000'],
+    },
   },
 }
 

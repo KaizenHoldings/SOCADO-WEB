@@ -51,6 +51,8 @@ export default buildConfig({
       ],
     },
   },
+  cors: ['http://72.167.42.216', 'https://72.167.42.216', process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
+  csrf: ['http://72.167.42.216', 'https://72.167.42.216', process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   collections: [Users, Media, Macrocategories, Categories,SubCategories, Products, Promotions, Quotes, CatCombos, CatCategories, Stores, DiscountRules, Taxes ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
