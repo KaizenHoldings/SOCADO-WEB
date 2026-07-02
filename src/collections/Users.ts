@@ -13,6 +13,7 @@ export const Users: CollectionConfig = {
     cookies: {
       secure: false,
       sameSite: 'Lax',
+      domain: undefined,
     },
   },
   fields: [
