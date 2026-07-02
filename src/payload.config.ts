@@ -23,8 +23,6 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
-  cookiePrefix: 'socado',
   admin: {
     user: Users.slug,
     components: {
@@ -53,20 +51,6 @@ export default buildConfig({
       ],
     },
   },
-  cors: [
-    'http://72.167.42.216', 
-    'https://72.167.42.216', 
-    'http://localhost:3000', 
-    'https://socadocafe.com', 
-    'https://www.socadocafe.com'
-  ],
-  csrf: [
-    'http://72.167.42.216', 
-    'https://72.167.42.216', 
-    'http://localhost:3000', 
-    'https://socadocafe.com', 
-    'https://www.socadocafe.com'
-  ],
   collections: [Users, Media, Macrocategories, Categories,SubCategories, Products, Promotions, Quotes, CatCombos, CatCategories, Stores, DiscountRules, Taxes ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
