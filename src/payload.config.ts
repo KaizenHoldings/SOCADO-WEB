@@ -25,6 +25,9 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000',
   cookiePrefix: 'socado',
+  cookie: {
+    secure: false,
+  },
   admin: {
     user: Users.slug,
     components: {
@@ -53,7 +56,13 @@ export default buildConfig({
       ],
     },
   },
-  cors: '*',
+  cors: [
+    'http://72.167.42.216', 
+    'https://72.167.42.216', 
+    'http://localhost:3000', 
+    'https://socadocafe.com', 
+    'https://www.socadocafe.com'
+  ],
   csrf: [
     'http://72.167.42.216', 
     'https://72.167.42.216', 
