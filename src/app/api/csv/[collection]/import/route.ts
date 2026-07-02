@@ -108,6 +108,18 @@ export async function POST(req: Request, { params }: { params: Promise<{ collect
           }
         }
 
+        // Clean up the row before DB operations
+        delete row.id;
+        delete row.createdAt;
+        delete row.updatedAt;
+        
+        // Remove keys with null or empty string to prevent overriding with invalid empty values
+        Object.keys(row).forEach(key => {
+          if (row[key] === null || row[key] === '') {
+            delete row[key];
+          }
+        });
+
         const existing = matchRecord(row);
 
         if (existing) {
