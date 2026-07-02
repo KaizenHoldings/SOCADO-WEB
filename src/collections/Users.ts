@@ -9,7 +9,12 @@ export const Users: CollectionConfig = {
       beforeListTable: ['@/components/admin/CsvActions#CsvActions'],
     },
   },
-  auth: true,
+  auth: {
+    cookies: {
+      secure: false,
+      sameSite: 'Lax',
+    },
+  },
   fields: [
     // Email added by default
     // Add more fields as needed
