@@ -24,6 +24,10 @@ export default function CateringPage() {
   
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
   const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+  
+  const [page, setPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [hasPrevPage, setHasPrevPage] = useState(false);
 
   const [selectedMacrocategory, setSelectedMacrocategory] = useState<string | number>("");
   const [selectedCategory, setSelectedCategory] = useState<string | number>("");
@@ -139,7 +143,7 @@ export default function CateringPage() {
       try {
         let query = "";
         if (viewMode === "libre") {
-          query = `?where[category][equals]=${selectedCategory}`;
+          query = `?limit=20&page=${page}&where[category][equals]=${selectedCategory}`;
           if (selectedSubcategory) {
             query += `&where[subCategory][equals]=${selectedSubcategory}`;
           }
@@ -166,6 +170,8 @@ export default function CateringPage() {
         }));
         
         setProducts(mappedProducts);
+        setHasNextPage(dataProd.hasNextPage || false);
+        setHasPrevPage(dataProd.hasPrevPage || false);
       } catch (error) {
         console.error("Failed to fetch products:", error);
       } finally {
@@ -178,6 +184,11 @@ export default function CateringPage() {
     return () => {
       isMounted = false;
     };
+  }, [selectedCategory, selectedSubcategory, viewMode, page]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1);
   }, [selectedCategory, selectedSubcategory, viewMode]);
 
   // Efecto para buscar combos (Boxes)
@@ -370,6 +381,11 @@ export default function CateringPage() {
           filteredProducts={filteredProducts}
           onViewDetails={handleViewDetails}
           onAddToCart={handleAddToCart}
+          page={page}
+          hasNextPage={hasNextPage}
+          hasPrevPage={hasPrevPage}
+          onNextPage={() => setPage((p) => p + 1)}
+          onPrevPage={() => setPage((p) => p - 1)}
         />
         </>
         ) : (

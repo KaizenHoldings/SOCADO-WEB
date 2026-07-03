@@ -10,6 +10,11 @@ interface ProductGridSectionProps {
   filteredProducts: Product[];
   onViewDetails: (product: Product) => void;
   onAddToCart: (product: Product) => void;
+  page?: number;
+  hasNextPage?: boolean;
+  hasPrevPage?: boolean;
+  onNextPage?: () => void;
+  onPrevPage?: () => void;
 }
 
 export function ProductGridSection({
@@ -19,6 +24,11 @@ export function ProductGridSection({
   filteredProducts,
   onViewDetails,
   onAddToCart,
+  page = 1,
+  hasNextPage = false,
+  hasPrevPage = false,
+  onNextPage,
+  onPrevPage,
 }: ProductGridSectionProps) {
   return (
     <section className="mx-auto max-w-[1400px] px-6 lg:px-12">
@@ -38,16 +48,41 @@ export function ProductGridSection({
             Cargando productos...
           </div>
         ) : filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onViewDetails={onViewDetails}
-                onAdd={onAddToCart}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onViewDetails={onViewDetails}
+                  onAdd={onAddToCart}
+                />
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {(hasPrevPage || hasNextPage) && (
+              <div className="mt-12 flex items-center justify-center space-x-4 pb-8">
+                <button
+                  onClick={onPrevPage}
+                  disabled={!hasPrevPage}
+                  className="rounded-full border border-[#063547]/20 px-6 py-2 font-outfit text-sm font-semibold uppercase tracking-wider text-[#063547] transition-all hover:bg-[#063547] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed dark:border-white/20 dark:text-[#f2eae6] dark:hover:bg-white dark:hover:text-[#042430]"
+                >
+                  Anterior
+                </button>
+                <span className="font-outfit text-sm font-semibold text-[#6e7c7c] dark:text-[#b2b5a9]">
+                  Página {page}
+                </span>
+                <button
+                  onClick={onNextPage}
+                  disabled={!hasNextPage}
+                  className="rounded-full border border-[#063547]/20 px-6 py-2 font-outfit text-sm font-semibold uppercase tracking-wider text-[#063547] transition-all hover:bg-[#063547] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed dark:border-white/20 dark:text-[#f2eae6] dark:hover:bg-white dark:hover:text-[#042430]"
+                >
+                  Siguiente
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="mb-4 h-16 w-16 rounded-full bg-black/5 flex items-center justify-center dark:bg-white/5">
