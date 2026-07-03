@@ -159,7 +159,7 @@ export default function CateringPage() {
         const mappedProducts = (dataProd.docs || []).map((p: any) => ({
           id: p.id,
           name: p.name,
-          description: p.description || "Delicioso producto con la calidad Socado.", 
+          description: p.description || "", 
           price: p.price,
           categoryId: p.category?.id || p.category,
           subcategoryId: p.subCategory?.id || p.subCategory,
