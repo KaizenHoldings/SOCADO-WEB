@@ -99,3 +99,33 @@ html {
   }
 }
 
+/* ===========================================================
+   Editorial section tokens & helpers (header hero + footer)
+   =========================================================== */
+:root {
+  --section-gutter: 1.5rem;  /* 24px — mobile/tablet inset */
+  --section-max: 87.5rem;    /* 1400px content rail */
+}
+@media (min-width: 1024px) {
+  :root {
+    --section-gutter: 3rem;  /* 48px — desktop inset */
+  }
+}
+
+@layer components {
+  .section-shell {
+    width: 100%;
+    margin-inline: auto;
+    max-width: var(--section-max);
+    padding-inline: var(--section-gutter);
+  }
+  /* Cinematic display headline, anchored bottom-left */
+  .hero-title {
+    font-family: var(--font-raleway), sans-serif;
+    font-weight: 400;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    font-size: clamp(2.25rem, 7vw, 6rem);
+  }
+}
+

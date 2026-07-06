@@ -2,53 +2,104 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { StoreCard, StoreData } from "./StoreCard";
-import { motion, useMotionValue, useScroll, useTransform } from "motion/react";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useScroll,
+  useTransform,
+} from "motion/react";
+
+const SCHEDULE =
+  "Lunes a viernes de 7 a.m. a 9 p.m.\nSábados, domingos y feriados de 8 a.m. a 8 p.m.";
 
 const DEFAULT_STORES: StoreData[] = [
   {
     id: "las-mercedes",
     title: "LAS MERCEDES",
-    subtitle: "UBICACIÓN",
-    location: "Av. Veracruz, Torre Aba, Las Mercedes.",
-    schedule: "Lunes a viernes de 7 a.m. a 9 p.m.\nSábados, domingos y feriados de 8 a.m. a 8 p.m.",
+    location: "Las Mercedes",
+    address: "Av. Veracruz, Torre Aba, Las Mercedes.",
+    schedule: SCHEDULE,
     link: "https://lasmercedes.socadocafe.com",
-    images: ["/images/socadolasMercedes.jpg", "/images/socadoTrinidad.jpg"],
+    images: ["/images/mercedes1.jpg", "/images/mercedes2.jpg", "/images/mercedes3.jpg"],
     order: 1,
   },
   {
     id: "la-trinidad",
     title: "LA TRINIDAD",
-    subtitle: "UBICACIÓN",
-    location: "Calle Altagracia, Edificio Caracas Campus, La Trinidad.",
-    schedule: "Lunes a viernes de 7 a.m. a 9 p.m.\nSábados, domingos y feriados de 8 a.m. a 8 p.m.",
+    location: "La Trinidad",
+    address: "Calle Altagracia, Edificio Caracas Campus, La Trinidad.",
+    schedule: SCHEDULE,
     link: "https://latrinidad.socadocafe.com",
-    images: ["/images/socadoTrinidad.jpg", "/images/socadoRosal.jpg"],
+    images: ["/images/socadoTrinidad.jpg", "/images/trinidad2.jpg", "/images/trinidad3.jpg"],
     order: 2,
   },
   {
     id: "el-rosal",
     title: "EL ROSAL",
-    subtitle: "UBICACIÓN",
-    location: "Av. Tamanaco, El Rosal.",
-    schedule: "Lunes a viernes de 7 a.m. a 9 p.m.\nSábados, domingos y feriados de 8 a.m. a 8 p.m.",
+    location: "El Rosal",
+    address: "Av. Tamanaco, El Rosal.",
+    schedule: SCHEDULE,
     link: "https://elrosal.socadocafe.com",
-    images: ["/images/socadoRosal.jpg", "/images/socadolasMercedes.jpg"],
+    images: ["/images/rosal1.jpg", "/images/rosal2.jpg", "/images/rosal3.jpg"],
     order: 3,
-  }
+  },
+  {
+    id: "socadito-pcv",
+    title: "SOCADITO PARQUE CERRO VERDE",
+    titleLine1: "Socadito",
+    titleLine2: "Parque Cerro Verde",
+    location: "Parque Cerro Verde",
+    address: "Subida de Los Naranjos, Av. Raimundo Reinoso,\nCC PCV, piso 1.",
+    link: "",
+    images: ["/images/pcv1.JPG", "/images/pcv2.JPG", "/images/pcv3.jpg"],
+    order: 4,
+  },
+  {
+    id: "socadito-la-castellana",
+    title: "SOCADITO LA CASTELLANA",
+    titleLine1: "Socadito",
+    titleLine2: "La Castellana",
+    location: "La Castellana",
+    address: "Avenida San Felipe, cruce, con C. El Bosque, Locatel.",
+    link: "",
+    images: ["/images/locatel1.png", "/images/locatel2.JPG", "/images/locatel3.JPG"],
+    order: 5,
+  },
 ];
+
+const STORES_CACHE_KEY = "socado_stores_v2";
+
+// Hand icon for the drag hint (color inherits from text).
+function HandIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+      <path d="M0 0h24v24H0z" fill="none" />
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="M20.964 4h-3.992m3.992 0c0 .56-1.491 1.607-1.996 2m1.996-2c0-.56-1.491-1.607-1.996-2M3 4h3.99M3 4c0-.56 1.492-1.607 1.996-2M3 4c0 .56 1.492 1.607 1.996 2m4.819 16v-.94a3 3 0 0 0-.598-1.798l-3.823-5.109c-.317-.424-.554-.939-.408-1.449c.36-1.259 1.782-2.378 3.373-.407l1.6 1.708V3.594c.098-1.83 3.174-2.407 3.491 0v5.933c1.483-.19 8.466.851 7.45 5.265l-.144.636c-.207.918-.815 2.552-1.486 3.508c-.7.995-.373 2.6-.453 3.066"
+      />
+    </svg>
+  );
+}
 
 export function StoresCards() {
   const sectionRef = useRef<HTMLElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
-  
+
   const [activeStores, setActiveStores] = useState<StoreData[]>(DEFAULT_STORES);
   const [dragConstraints, setDragConstraints] = useState({ left: 0, right: 0 });
+  const [showHint, setShowHint] = useState(true);
   const x = useMotionValue(0);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "center center"]
+    offset: ["start end", "center center"],
   });
 
   const filter = useTransform(scrollYProgress, [0, 0.5], ["blur(10px)", "blur(0px)"]);
@@ -60,14 +111,13 @@ export function StoresCards() {
       if (carouselRef.current && innerRef.current) {
         setDragConstraints({
           right: 0,
-          left: carouselRef.current.offsetWidth - innerRef.current.scrollWidth
+          left: carouselRef.current.offsetWidth - innerRef.current.scrollWidth,
         });
       }
     };
-    
+
     measure();
     window.addEventListener("resize", measure);
-    // Agregamos un timeout para asegurar que las fuentes/imágenes cargaron antes de medir
     const timeout = setTimeout(measure, 500);
     return () => {
       window.removeEventListener("resize", measure);
@@ -76,11 +126,11 @@ export function StoresCards() {
   }, [activeStores]);
 
   useEffect(() => {
-    // 1. Cargar desde localStorage inicialmente si existe para evitar carga vacía
+    // 1. Cache local (evita carga vacía). Clave versionada para ignorar caché antigua.
     try {
-      const cachedStores = localStorage.getItem("socado_stores");
-      if (cachedStores) {
-        const parsed = JSON.parse(cachedStores);
+      const cached = localStorage.getItem(STORES_CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached);
         if (Array.isArray(parsed) && parsed.length > 0) {
           setActiveStores(parsed);
         }
@@ -99,22 +149,25 @@ export function StoresCards() {
             const mappedStores: StoreData[] = data.docs.map((doc: any) => ({
               id: doc.storeId || doc.id,
               title: doc.title,
-              subtitle: doc.subtitle || "UBICACIÓN",
+              subtitle: doc.subtitle,
               location: doc.location,
+              address: doc.address || doc.location,
               schedule: doc.schedule,
               link: doc.link,
-              images: doc.images && Array.isArray(doc.images) 
-                ? doc.images.map((imgObj: any) => typeof imgObj.image === 'string' ? imgObj.image : imgObj.image?.url || '')
-                : [],
-              order: typeof doc.order === 'number' ? doc.order : undefined,
+              images:
+                doc.images && Array.isArray(doc.images)
+                  ? doc.images.map((imgObj: any) =>
+                      typeof imgObj.image === "string" ? imgObj.image : imgObj.image?.url || "",
+                    )
+                  : [],
+              order: typeof doc.order === "number" ? doc.order : undefined,
             }));
-            
-            // Comparar para no actualizar el estado si no hay cambios reales
-            const currentStringified = localStorage.getItem("socado_stores");
+
+            const currentStringified = localStorage.getItem(STORES_CACHE_KEY);
             const newStringified = JSON.stringify(mappedStores);
-            
+
             if (currentStringified !== newStringified) {
-              localStorage.setItem("socado_stores", newStringified);
+              localStorage.setItem(STORES_CACHE_KEY, newStringified);
               setActiveStores(mappedStores);
             }
           }
@@ -127,41 +180,74 @@ export function StoresCards() {
     fetchStores();
   }, []);
 
-
-
-
   return (
-    <section ref={sectionRef} id="tiendas" className="w-full bg-white py-24 px-6 lg:px-12 relative overflow-hidden">
+    <section
+      ref={sectionRef}
+      id="tiendas"
+      className="relative w-full overflow-hidden bg-white px-6 py-24 lg:px-12"
+    >
       <motion.div style={{ filter, scale, opacity }} className="mx-auto max-w-[1400px]">
-        <div className="text-left mb-16">
-          <h2 className="font-raleway text-4xl md:text-5xl font-black uppercase text-azul-socado dark:text-ivory">
-            Nuestras Tiendas
+        {/* Título + categoría (mismo borde izquierdo que Promotion1) */}
+        <div className="mb-12 text-left">
+          <h2 className="font-raleway text-4xl font-normal tracking-tight text-azul-socado sm:text-5xl lg:text-6xl">
+            nuestras tiendas
           </h2>
+          <div className="mt-5 flex gap-6">
+            <span className="border-b-2 border-azul-socado pb-1 font-raleway text-sm font-medium tracking-wide text-azul-socado">
+              Caracas
+            </span>
+          </div>
         </div>
 
-        <div className="relative overflow-hidden -mx-6 px-6 md:mx-0 md:px-0" ref={carouselRef}>
-          <motion.div 
+        <div
+          className="relative -mx-6 overflow-hidden px-6 md:mx-0 md:px-0"
+          ref={carouselRef}
+        >
+          <motion.div
             ref={innerRef}
             drag="x"
             dragConstraints={dragConstraints}
             dragElastic={0.15}
             style={{ x }}
-            className="flex gap-6 pb-8 md:pb-0 cursor-grab active:cursor-grabbing w-full"
+            onPointerDown={() => setShowHint(false)}
+            className="flex w-full cursor-grab gap-6 pb-8 active:cursor-grabbing md:pb-0"
           >
             {[...activeStores]
               .sort((a, b) => {
-                const orderA = typeof a.order === 'number' ? a.order : Infinity;
-                const orderB = typeof b.order === 'number' ? b.order : Infinity;
+                const orderA = typeof a.order === "number" ? a.order : Infinity;
+                const orderB = typeof b.order === "number" ? b.order : Infinity;
                 return orderA - orderB;
               })
               .map((store, index) => {
-              const uniqueStore = { ...store, id: `${store.id}-${index}` };
-              return (
-                <StoreCard key={uniqueStore.id} store={uniqueStore} />
-              );
-            })}
+                const uniqueStore = { ...store, id: `${store.id}-${index}` };
+                return <StoreCard key={uniqueStore.id} store={uniqueStore} />;
+              })}
           </motion.div>
         </div>
+
+        {/* Hint "agarra y mueve" — se oculta tras la primera interacción */}
+        <AnimatePresence>
+          {showHint && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="mt-6 flex justify-end"
+            >
+              <div className="flex items-center gap-2 font-raleway text-sm text-azul-socado/70">
+                <span>agarra y mueve</span>
+                <motion.span
+                  animate={{ x: [-3, 3, -3] }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                  className="inline-flex text-lg text-azul-socado"
+                >
+                  <HandIcon />
+                </motion.span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </section>
   );

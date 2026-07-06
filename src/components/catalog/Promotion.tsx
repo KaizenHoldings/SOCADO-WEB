@@ -1,252 +1,195 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import { motion, AnimatePresence } from "motion/react";
-import { Coffee, Star, Mail } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  type Variants,
+} from "motion/react";
+import { InteractiveStickerCard } from "./InteractiveStickerCard";
 
-// ─── Promo 1: Tarjeta de Fidelidad ────────────────────────────────────────
-function PromoFidelidad() {
-  return (
-    <div className="flex h-full min-h-[400px] lg:min-h-[500px]">
-      <div className="w-[48%] flex flex-col justify-center px-8 lg:px-14 py-10">
-        <p className="font-outfit text-white/50 text-[11px] uppercase tracking-[0.18em] mb-4">
-          Tarjeta de Fidelidad
-        </p>
-        <h2
-          className="font-raleway font-bold text-white leading-[1.0] mb-5"
-          style={{ fontSize: "clamp(2.5rem, 4.5vw, 3.5rem)" }}
-        >
-          <span className="block">Pide,</span>
-          <span className="block">disfruta</span>
-          <span className="block">y suma</span>
-        </h2>
-        <p className="font-outfit text-white/60 text-sm lg:text-base leading-snug">
-          Adquiere tu tarjeta en tienda
-        </p>
-      </div>
-      <div className="w-[52%] flex flex-col items-center justify-end pb-6 pr-4 gap-4">
-        <div className="relative w-full flex-1 min-h-0">
-          <Image
-            src="/images/promotions/1.png"
-            alt="Tarjeta de fidelidad Socado"
-            fill
-            className="object-contain object-bottom drop-shadow-2xl"
-            sizes="(max-width: 1024px) 52vw, 30vw"
-          />
-        </div>
-        <span className="font-outfit text-sm italic text-white/60 tracking-wide text-center">
-          9 sellos* = un cafecito por la casa
-        </span>
-      </div>
-    </div>
-  );
-}
+// Title animates word-by-word; a full-width break forces the second line.
+const TITLE_LINE_1 = ["Pide,", "disfruta"];
+const TITLE_LINE_2 = [
+  { text: "y", bold: false },
+  { text: "suma", bold: true },
+];
 
-// ─── Promo 2: Tu Recompensa ────────────────────────────────────────────────
-function PromoRecompensa() {
-  return (
-    <div className="flex h-full min-h-[400px] lg:min-h-[500px]">
-      <div className="w-[48%] flex flex-col justify-center px-8 lg:px-14 py-10">
-        <p className="font-outfit text-white/50 text-[11px] uppercase tracking-[0.18em] mb-4">
-          Tu Recompensa
-        </p>
-        <h2
-          className="font-raleway font-bold text-white leading-[1.0] mb-5"
-          style={{ fontSize: "clamp(2.5rem, 4.5vw, 3.5rem)" }}
-        >
-          <span className="block">Completa</span>
-          <span className="block">y recibe</span>
-          <span className="block">tu regalo</span>
-        </h2>
-        <p className="font-outfit text-white/60 text-sm lg:text-base leading-snug">
-          9 sellos completados, una bebida gratis
-        </p>
-      </div>
-      <div className="w-[52%] flex flex-col items-center justify-end pb-6 pr-4 gap-4">
-        <div className="relative w-full flex-1 min-h-0">
-          <Image
-            src="/images/promotions/2.png"
-            alt="Tu recompensa Socado"
-            fill
-            className="object-contain object-bottom drop-shadow-2xl"
-            sizes="(max-width: 1024px) 52vw, 30vw"
-          />
-        </div>
-        <span className="font-outfit text-sm italic text-white/60 tracking-wide text-center">
-          Café · Matcha · Infusión
-        </span>
-      </div>
-    </div>
-  );
-}
+type PromoState = {
+  icon: string;
+  lead: ReactNode;
+  sub: ReactNode;
+};
 
-// ─── Promo 3: Comunidad Socado ─────────────────────────────────────────────
-function PromoComunidad() {
-  return (
-    <div className="flex h-full min-h-[400px] lg:min-h-[500px]">
-      <div className="w-[48%] flex flex-col justify-center px-8 lg:px-14 py-10">
-        <p className="font-outfit text-white/50 text-[11px] uppercase tracking-[0.18em] mb-4">
-          Comunidad Socado
-        </p>
-        <h2
-          className="font-raleway font-bold text-white leading-[1.0] mb-5"
-          style={{ fontSize: "clamp(2.5rem, 4.5vw, 3.5rem)" }}
-        >
-          <span className="block">Únete</span>
-          <span className="block">a nuestra</span>
-          <span className="block">comunidad</span>
-        </h2>
-        <p className="font-outfit text-white/60 text-sm lg:text-base leading-snug">
-          Beneficios exclusivos para miembros
-        </p>
-      </div>
-      <div className="w-[52%] flex flex-col items-center justify-end pb-6 pr-4 gap-4">
-        <div className="relative w-full flex-1 min-h-0">
-          <Image
-            src="/images/promotions/1.png"
-            alt="Comunidad Socado"
-            fill
-            className="object-contain object-bottom drop-shadow-2xl"
-            sizes="(max-width: 1024px) 52vw, 30vw"
-          />
-        </div>
-        <span className="font-outfit text-sm italic text-white/60 tracking-wide text-center">
-          Noticias · Ofertas · Sorpresas
-        </span>
-      </div>
-    </div>
-  );
-}
-
-// ─── Tarjetas del panel derecho ───────────────────────────────────────────
-const cards = [
+// Only the supporting text + icon change; the title stays constant.
+const STATES: PromoState[] = [
   {
-    icon: Coffee,
-    accentColor: "#b45b38",
-    iconBg: "bg-[#b45b38]",
-    title: "Pide tu Loyalty Card",
-    description: "Órdenes mayores a REF.10 con café, matcha o infusión reciben un sello.",
+    icon: "/images/icon1.png",
+    lead: (
+      <>
+        Pide tu <strong className="font-semibold">Loyalty Card</strong> en nuestras tiendas.
+      </>
+    ),
+    sub: <>Órdenes mayores a REF.10 con café, matcha o infusión reciben un sello.</>,
   },
   {
-    icon: Star,
-    accentColor: "#5c8ea0",
-    iconBg: "bg-[#5c8ea0]",
-    title: "Tu recompensa te espera",
-    description: "Al completar 9 sellos, te regalamos una bebida de barismo: café, matcha o infusión.",
+    icon: "/images/icon2.png",
+    lead: (
+      <>
+        Tu <strong className="font-semibold">recompensa</strong> te espera.
+      </>
+    ),
+    sub: (
+      <>
+        <strong className="font-semibold">9 sellos</strong> = una bebida de barismo: café, matcha o
+        infusión.
+      </>
+    ),
   },
   {
-    icon: Mail,
-    accentColor: "#cf8a00",
-    iconBg: "bg-[#cf8a00]",
-    title: "Mantente cerca de Socado",
-    description: "Déjanos tu correo y recibe beneficios exclusivos solo para miembros.",
+    icon: "/images/icon3.png",
+    lead: (
+      <>
+        Termina una y <strong className="font-semibold">pide otra.</strong>
+      </>
+    ),
+    sub: <>Podrás <strong className="font-semibold">completar</strong> las tarjetas de fidelidad que desees.</>,
   },
 ];
 
-const promos = [PromoFidelidad, PromoRecompensa, PromoComunidad];
-
-// ─── Componente principal ─────────────────────────────────────────────────
-const INTERVAL_MS = 4000;
-
 export function Promotion() {
-  const [active, setActive] = useState(0);
-  const isPausedRef = useRef(false);
-  const ActivePromo = promos[active];
+  const reduce = useReducedMotion();
+  const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    const tick = setInterval(() => {
-      if (!isPausedRef.current) {
-        setActive((prev) => (prev + 1) % promos.length);
-      }
-    }, INTERVAL_MS);
-    return () => clearInterval(tick);
-  }, []);
+  // Only the first two placements advance the section state.
+  const state = Math.min(count, STATES.length - 1);
+  const s = STATES[state];
 
-  const handleManualSelect = (i: number) => {
-    setActive(i);
-    isPausedRef.current = true;
-    setTimeout(() => { isPausedRef.current = false; }, INTERVAL_MS * 2);
+  const titleContainer: Variants = {
+    hidden: {},
+    show: {
+      transition: {
+        staggerChildren: reduce ? 0 : 0.09,
+        delayChildren: reduce ? 0 : 0.1,
+      },
+    },
   };
+  const word: Variants = {
+    hidden: { opacity: 0, y: reduce ? 0 : 18 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+  };
+
+  const ease: [number, number, number, number] = [0.22, 1, 0.36, 1];
+  const fadeUp = (delay: number) => ({
+    initial: { opacity: 0, y: reduce ? 0 : 24 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.3 } as const,
+    transition: { duration: 0.6, ease, delay: reduce ? 0 : delay },
+  });
+
+  // Reusable icon render (crossfades on state change).
+  const renderIcon = (cls: string) => (
+    <AnimatePresence mode="wait">
+      <motion.img
+        key={s.icon}
+        src={s.icon}
+        alt=""
+        aria-hidden
+        draggable={false}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.35 }}
+        className={`h-auto select-none opacity-80 ${cls}`}
+      />
+    </AnimatePresence>
+  );
 
   return (
     <section
       id="promociones"
-      className="w-full flex flex-col lg:flex-row min-h-[520px] lg:min-h-[600px] overflow-hidden"
+      className="relative w-full overflow-visible bg-ivory text-azul-socado"
     >
-      {/* Panel izquierdo — entra desde la izquierda al hacer scroll */}
-      <motion.div
-        className="relative w-full lg:w-[58%] bg-[#5c8ea0] overflow-hidden min-h-[400px] lg:min-h-[560px]"
-        initial={{ opacity: 0, x: -60 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: false, amount: 0.2 }}
-        transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, x: -16 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -16 }}
-            transition={{ duration: 0.38, ease: "easeInOut" }}
-            className="h-full"
-          >
-            <ActivePromo />
-          </motion.div>
-        </AnimatePresence>
-      </motion.div>
-
-      {/* Panel derecho — tarjetas entran escalonadas desde la derecha */}
-      <div className="w-full lg:w-[42%] bg-white flex flex-col justify-center divide-y divide-black/[0.06]">
-        {cards.map((card, i) => {
-          const Icon = card.icon;
-          const isActive = active === i;
-
-          return (
-            <motion.button
-              key={i}
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false, amount: 0.3 }}
-              transition={{ duration: 0.5, delay: i * 0.12, ease: [0.25, 0.46, 0.45, 0.94] }}
-              onClick={() => handleManualSelect(i)}
-              className={`group relative flex items-start gap-5 px-8 lg:px-12 py-8 lg:py-10 text-left transition-colors duration-300 w-full ${
-                isActive ? "bg-[#f2eae6]" : "hover:bg-[#f2eae6]/50"
-              }`}
+      <div className="section-shell py-16 lg:py-28">
+        <div className="grid grid-cols-1 items-center gap-12 lg:min-h-[30rem] lg:grid-cols-2 lg:gap-16">
+          {/* LEFT — title + supporting text + icon (text pinned to top so the
+              bottom-left icon never collides with it) */}
+          <div className="order-2 lg:order-1 lg:self-start">
+            <motion.h2
+              variants={titleContainer}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.4 }}
+              className="flex flex-wrap font-raleway leading-[1.02] tracking-tight"
+              style={{ fontSize: "clamp(2.5rem, 5.5vw, 4.25rem)" }}
             >
-              <div
-                className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 shadow-sm transition-all duration-300 ${card.iconBg} ${
-                  isActive ? "scale-110 shadow-md" : "opacity-60 group-hover:opacity-90"
-                }`}
-              >
-                <Icon className="w-5 h-5 text-white" />
-              </div>
-
-              <div className="flex-1 min-w-0">
-                <h3
-                  className={`font-raleway font-bold text-base lg:text-lg mb-1 leading-snug transition-colors duration-200 ${
-                    isActive ? "text-[#063547]" : "text-[#063547]/60 group-hover:text-[#063547]"
-                  }`}
+              {TITLE_LINE_1.map((w) => (
+                <motion.span key={w} variants={word} className="mr-[0.28em] inline-block font-normal">
+                  {w}
+                </motion.span>
+              ))}
+              <span className="w-full" aria-hidden />
+              {TITLE_LINE_2.map((w) => (
+                <motion.span
+                  key={w.text}
+                  variants={word}
+                  className={`mr-[0.28em] inline-block ${w.bold ? "font-bold" : "font-normal"}`}
                 >
-                  {card.title}
-                </h3>
-                <p
-                  className={`font-outfit text-sm leading-relaxed transition-colors duration-200 ${
-                    isActive ? "text-[#6e7c7c]" : "text-[#6e7c7c]/50 group-hover:text-[#6e7c7c]"
-                  }`}
-                >
-                  {card.description}
-                </p>
-              </div>
+                  {w.text}
+                </motion.span>
+              ))}
+            </motion.h2>
 
-              <div
-                className="absolute right-0 top-6 bottom-6 w-[3px] rounded-full transition-all duration-300"
-                style={{ backgroundColor: isActive ? card.accentColor : "transparent" }}
-              />
-            </motion.button>
-          );
-        })}
+            {/* Supporting text — swaps per state. Reserved min-height keeps
+                the section height stable across all states. */}
+            <motion.div {...fadeUp(0.45)} className="mt-8 min-h-[7rem] max-w-md">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={state}
+                  initial={{ opacity: 0, y: reduce ? 0 : 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: reduce ? 0 : -8 }}
+                  transition={{ duration: 0.35, ease: "easeOut" }}
+                  className="font-outfit text-azul-socado/85"
+                >
+                  <p className="text-lg leading-snug">{s.lead}</p>
+                  <p className="mt-4 text-lg leading-snug">{s.sub}</p>
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
+
+            {/* Icon (mobile) — appears in flow below the text */}
+            <motion.div {...fadeUp(0.75)} className="mt-8 md:hidden">
+              {renderIcon("w-44")}
+            </motion.div>
+          </div>
+
+          {/* RIGHT — loyalty card + hint */}
+          <motion.div
+            {...fadeUp(0.45)}
+            className="order-1 flex flex-col items-center lg:order-2 lg:items-end"
+          >
+            <InteractiveStickerCard onStickerPlaced={setCount} />
+            <motion.p
+              animate={reduce ? {} : { opacity: [0.55, 1, 0.55] }}
+              transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+              className="mt-5 font-outfit text-sm text-azul-socado/50"
+            >
+              Haz click y llena los sellos para conocer más.
+            </motion.p>
+          </motion.div>
+        </div>
       </div>
+
+      {/* Icon (desktop/tablet) — anchored to the section's bottom-left,
+          intentionally overflowing a touch (section is overflow-visible). */}
+      <motion.div
+        {...fadeUp(0.75)}
+        className="pointer-events-none absolute bottom-6 -left-4 z-20 hidden w-56 md:block lg:bottom-10 lg:-left-6 lg:w-72"
+      >
+        {renderIcon("w-full")}
+      </motion.div>
     </section>
   );
 }

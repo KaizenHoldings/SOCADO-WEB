@@ -12,11 +12,14 @@ interface HeaderProps {
   activePage?: "home" | "catering";
   /** Si el fondo debajo del header transparente es oscuro, los textos se muestran en claro */
   heroIsDark?: boolean;
+  /** Segundos de espera antes de revelar el navbar (para que aparezca tras la intro del hero) */
+  revealDelay?: number;
 }
 
 export function Header({
   activePage = "home",
   heroIsDark = false,
+  revealDelay = 0,
 }: HeaderProps) {
   const { items, toggleDrawer } = useCartStore();
   const cartCount = items.length;
@@ -96,9 +99,15 @@ export function Header({
   return (
     <>
       <motion.header
-        initial={{ y: "-100%" }}
-        animate={{ y: "0%" }}
-        transition={{ type: "spring", stiffness: 300, damping: 22 }}
+        initial={{ y: "-100%", opacity: 0 }}
+        animate={{ y: "0%", opacity: 1 }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 22,
+          delay: revealDelay,
+          opacity: { duration: 0.4, delay: revealDelay },
+        }}
         className={`fixed top-0 left-0 z-50 w-full ${bgClass}`}
         style={{ transition: "background-color 500ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 500ms cubic-bezier(0.34, 1.56, 0.64, 1), backdrop-filter 500ms cubic-bezier(0.34, 1.56, 0.64, 1)" }}
       >
@@ -121,7 +130,7 @@ export function Header({
             </Link>
 
             {/* Nav */}
-            <nav className="hidden lg:flex gap-8 text-[14px] tracking-wide">
+            <nav className="hidden md:flex gap-6 lg:gap-8 text-[14px] tracking-wide">
               <a
                 href="/#inicio"
                 className={`${navLinkBase} ${activeSection === "inicio" ? navLinkActive : navLinkInactive}`}
@@ -162,18 +171,20 @@ export function Header({
             {activePage === "home" && (
               <button
                 onClick={() => setIsEcommerceModalOpen(true)}
-                className={`group hidden lg:flex items-center gap-1.5 text-[13px] font-bold uppercase tracking-widest transition-opacity hover:opacity-60 ${textColor}`}
+                className={`group hidden md:flex items-center gap-1.5 text-[13px] font-semibold tracking-wide transition-opacity hover:opacity-60 ${textColor}`}
               >
-                Ecommerce
+                Delivery
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
             )}
-            
+
             {/* Menu Hamburguesa (Móvil) */}
             <button
-              className={`lg:hidden p-2 transition-opacity hover:opacity-60 ${textColor}`}
+              className={`md:hidden p-2 transition-opacity hover:opacity-60 ${textColor}`}
               onClick={() => setIsMobileMenuOpen(true)}
               aria-label="Abrir menú"
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
             >
               <Menu className="h-6 w-6" />
             </button>
@@ -187,9 +198,14 @@ export function Header({
       />
 
       {/* Menú Móvil Pantalla Completa */}
-      <div 
-        className={`fixed inset-0 z-[100] flex flex-col bg-[#f2eae6]/98 backdrop-blur-xl dark:bg-[#042430]/98 transition-transform duration-300 ease-in-out lg:hidden ${
-          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+      <div
+        id="mobile-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menú de navegación"
+        aria-hidden={!isMobileMenuOpen}
+        className={`fixed inset-0 z-[100] flex flex-col bg-[#f2eae6]/98 backdrop-blur-xl dark:bg-[#042430]/98 transition-transform duration-300 ease-in-out md:hidden ${
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full pointer-events-none"
         }`}
       >
         <div className="flex h-20 items-center justify-between px-6">
@@ -263,7 +279,7 @@ export function Header({
               onClick={() => setIsMobileMenuOpen(false)}
               className="mt-6 flex items-center gap-2 rounded-full border-2 border-[#063547] px-8 py-3 text-lg font-bold transition-all hover:bg-[#063547] hover:text-white dark:border-[#f2eae6] dark:hover:bg-[#f2eae6] dark:hover:text-[#042430]"
             >
-              IR A ECOMMERCE <ArrowUpRight className="h-5 w-5" />
+              Ir a Delivery <ArrowUpRight className="h-5 w-5" />
             </Link>
           )}
         </nav>

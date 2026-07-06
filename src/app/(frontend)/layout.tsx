@@ -30,7 +30,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
 
   return (
     <html lang="es" className={`scroll-smooth ${raleway.variable} ${outfit.variable}`}>
-      <body className="font-outfit antialiased overflow-x-hidden">
+      <body className="font-outfit antialiased overflow-x-clip">
         <main>{children}</main>
       </body>
     </html>
