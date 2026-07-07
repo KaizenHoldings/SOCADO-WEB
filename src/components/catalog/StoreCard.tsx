@@ -3,80 +3,100 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
-import { ArrowRight } from "lucide-react";
 
 export interface StoreData {
   id: string;
   title: string;
-  subtitle: string;
-  location: string;
-  schedule: string;
+  titleLine1?: string; // nombre en dos líneas (opcional)
+  titleLine2?: string;
+  subtitle?: string;
+  location: string; // ubicación (zona)
+  address?: string; // dirección
+  schedule?: string; // conservado por compatibilidad de datos
   link: string;
   images: string[];
   order?: number;
 }
 
+const HOVER_CYCLE_MS = 3300;
+
 export function StoreCard({ store }: { store: StoreData }) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const images =
+    store.images && store.images.length > 0 ? store.images : ["/images/placeholder.jpg"];
+  const [idx, setIdx] = useState(0);
+  const [hovering, setHovering] = useState(false);
 
+  // Cycle through the store's own images only while it is hovered.
   useEffect(() => {
-    if (!store.images || store.images.length <= 1) return;
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % store.images.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [store.images]);
-
-  const images = store.images && store.images.length > 0 ? store.images : ["/images/placeholder.jpg"];
+    if (!hovering || images.length <= 1) {
+      setIdx(0);
+      return;
+    }
+    const t = setInterval(() => setIdx((p) => (p + 1) % images.length), HOVER_CYCLE_MS);
+    return () => clearInterval(t);
+  }, [hovering, images.length]);
 
   return (
-    <motion.div 
+    <motion.div
       layoutId={`card-${store.id}`}
-      className="relative h-[350px] sm:h-[400px] min-w-[85%] md:min-w-[calc(50%-0.75rem)] lg:min-w-[calc(33.333333%-1rem)] shrink-0 group flex flex-col  overflow-hidden shadow-sm hover:shadow-2xl transition-shadow duration-700 border border-black/5 dark:border-white/5"
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+      className="group relative flex aspect-square min-w-[78%] shrink-0 flex-col overflow-hidden border border-black/5 shadow-sm transition-shadow duration-700 hover:shadow-2xl md:min-w-[calc(44%-0.5rem)] lg:min-w-[calc(30%-0.6rem)]"
     >
-      {/* Image Backgrounds (Slideshow) */}
-      <motion.div layoutId={`image-${store.id}`} className="absolute inset-0 bg-black/10">
-        {images.map((src, idx) => (
-          <Image  
-            key={idx}
-            src={src} 
-            alt={`Socado ${store.title} ${idx + 1}`}
+      {/* Image crossfade */}
+      <div className="absolute inset-0 bg-black/10">
+        {images.map((src, i) => (
+          <Image
+            key={i}
+            src={src}
+            alt={`Socado ${store.title} ${i + 1}`}
             fill
             draggable={false}
-            className={`object-cover transition-all duration-1000 ease-in-out group-hover:scale-110 pointer-events-none ${
-              idx === currentImageIndex ? 'opacity-100' : 'opacity-0'
-            }`}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className={`pointer-events-none object-cover transition-all duration-[1200ms] ease-out group-hover:scale-105 ${
+              i === idx ? "opacity-100" : "opacity-0"
+            }`}
           />
         ))}
-      </motion.div>
-      
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#042430]/90 via-[#042430]/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-      
-      {/* Content (Positioned at bottom) */}
-      <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 flex flex-col justify-end">
-        {/* Title (Always visible) */}
-        <motion.h3 
+      </div>
+
+      {/* Gradient overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#042430]/90 via-[#042430]/40 to-transparent opacity-80 transition-opacity duration-700 group-hover:opacity-100" />
+
+      {/* Content */}
+      <div className="absolute bottom-0 left-0 flex w-full flex-col justify-end p-6 md:p-8">
+        <motion.h3
           layoutId={`title-${store.id}`}
-          className="font-outfit text-3xl md:text-4xl font-light text-white transition-transform duration-500 ease-out group-hover:-translate-y-1 relative z-10"
+          className="relative z-10 font-outfit text-2xl font-light leading-tight text-white transition-transform duration-500 ease-out group-hover:-translate-y-1 md:text-3xl"
         >
-          {/* Formateamos el título para que coincida con la imagen (Capitalized) */}
-          {store.title.toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase())}
+          {store.titleLine1 ? (
+            <>
+              <span className="block">{store.titleLine1}</span>
+              <span className="block">{store.titleLine2}</span>
+            </>
+          ) : (
+            store.title.toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase())
+          )}
         </motion.h3>
-        
-        {/* Expandable Info (Visible on hover) */}
-        <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] relative z-10">
+
+        {/* Expandable info (on hover) */}
+        <div className="relative z-10 grid grid-rows-[0fr] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:grid-rows-[1fr]">
           <div className="overflow-hidden">
-            <div className="pt-4 flex flex-col gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-              <p className="font-outfit text-white/80 whitespace-pre-line text-sm leading-relaxed">
-                <span className="font-bold text-white mb-1 block uppercase text-xs tracking-wider">Ubicación</span>
+            <div className="flex flex-col gap-4 pt-4 opacity-0 transition-opacity delay-100 duration-500 group-hover:opacity-100">
+              <p className="whitespace-pre-line font-outfit text-sm leading-relaxed text-white/80">
+                <span className="mb-1 block font-raleway text-xs font-semibold tracking-wide text-white">
+                  ubicación
+                </span>
                 {store.location}
               </p>
-              <p className="font-outfit text-white/80 whitespace-pre-line text-sm leading-relaxed">
-                <span className="font-bold text-white mb-1 block uppercase text-xs tracking-wider">Horario</span>
-                {store.schedule}
-              </p>
+              {store.address && (
+                <p className="whitespace-pre-line font-outfit text-sm leading-relaxed text-white/80">
+                  <span className="mb-1 block font-raleway text-xs font-semibold tracking-wide text-white">
+                    dirección
+                  </span>
+                  {store.address}
+                </p>
+              )}
             </div>
           </div>
         </div>

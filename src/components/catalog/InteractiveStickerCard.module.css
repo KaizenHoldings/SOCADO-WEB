@@ -1,0 +1,63 @@
+/* Interactive sticker card — animation reference adapted from Uiverse */
+
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 23px;
+  box-shadow:
+    0px 155px 62px rgba(0, 0, 0, 0.01),
+    0px 87px 52px rgba(0, 0, 0, 0.05),
+    0px 39px 39px rgba(0, 0, 0, 0.09),
+    0px 10px 21px rgba(0, 0, 0, 0.1),
+    0px 0px 0px rgba(0, 0, 0, 0.1);
+  /* Replicated hover feel */
+  transition: all 0.8s cubic-bezier(0.15, 0.83, 0.66, 1);
+  transform: scale(1);
+}
+
+/* Desktop hover (driven by the wider hover zone, not the card's own :hover) */
+.isHover {
+  transform: scale(1.05);
+}
+
+/* Mobile: subtle automatic breathing since hover is unreliable */
+.autoPulse {
+  animation: sticker-card-pulse 3.6s ease-in-out infinite;
+}
+
+@keyframes sticker-card-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.035);
+  }
+}
+
+/* Soft fade-in for the floating sticker cursor (opacity only, so it
+   never competes with the live translate/rotate transform). */
+.cursor {
+  animation: sticker-cursor-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes sticker-cursor-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition-duration: 0.01ms;
+  }
+  .autoPulse {
+    animation: none;
+  }
+  .cursor {
+    animation: none;
+  }
+}
