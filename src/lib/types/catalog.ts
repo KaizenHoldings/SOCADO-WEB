@@ -22,6 +22,7 @@ export interface ProductVariationChoice {
 
 export interface Product {
   id: string;
+  codigo?: string;
   name: string;
   description: string;
   price: number; // Precio unitario o por porción

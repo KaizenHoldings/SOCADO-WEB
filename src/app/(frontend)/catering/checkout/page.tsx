@@ -9,6 +9,8 @@ import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { calculateDiscounts } from "@/lib/utils/discount.utils";
+import { LocationPicker } from "@/components/catalog/LocationPicker";
+import { CartDrawer } from "@/components/catalog/CartDrawer";
 
 export default function CateringCheckoutPage() {
   const { items, clearCart, discountRules, fetchDiscountRules, taxes, fetchTaxes } = useCartStore();
@@ -31,6 +33,13 @@ export default function CateringCheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [eventLocation, setEventLocation] = useState({ address: '', lat: 10.4806, lng: -66.9036 });
+
+  // Calcular fecha mínima (2 días después de hoy)
+  const today = new Date();
+  today.setDate(today.getDate() + 2);
+  const minDate = today.toISOString().split("T")[0];
 
   const { totalOriginal, totalDiscount, totalTax, totalFinal, appliedRules, appliedTaxes } = calculateDiscounts(items, discountRules, taxes);
 
@@ -68,13 +77,15 @@ export default function CateringCheckoutPage() {
           items: items.map(i => ({
             productId: i.product.id,
             name: i.product.name,
+            codigo: i.product.codigo,
             quantity: i.quantity,
             price: i.product.price
           })),
           totalOriginal,
           totalDiscount,
           totalTax,
-          total: totalFinal
+          total: totalFinal,
+          eventLocation
         })
       });
 
@@ -145,11 +156,12 @@ export default function CateringCheckoutPage() {
                   </div>
                   <div className="flex flex-col gap-2">
                     <label className="text-sm font-bold text-[#063547] dark:text-[#f2eae6]">Teléfono *</label>
-                    <input required type="tel" name="phone" value={formData.phone} onChange={handleChange} className="rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-[#063547] focus:border-[#b45b38] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" placeholder="+1 234 567 890" />
+                    <input required type="tel" name="phone" value={formData.phone} onChange={handleChange} className="rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-[#063547] focus:border-[#b45b38] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" placeholder="+58 414 123 4567" />
                   </div>
                   <div className="flex flex-col gap-2">
                     <label className="text-sm font-bold text-[#063547] dark:text-[#f2eae6]">Fecha del Evento *</label>
-                    <input required type="date" name="eventDate" value={formData.eventDate} onChange={handleChange} className="rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-[#063547] focus:border-[#b45b38] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" />
+                    <p className="text-xs text-[#6e7c7c] dark:text-[#b2b5a9]">Requerimos al menos 2 días de antelación.</p>
+                    <input required type="date" min={minDate} name="eventDate" value={formData.eventDate} onChange={handleChange} className="rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-[#063547] focus:border-[#b45b38] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" />
                   </div>
                 </div>
 
@@ -158,9 +170,11 @@ export default function CateringCheckoutPage() {
                   <input required type="number" min="1" name="guests" value={formData.guests} onChange={handleChange} className="rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-[#063547] focus:border-[#b45b38] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6] sm:w-1/2" placeholder="Cantidad aproximada" />
                 </div>
 
+                <LocationPicker onLocationChange={setEventLocation} />
+
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm font-bold text-[#063547] dark:text-[#f2eae6]">Descripción y Ubicación del Evento *</label>
-                  <textarea required name="description" value={formData.description} onChange={handleChange} rows={4} className="rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-[#063547] focus:border-[#b45b38] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" placeholder="Cuéntanos un poco sobre tu evento y dónde será..." />
+                  <label className="text-sm font-bold text-[#063547] dark:text-[#f2eae6]">Descripción del Evento *</label>
+                  <textarea required name="description" value={formData.description} onChange={handleChange} rows={3} className="rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-[#063547] focus:border-[#b45b38] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" placeholder="Cuéntanos un poco sobre tu evento..." />
                 </div>
 
                 {error && <p className="text-red-500 font-bold">{error}</p>}
@@ -179,7 +193,12 @@ export default function CateringCheckoutPage() {
                   {items.map(item => (
                     <div key={item.product.id} className="flex gap-4 py-4">
                       <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg">
-                        <Image src={item.product.image} alt={item.product.name} fill className="object-cover" />
+                        <Image 
+                          src={item.product.image} 
+                          alt={item.product.name} 
+                          fill 
+                          className={item.product.image.includes('isotipo.png') ? 'object-contain p-4 opacity-30 dark:opacity-50' : 'object-cover'} 
+                        />
                       </div>
                       <div className="flex flex-1 flex-col justify-center">
                         <h4 className="font-bold text-[#063547] line-clamp-1 dark:text-[#f2eae6]">{item.product.name}</h4>
@@ -226,6 +245,7 @@ export default function CateringCheckoutPage() {
         </section>
       </main>
       <Footer />
+      <CartDrawer />
     </div>
   );
 }

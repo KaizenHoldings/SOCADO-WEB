@@ -34,7 +34,7 @@ export function ProductGridSection({
   return (
     <section className="mx-auto max-w-[1400px] px-6 lg:px-12">
       {/* Título de la categoría activa y Grid de Productos */}
-      <div className="mt-6 min-h-[50vh]">
+      <div className="mt-6 min-h-[calc(100vh-200px)]">
         <div className="mb-8 border-t border-black/10 pt-8 dark:border-white/10">
           <h2 className="font-raleway text-3xl font-bold text-[#063547] dark:text-[#f2eae6]">
             {filteredCategories.find((c) => c.id === selectedCategory)?.name || "Categoría"}
@@ -56,7 +56,7 @@ export function ProductGridSection({
                   key={product.id}
                   product={product}
                   onViewDetails={onViewDetails}
-                  onAdd={onAddToCart}
+                  onAdd={onViewDetails}
                 />
               ))}
             </div>

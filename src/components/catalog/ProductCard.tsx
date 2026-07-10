@@ -23,7 +23,11 @@ export function ProductCard({ product, onViewDetails, onAdd }: ProductCardProps)
           src={product.image}
           alt={product.name}
           fill
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          className={`transition-transform duration-700 ease-out group-hover:scale-105 ${
+            product.image.includes('isotipo.png') 
+              ? 'object-contain p-8 opacity-30 dark:opacity-50' 
+              : 'object-cover'
+          }`}
         />
       </div>
 

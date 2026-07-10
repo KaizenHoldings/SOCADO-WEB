@@ -72,7 +72,12 @@ export function CartDrawer() {
                   {recentItems.map((item) => (
                     <div key={item.id || item.product.id} className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm dark:bg-[#063547]">
                       <div className="relative h-10 w-10 overflow-hidden rounded-md">
-                        <Image src={item.product.image} alt={item.product.name} fill className="object-cover" />
+                        <Image 
+                          src={item.product.image} 
+                          alt={item.product.name} 
+                          fill 
+                          className={item.product.image.includes('isotipo.png') ? 'object-contain p-2 opacity-30 dark:opacity-50' : 'object-cover'} 
+                        />
                       </div>
                       <div className="text-xs">
                         <p className="font-bold text-[#063547] line-clamp-1 dark:text-[#f2eae6]">{item.product.name}</p>
@@ -88,7 +93,12 @@ export function CartDrawer() {
                 {items.map((item) => (
                   <div key={item.id || item.product.id} className="flex gap-4">
                     <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-black/5 dark:bg-white/5">
-                      <Image src={item.product.image} alt={item.product.name} fill className="object-cover" />
+                      <Image 
+                        src={item.product.image} 
+                        alt={item.product.name} 
+                        fill 
+                        className={item.product.image.includes('isotipo.png') ? 'object-contain p-4 opacity-30 dark:opacity-50' : 'object-cover'} 
+                      />
                     </div>
                     <div className="flex flex-1 flex-col">
                       <div className="flex justify-between">

@@ -135,14 +135,15 @@ export default function CateringPage() {
         if (!isMounted) return;
 
         // Mapeamos los datos crudos para que cumplan la interfaz de la UI
-        const mappedProducts = (dataProd.docs || []).map((p: any) => ({
+        const mappedProducts: Product[] = (dataProd.docs || []).map((p: any) => ({
           id: p.id,
+          codigo: p.codigo || p.sku || "",
           name: p.name,
           description: p.description || "", 
           price: p.price,
           categoryId: p.category?.id || p.category,
           subcategoryId: p.subCategory?.id || p.subCategory,
-          image: p.image?.url || p.image || "/images/placeholder.jpg",
+          image: p.image?.url || p.image || "/images/isotipo.png",
           minPortions: p.minPortions || 5,
           tags: p.tags || ["Recomendado"],
           categoryCateringId: p.categoryCatering?.id || p.categoryCatering,
@@ -172,6 +173,16 @@ export default function CateringPage() {
     setPage(1);
   }, [selectedCategory, selectedSubcategory, viewMode]);
 
+  // Scroll to top when view mode is selected
+  useEffect(() => {
+    if (hasSelectedMode) {
+      // Usar setTimeout para asegurar que el DOM se haya actualizado y el Hero haya desaparecido
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    }
+  }, [viewMode, hasSelectedMode]);
+
   // Efecto para buscar combos (Boxes)
   useEffect(() => {
     async function fetchCombos() {
@@ -184,7 +195,7 @@ export default function CateringPage() {
           description: combo.description || "Deliciosa opción de catering.",
           priceIndividual: combo.pricePerPerson,
           priceTen: combo.priceTenPeople || (combo.pricePerPerson * 10),
-          imageUrl: combo.image?.url || "/images/placeholder.jpg",
+          imageUrl: combo.image?.url || "/images/isotipo.png",
           requirements: (combo.rules || []).map((rule: any) => ({
             categoryId: rule.category?.id || rule.category,
             subcategoryName: rule.category?.name || "Categoría",
@@ -219,24 +230,41 @@ export default function CateringPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-white dark:bg-[#042430] selection:bg-[#b45b38] selection:text-white">
-      <Header activePage="catering" />
+      <Header activePage="catering" heroIsDark={!hasSelectedMode} />
 
       <main className="flex-1 pt-24 ">
-        {/* Sección de Cómo Funciona */}
-        
-        {/* Header de Catering */}
-        <section className="mx-auto max-w-[1400px] px-6 lg:px-12 ">
-          <div className="">
-            <h1 className="font-raleway text-4xl font-bold tracking-tight text-azul-socado md:text-5xl mb-2">
-              Catering Socado
-            </h1>
-          </div>
-        </section>
-
         {!hasSelectedMode ? (
           <>
+            {/* Hero de Catering */}
+            <section className="relative w-full h-screen -mt-24 overflow-hidden">
+              <Image
+                src="/images/catering.jpg"
+                alt="Socado Catering"
+                fill
+                className="object-cover"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              <div className="absolute inset-0 bg-[#063547]/20" /> {/* Overlay Azul Socado sutil */}
+              <div className="absolute inset-0 flex flex-col justify-end text-left p-10 lg:p-20 pb-20 lg:pb-32">
+                <h1 className="font-raleway text-5xl md:text-7xl lg:text-[5rem] font-bold tracking-tight text-white mb-6 drop-shadow-lg">
+                  Catering Socado
+                </h1>
+                <p className="font-outfit text-white/90 text-xl md:text-2xl max-w-2xl font-light drop-shadow-md">
+                  Llevamos la experiencia Socado a tus reuniones y eventos con opciones para compartir o individuales.
+                </p>
+              </div>
+            </section>
+            
             <HowItWorksCatering />
-          <div className="flex flex-col md:flex-row w-full" style={{ minHeight: "70vh" }}>
+            
+            <div className="w-full text-center mb-8 px-6">
+              <h2 className="font-raleway text-3xl md:text-4xl font-bold uppercase tracking-wider text-[#063547] dark:text-[#f2eae6]">
+                Selecciona tu tipo de catering
+              </h2>
+            </div>
+            
+            <div className="flex flex-col md:flex-row w-full" style={{ minHeight: "70vh" }}>
             {/* Mitad 1: Individuales */}
             <div
               onClick={() => { setViewMode("box"); setHasSelectedMode(true); }}

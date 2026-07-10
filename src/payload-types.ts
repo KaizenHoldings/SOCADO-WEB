@@ -326,6 +326,15 @@ export interface Quote {
     | number
     | boolean
     | null;
+  eventLocation?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   totalOriginal?: number | null;
   totalDiscount?: number | null;
   totalTax?: number | null;
@@ -694,6 +703,7 @@ export interface QuotesSelect<T extends boolean = true> {
   guests?: T;
   description?: T;
   items?: T;
+  eventLocation?: T;
   totalOriginal?: T;
   totalDiscount?: T;
   totalTax?: T;

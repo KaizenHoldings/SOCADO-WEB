@@ -27,7 +27,7 @@ export function HowItWorksCatering() {
   ];
 
   return (
-    <section className="w-full  px-6 lg:px-12 text-azul-socado   mb-8">
+    <section className="w-full px-6 lg:px-12 text-azul-socado my-16 lg:my-24">
       <div className="mx-auto max-w-[1400px]">
         <div className="text-center mb-16">
           <h2 className="font-raleway text-4xl md:text-5xl font-bold uppercase tracking-wider text-[#063547] dark:text-white">

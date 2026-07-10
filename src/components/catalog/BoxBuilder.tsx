@@ -204,7 +204,7 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full min-h-[calc(100vh-200px)]">
       {/* 1. Selector de Cajas (usa la misma UI que Categories) */}
       <CategoryFilter
         categories={combos.map(b => ({ id: b.id, name: b.name, description: b.description, image: b.imageUrl }))}

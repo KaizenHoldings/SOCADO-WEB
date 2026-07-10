@@ -61,6 +61,12 @@ export const Quotes: CollectionConfig = {
       label: 'Productos de la Cotización (JSON)',
     },
     {
+      name: 'eventLocation',
+      type: 'json',
+      required: false,
+      label: 'Ubicación del Evento (Dirección y Coordenadas)',
+    },
+    {
       name: 'totalOriginal',
       type: 'number',
       label: 'Subtotal (Sin Descuentos)',

@@ -9,7 +9,7 @@ export class SlackService {
 
     try {
       const itemsList = quote.items && Array.isArray(quote.items) 
-        ? quote.items.map((i: any) => `- ${i.quantity}x ${i.name || i.title} ($${(i.price * i.quantity) || i.total || 0})`).join('\n')
+        ? quote.items.map((i: any) => `- ${i.quantity}x ${i.name || i.title} ${i.codigo ? `(SKU: ${i.codigo})` : ''} ($${(i.price * i.quantity) || i.total || 0})`).join('\n')
         : 'Sin items detallados';
 
       const eventDateStr = quote.eventDate ? new Date(quote.eventDate).toLocaleDateString() : 'No especificada';
@@ -49,6 +49,15 @@ export class SlackService {
               }
             ]
           },
+          ...(quote.eventLocation ? [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `*Dirección del Evento:*\n${quote.eventLocation.address || 'No especificada'}\n<https://www.google.com/maps?q=${quote.eventLocation.lat},${quote.eventLocation.lng}|📍 Ver en Google Maps>`
+              }
+            }
+          ] : []),
           ...(quote.totalDiscount && quote.totalDiscount > 0 ? [
             {
               type: 'section',

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { Product, CartItem } from '@/lib/types/catalog';
 import { DiscountRule } from '@/lib/utils/discount.utils';
 
@@ -26,8 +27,10 @@ interface CartState {
   fetchTaxes: () => Promise<void>;
 }
 
-export const useCartStore = create<CartState>((set) => ({
-  items: [],
+export const useCartStore = create<CartState>()(
+  persist(
+    (set) => ({
+      items: [],
   discountRules: [],
   taxes: [],
   isDrawerOpen: false,
@@ -95,4 +98,10 @@ export const useCartStore = create<CartState>((set) => ({
       console.error('Error fetching taxes:', error);
     }
   }
-}));
+    }),
+    {
+      name: 'socado-cart',
+      partialize: (state) => ({ items: state.items }), // Solo guardar los items para no guardar estados UI como el cajón abierto
+    }
+  )
+);

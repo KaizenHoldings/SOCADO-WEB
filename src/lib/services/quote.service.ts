@@ -26,6 +26,7 @@ export class QuoteService {
           guests: Number(quoteData.guests),
           description: quoteData.description,
           items: quoteData.items, // JSON array of items
+          eventLocation: quoteData.eventLocation, // Guardar dirección y coordenadas
           totalOriginal: quoteData.totalOriginal,
           totalDiscount: quoteData.totalDiscount,
           totalTax: quoteData.totalTax,
@@ -38,8 +39,11 @@ export class QuoteService {
       await EmailService.sendQuoteConfirmation(newQuote);
       await EmailService.sendQuoteNotificationToAdmin(newQuote);
 
-      // 4. Enviar notificación a Slack
-      await SlackService.sendQuoteNotification(newQuote);
+      // 4. Enviar notificación a Slack (inyectamos eventLocation en caso de que Payload no haya actualizado el esquema en memoria aún)
+      await SlackService.sendQuoteNotification({ 
+        ...newQuote, 
+        eventLocation: newQuote.eventLocation || quoteData.eventLocation 
+      });
 
       return { success: true, quote: newQuote };
     } catch (error) {
