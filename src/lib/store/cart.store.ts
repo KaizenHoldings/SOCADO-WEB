@@ -15,7 +15,7 @@ interface CartState {
   discountRules: DiscountRule[];
   taxes: Tax[];
   isDrawerOpen: boolean;
-  addItem: (product: Product, quantity?: number) => void;
+  addItem: (product: Product, quantity?: number, selectedVariation?: string) => void;
   removeItem: (productId: string | number) => void;
   updateQuantity: (productId: string | number, quantity: number) => void;
   clearCart: () => void;
@@ -32,14 +32,19 @@ export const useCartStore = create<CartState>((set) => ({
   taxes: [],
   isDrawerOpen: false,
 
-  addItem: (product, quantity) => set((state) => {
+  addItem: (product, quantity, selectedVariation) => set((state) => {
     const qtyToAdd = quantity || product.minPortions || 1;
-    const existing = state.items.find(item => item.product.id === product.id);
+    
+    // Generar un ID único para el item en el carrito basado en el producto y su variación
+    const variationsKey = selectedVariation || '';
+    const cartItemId = `${product.id}${variationsKey ? '-' + btoa(variationsKey) : ''}`;
+
+    const existing = state.items.find(item => item.id === cartItemId);
     
     if (existing) {
       return {
         items: state.items.map(item => 
-          item.product.id === product.id 
+          item.id === cartItemId 
             ? { ...item, quantity: item.quantity + qtyToAdd }
             : item
         )
@@ -47,17 +52,17 @@ export const useCartStore = create<CartState>((set) => ({
     }
     
     return {
-      items: [...state.items, { product, quantity: qtyToAdd }]
+      items: [...state.items, { id: cartItemId, product, quantity: qtyToAdd, selectedVariation }]
     };
   }),
 
-  removeItem: (productId) => set((state) => ({
-    items: state.items.filter(item => item.product.id !== productId)
+  removeItem: (cartItemId) => set((state) => ({
+    items: state.items.filter(item => item.id !== cartItemId && item.product.id !== cartItemId) // Fallback for old items
   })),
 
-  updateQuantity: (productId, quantity) => set((state) => ({
+  updateQuantity: (cartItemId, quantity) => set((state) => ({
     items: state.items.map(item =>
-      item.product.id === productId ? { ...item, quantity } : item
+      (item.id === cartItemId || item.product.id === cartItemId) ? { ...item, quantity } : item
     )
   })),
 

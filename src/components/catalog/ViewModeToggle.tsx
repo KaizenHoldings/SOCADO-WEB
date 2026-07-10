@@ -1,28 +1,79 @@
 import React from "react";
-import { Package, ListFilter } from "lucide-react";
+import Image from "next/image";
 
 interface ViewModeToggleProps {
   viewMode: "libre" | "box";
   onChange: (mode: "libre" | "box") => void;
+  selectedBoxName?: string;
 }
 
-export function ViewModeToggle({ viewMode, onChange }: ViewModeToggleProps) {
+export function ViewModeToggle({ viewMode, onChange, selectedBoxName }: ViewModeToggleProps) {
   return (
-    <div className="flex-shrink-0">
-      <button
-        onClick={() => onChange(viewMode === "libre" ? "box" : "libre")}
-        className="flex w-full items-center justify-center gap-2 rounded-full bg-[#063547] px-8 py-3 text-sm font-bold uppercase tracking-wider text-white shadow-md transition-all hover:bg-[#063547]/90 hover:shadow-lg lg:w-auto"
+    <div className="relative w-full h-24 md:h-28 overflow-hidden bg-white flex">
+      {/* Left side: Individuales (Image Background) */}
+      <div 
+        onClick={() => onChange("box")}
+        className={`relative w-1/2 h-full flex flex-col justify-center items-start pl-6 md:pl-10 z-10 transition-all duration-300 cursor-pointer ${
+          viewMode === 'box' ? 'opacity-100' : 'opacity-60 hover:opacity-90'
+        }`}
       >
-        {viewMode === "libre" ? (
-          <>
-            <Package className="h-4 w-4" /> Box individual
-          </>
-        ) : (
-          <>
-            <ListFilter className="h-4 w-4" /> Para compartir
-          </>
+        <Image
+          src="/images/promotion2.png"
+          fill
+          className="object-cover"
+          alt="Individuales"
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="relative z-10 text-left">
+        <h3 className="font-outfit text-3xl md:text-4xl font-light text-white lowercase tracking-wide flex items-center gap-2">
+          individuales
+        </h3>
+        <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2 mt-1">
+          <p className="font-outfit text-white/90 text-[10px] md:text-xs uppercase tracking-widest">
+            Boxes por persona
+          </p>
+          {selectedBoxName && (
+            <span className="font-outfit text-white text-[10px] md:text-xs uppercase font-bold tracking-widest bg-black/10 px-2 py-0.5 rounded-sm w-fit">
+              Armando: {selectedBoxName}
+            </span>
+          )}
+        </div>
+        {/* Active Indicator */}
+        {viewMode === 'box' && (
+          <div className="absolute -bottom-6 md:-bottom-4 left-0 h-1.5 w-32 bg-[#063547] rounded-full" />
         )}
-      </button>
+        </div>
+      </div>
+
+      {/* Right side: Para compartir (Image Background) */}
+      <div 
+        onClick={() => onChange("libre")}
+        className={`absolute right-0 top-0 w-1/2 h-full flex flex-col justify-center items-end md:items-start md:pl-10 pr-6 md:pr-10 z-0 transition-all duration-300 cursor-pointer ${
+          viewMode === 'libre' ? 'opacity-100' : 'opacity-60 hover:opacity-90'
+        }`}
+      >
+        <Image
+          src="/images/servicio.jpg"
+          fill
+          className="object-cover"
+          alt="Para compartir"
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="relative z-10 text-right md:text-left flex flex-col">
+          <h3 className="font-outfit text-3xl md:text-4xl font-light text-white lowercase tracking-wide">
+            para compartir
+          </h3>
+          <p className="font-outfit text-white/90 text-[10px] md:text-xs mt-1 uppercase tracking-widest">
+            Bandejas y opciones grupales
+          </p>
+          {/* Active Indicator */}
+          {viewMode === 'libre' && (
+            <div className="absolute -bottom-6 md:-bottom-4 right-0 md:left-0 h-1.5 w-32 bg-[#063547] rounded-full" />
+          )}
+        </div>
+      </div>
     </div>
   );
 }

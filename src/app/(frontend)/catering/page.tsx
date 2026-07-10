@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Header } from "@/components/catalog/Header";
 import { CategoryFilter } from "@/components/catalog/CategoryFilter";
 import { ProductCard } from "@/components/catalog/ProductCard";
-import { ProductDetailModal } from "@/components/catalog/ProductDetailModal";
+import { ProductVariationsDrawer } from "@/components/catalog/ProductVariationsDrawer";
 import { ProductGridSection } from "@/components/catalog/ProductGridSection";
 import { BoxBuilder } from "@/components/catalog/BoxBuilder";
 import { ViewModeToggle } from "@/components/catalog/ViewModeToggle";
@@ -54,33 +54,12 @@ export default function CateringPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Efecto para buscar todas las categorías directamente desde el backend de Payload
   useEffect(() => {
-    async function fetchMacrocategories() {
-      try {
-        const resMacro = await fetch('/api/macrocategories');
-        const dataMacro = await resMacro.json();
-        const mDocs = dataMacro.docs || [];
-        
-        setMacrocategories(mDocs);
-        if (mDocs.length > 0) {
-          setSelectedMacrocategory(mDocs[0].id);
-        }
-      } catch (error) {
-        console.error("Failed to fetch macrocategories:", error);
-        setIsLoadingCategories(false);
-      }
-    }
-    fetchMacrocategories();
-  }, []);
-
-  // Efecto para buscar categorías filtradas directamente desde el backend de Payload
-  useEffect(() => {
-    async function fetchCategoriesFiltered() {
-      if (!selectedMacrocategory) return;
+    async function fetchCategoriesAll() {
       setIsLoadingCategories(true);
       try {
-        const query = `?where[macroCategory][equals]=${selectedMacrocategory}`;
-        const endpoint = `/api/categories${encodeURI(query)}`;
+        const endpoint = `/api/categories?limit=100`;
         
         const resCat = await fetch(endpoint);
         const dataCat = await resCat.json();
@@ -104,8 +83,8 @@ export default function CateringPage() {
         setIsLoadingCategories(false);
       }
     }
-    fetchCategoriesFiltered();
-  }, [selectedMacrocategory]); 
+    fetchCategoriesAll();
+  }, []); 
 
   // Efecto para buscar subcategorías
   useEffect(() => {
@@ -166,7 +145,9 @@ export default function CateringPage() {
           image: p.image?.url || p.image || "/images/placeholder.jpg",
           minPortions: p.minPortions || 5,
           tags: p.tags || ["Recomendado"],
-          categoryCateringId: p.categoryCatering?.id || p.categoryCatering
+          categoryCateringId: p.categoryCatering?.id || p.categoryCatering,
+          variations: p.variations || [],
+          details: p.details || undefined
         }));
         
         setProducts(mappedProducts);
@@ -307,37 +288,15 @@ export default function CateringPage() {
           <>
 
             {/* Barra Sticky */}
-            <div className="sticky top-[76px] z-40 w-full border-b border-black/5 dark:border-white/5 bg-white/95 backdrop-blur-md dark:bg-[#042430]/95">
-              <div className="mx-auto max-w-[1400px] px-6 lg:px-12 flex flex-col">
-                {/* Fila 1: Toggle */}
-                <div className="flex items-center py-3">
-                  <ViewModeToggle viewMode={viewMode} onChange={setViewMode} />
-                </div>
-                {/* Fila 2: Macrocategorías — sin gap entre filas */}
-                <div className="flex flex-wrap gap-2 md:gap-3 items-center pb-3">
-                  {viewMode === "libre" ? (
-                    <>
-                      {(!isLoadingCategories && macrocategories.length > 0) && macrocategories.map((macro) => (
-                        <button
-                          key={macro.id}
-                          onClick={() => setSelectedMacrocategory(macro.id)}
-                          className={`rounded-full px-5 py-2 text-sm font-bold uppercase tracking-wider transition-all ${
-                            selectedMacrocategory === macro.id
-                              ? "bg-[#b45b38] text-white shadow-md"
-                              : "bg-black/5 text-[#6e7c7c] hover:bg-black/10 hover:text-[#063547] dark:bg-white/5 dark:text-[#b2b5a9] dark:hover:bg-white/10 dark:hover:text-[#f2eae6]"
-                          }`}
-                        >
-                          {macro.name}
-                        </button>
-                      ))}
-                    </>
-                  ) : (
-                    <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#063547] dark:text-[#f2eae6]">
-                      <span className="opacity-50">Armando:</span>
-                      <span className="text-[#b45b38]">{selectedBoxName}</span>
-                    </div>
-                  )}
-                </div>
+            <div className="sticky top-[76px] z-40 w-full border-b-2 border-[#063547] bg-white/95 backdrop-blur-md dark:bg-[#042430]/95">
+              
+              {/* Fila 1: Toggle (Ancho completo) */}
+              <div className="w-full">
+                <ViewModeToggle 
+                  viewMode={viewMode} 
+                  onChange={setViewMode} 
+                  selectedBoxName={viewMode === "box" ? selectedBoxName : undefined}
+                />
               </div>
             </div>
 
@@ -402,11 +361,10 @@ export default function CateringPage() {
 
       <Footer />
 
-      <ProductDetailModal
+      <ProductVariationsDrawer
         product={selectedProduct}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onAdd={handleAddToCart}
       />
       <CartDrawer />
     </div>

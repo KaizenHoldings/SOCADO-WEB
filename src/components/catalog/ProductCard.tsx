@@ -41,17 +41,14 @@ export function ProductCard({ product, onViewDetails, onAdd }: ProductCardProps)
 
         <div className="mt-5 flex items-center justify-between">
           <div>
-            <span className="font-raleway text-lg font-bold text-[#063547] dark:text-[#f2eae6]">
-              ${product.price.toFixed(2)}
-            </span>
-            <span className="ml-2 text-xs font-medium uppercase tracking-wider text-[#b45b38]">
+            <span className="text-xs font-medium uppercase tracking-wider text-[#b45b38]">
               Min {product.minPortions}
             </span>
           </div>
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onAdd(product);
+              onViewDetails(product);
             }}
             className="group/btn flex h-10 w-10 items-center justify-center rounded-full border border-[#063547]/20 text-[#063547] transition-all hover:border-[#b45b38] hover:bg-[#b45b38] hover:text-white dark:border-white/20 dark:text-[#f2eae6] dark:hover:border-[#b45b38]"
             aria-label="Agregar a cotización"

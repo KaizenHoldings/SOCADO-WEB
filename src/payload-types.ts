@@ -232,6 +232,31 @@ export interface Product {
   category?: (number | null) | Category;
   subCategory?: (number | null) | Subcategory;
   image?: (number | null) | Media;
+  /**
+   * Añade diferentes versiones de este producto (ej. Mini, Grande).
+   */
+  variations?:
+    | {
+        label: string;
+        /**
+         * Si defines un precio aquí, el producto costará esto cuando se seleccione esta opción.
+         */
+        price?: number | null;
+        /**
+         * Opcional. Reemplaza la descripción principal.
+         */
+        description?: string | null;
+        /**
+         * Opcional. Reemplaza la imagen principal.
+         */
+        image?: (number | null) | Media;
+        /**
+         * Si esto es un extra (ej. Leche Almendras), usa este campo para sumar al total (ej. 2 para sumar $2).
+         */
+        priceAdjustment?: number | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -607,6 +632,16 @@ export interface ProductsSelect<T extends boolean = true> {
   category?: T;
   subCategory?: T;
   image?: T;
+  variations?:
+    | T
+    | {
+        label?: T;
+        price?: T;
+        description?: T;
+        image?: T;
+        priceAdjustment?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

@@ -5,7 +5,7 @@ import { X, Trash2, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { calculateDiscounts } from "@/lib/utils/discount.utils";
+import { calculateDiscounts, getItemUnitPrice } from "@/lib/utils/discount.utils";
 
 export function CartDrawer() {
   const { isDrawerOpen, closeDrawer, items, removeItem, updateQuantity, discountRules, fetchDiscountRules, taxes, fetchTaxes } = useCartStore();
@@ -70,7 +70,7 @@ export function CartDrawer() {
                 </h3>
                 <div className="flex flex-wrap gap-3">
                   {recentItems.map((item) => (
-                    <div key={item.product.id} className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm dark:bg-[#063547]">
+                    <div key={item.id || item.product.id} className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm dark:bg-[#063547]">
                       <div className="relative h-10 w-10 overflow-hidden rounded-md">
                         <Image src={item.product.image} alt={item.product.name} fill className="object-cover" />
                       </div>
@@ -86,7 +86,7 @@ export function CartDrawer() {
               {/* Lista completa */}
               <div className="space-y-6">
                 {items.map((item) => (
-                  <div key={item.product.id} className="flex gap-4">
+                  <div key={item.id || item.product.id} className="flex gap-4">
                     <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-black/5 dark:bg-white/5">
                       <Image src={item.product.image} alt={item.product.name} fill className="object-cover" />
                     </div>
@@ -94,14 +94,21 @@ export function CartDrawer() {
                       <div className="flex justify-between">
                         <h4 className="font-bold text-[#063547] dark:text-[#f2eae6]">{item.product.name}</h4>
                         <button 
-                          onClick={() => removeItem(item.product.id)}
+                          onClick={() => removeItem(item.id || item.product.id)}
                           className="text-[#6e7c7c] hover:text-[#b45b38] dark:text-[#b2b5a9]"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
+                      
+                      {item.selectedVariation && (
+                        <div className="mt-1 flex flex-col gap-0.5 text-xs text-[#6e7c7c] dark:text-[#b2b5a9]">
+                          <span>Versión: <span className="font-medium text-[#063547] dark:text-[#f2eae6]">{item.selectedVariation}</span></span>
+                        </div>
+                      )}
+
                       <p className="mt-1 text-sm font-bold text-[#b45b38]">
-                        ${item.product.price.toFixed(2)} c/u
+                        ${getItemUnitPrice(item).toFixed(2)} c/u
                       </p>
                       
                       <div className="mt-auto flex items-center gap-3 pt-2">
@@ -112,7 +119,7 @@ export function CartDrawer() {
                           type="number" 
                           min={item.product.minPortions || 1}
                           value={item.quantity}
-                          onChange={(e) => updateQuantity(item.product.id, parseInt(e.target.value) || 1)}
+                          onChange={(e) => updateQuantity(item.id || item.product.id, parseInt(e.target.value) || 1)}
                           className="w-16 rounded-md border border-black/10 bg-transparent px-2 py-1 text-sm dark:border-white/10 dark:text-[#f2eae6]"
                         />
                       </div>

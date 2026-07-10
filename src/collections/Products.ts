@@ -99,5 +99,54 @@ export const Products: CollectionConfig = {
       label: 'Imagen del Producto',
       required: false,
     },
+    {
+      name: 'variations',
+      type: 'array',
+      label: 'Versiones / Opciones (Variaciones)',
+      admin: {
+        description: 'Añade diferentes versiones de este producto (ej. Mini, Grande).',
+      },
+      fields: [
+        {
+          name: 'label',
+          type: 'text',
+          label: 'Etiqueta de la Versión (Ej: Mini, Grande)',
+          required: true,
+        },
+        {
+          name: 'price',
+          type: 'number',
+          label: 'Precio Absoluto (Reemplaza el precio base del producto)',
+          admin: {
+            description: 'Si defines un precio aquí, el producto costará esto cuando se seleccione esta opción.',
+          },
+        },
+        {
+          name: 'description',
+          type: 'textarea',
+          label: 'Descripción de esta versión',
+          admin: {
+            description: 'Opcional. Reemplaza la descripción principal.',
+          },
+        },
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Imagen de esta versión',
+          admin: {
+            description: 'Opcional. Reemplaza la imagen principal.',
+          },
+        },
+        {
+          name: 'priceAdjustment',
+          type: 'number',
+          label: 'Ajuste de Precio',
+          admin: {
+            description: 'Si esto es un extra (ej. Leche Almendras), usa este campo para sumar al total (ej. 2 para sumar $2).',
+          },
+        },
+      ],
+    },
   ],
 }

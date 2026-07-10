@@ -31,6 +31,24 @@ export interface DiscountResult {
   appliedTaxes: { taxName: string; taxAmount: number; percentage: number }[];
 }
 
+export function getItemUnitPrice(item: CartItem): number {
+  let basePrice = item.product.price;
+  let totalAdjustments = 0;
+
+  if (item.selectedVariation && item.product.variations) {
+    const choice = item.product.variations.find(v => v.label === item.selectedVariation);
+    if (choice) {
+      if (typeof choice.price === 'number') {
+        basePrice = choice.price;
+      }
+      if (typeof choice.priceAdjustment === 'number') {
+        totalAdjustments += choice.priceAdjustment;
+      }
+    }
+  }
+  return basePrice + totalAdjustments;
+}
+
 export function calculateDiscounts(items: CartItem[], rules: DiscountRule[], taxes: Tax[] = []): DiscountResult {
   let totalOriginal = 0;
   let totalDiscount = 0;
@@ -44,13 +62,13 @@ export function calculateDiscounts(items: CartItem[], rules: DiscountRule[], tax
 
   // Sumar directamente los boxes (sin descuento)
   boxItems.forEach(item => {
-    totalOriginal += item.product.price * item.quantity;
+    totalOriginal += getItemUnitPrice(item) * item.quantity;
   });
 
   if (freeSelectionItems.length === 0 || rules.length === 0) {
     // Si no hay productos de selección libre o no hay reglas, calculamos igual los impuestos
     freeSelectionItems.forEach(item => {
-      totalOriginal += item.product.price * item.quantity;
+      totalOriginal += getItemUnitPrice(item) * item.quantity;
     });
     
     // Calcular impuestos sobre la base (totalOriginal - 0)
@@ -80,7 +98,7 @@ export function calculateDiscounts(items: CartItem[], rules: DiscountRule[], tax
     }
     itemsBySubcategory[subcatId].items.push(item);
     itemsBySubcategory[subcatId].totalQuantity += item.quantity;
-    itemsBySubcategory[subcatId].subtotal += (item.product.price * item.quantity);
+    itemsBySubcategory[subcatId].subtotal += (getItemUnitPrice(item) * item.quantity);
   });
 
   // 3. Evaluar reglas

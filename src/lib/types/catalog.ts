@@ -11,6 +11,15 @@ export interface Subcategory {
   categoryId: string;
 }
 
+export interface ProductVariationChoice {
+  id?: string;
+  label: string;
+  price?: number;
+  description?: string;
+  image?: any;
+  priceAdjustment?: number;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -22,6 +31,7 @@ export interface Product {
   minPortions: number; // Mínimo de unidades o porciones para catering
   categoryCateringId?: string; // ID en payload CMS de la categoría para el armado de combos
   tags?: string[]; // Ej: "Vegano", "Sin Azúcar", "Recomendado"
+  variations?: ProductVariationChoice[]; // Versiones opcionales
   details?: {
     ingredients?: string[];
     allergens?: string[];
@@ -31,6 +41,8 @@ export interface Product {
 }
 
 export interface CartItem {
+  id?: string; // Added to uniquely identify items with different variations
   product: Product;
   quantity: number;
+  selectedVariation?: string; // label de la versión seleccionada
 }
