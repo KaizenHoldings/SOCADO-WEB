@@ -226,6 +226,10 @@ export interface Product {
   status: 'active' | 'inactive' | 'draft';
   sku: string;
   name: string;
+  /**
+   * Breve descripción que se mostrará debajo del nombre en las tarjetas.
+   */
+  description?: string | null;
   price: number;
   macroCategory?: (number | null) | Macrocategory;
   categoryCatering?: (number | null) | CatCategory;
@@ -626,6 +630,7 @@ export interface ProductsSelect<T extends boolean = true> {
   status?: T;
   sku?: T;
   name?: T;
+  description?: T;
   price?: T;
   macroCategory?: T;
   categoryCatering?: T;

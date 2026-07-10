@@ -40,6 +40,15 @@ export const Products: CollectionConfig = {
       required: true,
     },
     {
+      name: 'description',
+      type: 'textarea',
+      label: 'Descripción del Producto',
+      required: false,
+      admin: {
+        description: 'Breve descripción que se mostrará debajo del nombre en las tarjetas.',
+      },
+    },
+    {
       name: 'price',
       type: 'number',
       label: 'Precio Base',

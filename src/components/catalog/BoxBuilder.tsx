@@ -8,6 +8,7 @@ import { BoxDefinition, BoxRequirement } from "@/lib/types/boxes";
 import { useCartStore } from "@/lib/store/cart.store";
 import { CheckCircle, XCircle } from "lucide-react";
 import Swal from "sweetalert2";
+import Image from "next/image";
 
 interface BoxBuilderProps {
   combos: BoxDefinition[];
@@ -29,7 +30,11 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
   const selectedBox = combos.find(b => b.id === selectedBoxId) || combos[0];
 
   if (!selectedBox) {
-    return <div className="p-10 text-center">Cargando combos...</div>;
+    return (
+      <div className="flex justify-center py-20">
+        <Image src="/images/socado-loader.svg" alt="Cargando combos..." width={180} height={40} priority className="animate-pulse" />
+      </div>
+    );
   }
 
   // Map box requirements to look like subcategories for the CategoryFilter

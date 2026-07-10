@@ -2,6 +2,7 @@
 
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { Product } from "@/lib/types/catalog";
+import Image from "next/image";
 
 interface ProductGridSectionProps {
   filteredCategories: any[];
@@ -44,8 +45,8 @@ export function ProductGridSection({
         </div>
 
         {isLoadingProducts ? (
-          <div className="flex justify-center py-20 text-xl font-bold text-[#6e7c7c]">
-            Cargando productos...
+          <div className="flex justify-center py-20">
+            <Image src="/images/socado-loader.svg" alt="Cargando productos..." width={180} height={40} priority className="animate-pulse" />
           </div>
         ) : filteredProducts.length > 0 ? (
           <>

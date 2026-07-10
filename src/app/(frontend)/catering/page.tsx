@@ -305,8 +305,8 @@ export default function CateringPage() {
             {/* Filtros de Categoría (Edge-to-Edge Cards) */}
             <div className="w-full">
           {isLoadingCategories ? (
-            <div className="flex justify-center py-20 text-xl font-bold text-gray-500">
-              Cargando categorías...
+            <div className="flex justify-center py-20">
+              <Image src="/images/socado-loader.svg" alt="Cargando categorías..." width={180} height={40} priority className="animate-pulse" />
             </div>
           ) : filteredCategories.length === 0 ? (
              <div className="flex flex-col items-center justify-center py-20 text-center">
