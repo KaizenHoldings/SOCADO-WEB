@@ -1,40 +1,38 @@
-import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 export function CateringPromo2() {
   return (
-    <section id="catering-pedido" className="relative w-full bg-terra overflow-hidden">
-      <div className="flex flex-col-reverse md:flex-row w-full min-h-[70vh]">
-
+    <section id="catering-pedido" className="relative w-full overflow-hidden bg-terra">
+      <div className="flex min-h-[70vh] w-full flex-col-reverse md:flex-row">
         {/* Left Side: Text Content */}
-        <div className="w-full md:w-1/2 flex items-center justify-center p-12 md:p-20 lg:p-32 z-10 bg-terra">
-          <div className="max-w-xl text-center md:text-left">
-            <h2 className="font-raleway font-light text-xl uppercase tracking-widest text-ivory mb-2">
-              SERVICIO DE CATERING
-            </h2>
-            <h2
-              className="font-raleway font-black text-7xl text-white mb-8"
-              style={{ letterSpacing: "-0.02em" }}
-            >
-              Socado en tu evento
-            </h2>
-            <p className="font-outfit text-lg md:text-xl text-ivory/90 mb-10 leading-relaxed font-light">
-              Descubre nuestras opciones de catering. Disfruta de la experiencia Socado en tus reuniones, celebraciones o eventos corporativos.
-            </p>
-            <Link
-              href="/catering"
-              className="group inline-flex items-center gap-3 bg-white text-terra font-outfit font-bold uppercase tracking-widest rounded-full px-10 py-5 hover:bg-ivory transition-all hover:shadow-xl hover:scale-105 active:scale-95"
-            >
-              Hacer un Pedido
-              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-            </Link>
+        <div className="z-10 flex w-full items-center bg-terra md:w-1/2">
+          <div className="section-shell max-w-none py-16 text-left text-ivory md:py-20">
+            <div className="max-w-xl">
+              <p className="mb-2 font-raleway text-xl font-light uppercase tracking-widest text-ivory">
+                SERVICIO DE CATERING
+              </p>
+              <h2 className="font-raleway text-4xl font-normal leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
+                Socado en tu evento
+              </h2>
+              <p className="mt-5 max-w-md font-outfit text-base text-ivory/85 sm:text-lg">
+                Descubre nuestras opciones de catering. Disfruta de la experiencia Socado en tus
+                reuniones, celebraciones o eventos corporativos.
+              </p>
+              <Link
+                href="/catering"
+                className="group mt-8 inline-flex items-center gap-3 rounded-full bg-white px-7 py-3 font-outfit text-sm font-semibold uppercase tracking-widest text-terra transition-colors duration-300 hover:bg-ivory"
+              >
+                Hacer un Pedido
+                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
           </div>
         </div>
 
         {/* Right Side: Full Image */}
-        <div className="w-full md:w-1/2 relative min-h-[400px] md:min-h-full">
+        <div className="relative min-h-[400px] w-full md:min-h-full md:w-1/2">
           <Image
             src="/images/servicio.jpg"
             alt="Socado Catering options"
@@ -43,7 +41,6 @@ export function CateringPromo2() {
             sizes="(max-width: 768px) 100vw, 50vw"
           />
         </div>
-
       </div>
     </section>
   );

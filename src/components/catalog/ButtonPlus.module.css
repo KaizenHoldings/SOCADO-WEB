@@ -1,0 +1,71 @@
+/* "más" CTA button — idle breathing/arrow-float animations adapted from the plusbutton prototype */
+
+.button {
+  animation: mas-breathe 3.4s ease-in-out infinite;
+}
+
+.button:hover {
+  animation: none;
+}
+
+.button:active {
+  transform: scale(0.96);
+  transition-duration: 100ms;
+}
+
+.label {
+  transition: letter-spacing 0.3s ease-out;
+}
+
+.button:hover .label {
+  letter-spacing: 0.09em;
+}
+
+.underline {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease-out;
+}
+
+.button:hover .underline {
+  transform: scaleX(1);
+}
+
+.arrow {
+  animation: mas-arrow 2.6s ease-in-out infinite;
+  transition: transform 0.3s ease-out;
+}
+
+.button:hover .arrow {
+  animation: none;
+  transform: translate(4px, -4px) rotate(6deg);
+}
+
+@keyframes mas-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.04);
+    filter: brightness(1.25);
+  }
+}
+
+@keyframes mas-arrow {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(3px, -3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .arrow {
+    animation: none;
+  }
+}
