@@ -84,10 +84,10 @@ export function HeroLeft() {
             className="section-shell hero-title pb-12 text-ivory drop-shadow-[0_2px_30px_rgba(0,0,0,0.5)] sm:pb-16 lg:pb-20"
           >
             <motion.span variants={line} className="block">
-              Social. Café.
+              social. café.
             </motion.span>
             <motion.span variants={line} className="block">
-              Conectado.
+              conectado.
             </motion.span>
           </motion.h1>
         </motion.div>

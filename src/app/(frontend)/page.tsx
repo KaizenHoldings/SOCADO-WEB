@@ -11,8 +11,9 @@ import { Footer } from "@/components/catalog/Footer";
 import { CateringPromo1 } from "@/components/catalog/CateringPromo1";
 import { CateringPromo2 } from "@/components/catalog/CateringPromo2";
 import { AboutUs } from "@/components/catalog/AboutUs";
-import { Promotion } from "@/components/catalog/Promotion";
-import { Promotion1 } from "@/components/catalog/Promotion1";
+// import { Promotion } from "@/components/catalog/Promotion"; // temporarily hidden
+import { LoyaltyCard } from "@/components/catalog/LoyaltyCard";
+import { SocadoClub } from "@/components/catalog/SocadoClub";
 
 export default function Home() {
   return (
@@ -21,14 +22,10 @@ export default function Home() {
 
       <main className="flex-1">
         <HeroLeft />
-        <Promotion />
-        <Promotion1 />
-        {/* Layer 3 — rises from below and covers the pinned Promotion1 image.
-            Negative margin (desktop/tablet) makes it overlap the sticky block
-            while it is still pinned; solid bg + higher z actually cover it. */}
-        <div className="relative z-10 bg-white md:-mt-[100vh]">
-          <StoresCards />
-        </div>
+        {/* <Promotion /> — temporarily hidden, not deleted */}
+        <LoyaltyCard />
+        <SocadoClub />
+        <StoresCards />
         <OurStory />
         <div className="block lg:hidden">
           <Timeline />

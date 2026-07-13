@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../loyaltybuttons"
+		},
+		{
+			"path": "../../buttons"
+		},
+		{
+			"path": "../../plusbutton"
+		},
+		{
+			"path": "../../PopupStores"
+		}
+	],
+	"settings": {
+		"js/ts.tsdk.path": "node_modules/typescript/lib",
+		"js/ts.tsdk.promptToUseWorkspaceVersion": true
+	}
+}

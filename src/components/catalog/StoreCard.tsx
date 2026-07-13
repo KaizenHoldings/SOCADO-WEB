@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
+import { ButtonPlus } from "./ButtonPlus";
+import type { StoreAmenities } from "./PopupStores";
 
 export interface StoreData {
   id: string;
@@ -16,11 +18,18 @@ export interface StoreData {
   link: string;
   images: string[];
   order?: number;
+  amenities?: StoreAmenities; // comodidades — toggles per store (admin later)
 }
 
 const HOVER_CYCLE_MS = 3300;
 
-export function StoreCard({ store }: { store: StoreData }) {
+export function StoreCard({
+  store,
+  onMore,
+}: {
+  store: StoreData;
+  onMore?: (store: StoreData) => void;
+}) {
   const images =
     store.images && store.images.length > 0 ? store.images : ["/images/placeholder.jpg"];
   const [idx, setIdx] = useState(0);
@@ -82,20 +91,35 @@ export function StoreCard({ store }: { store: StoreData }) {
         {/* Expandable info (on hover) */}
         <div className="relative z-10 grid grid-rows-[0fr] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:grid-rows-[1fr]">
           <div className="overflow-hidden">
-            <div className="flex flex-col gap-4 pt-4 opacity-0 transition-opacity delay-100 duration-500 group-hover:opacity-100">
-              <p className="whitespace-pre-line font-outfit text-sm leading-relaxed text-white/80">
-                <span className="mb-1 block font-raleway text-xs font-semibold tracking-wide text-white">
-                  ubicación
-                </span>
-                {store.location}
-              </p>
-              {store.address && (
+            <div className="flex items-end justify-between gap-4 pt-4 opacity-0 transition-opacity delay-100 duration-500 group-hover:opacity-100">
+              <div className="flex min-w-0 flex-col gap-4">
                 <p className="whitespace-pre-line font-outfit text-sm leading-relaxed text-white/80">
                   <span className="mb-1 block font-raleway text-xs font-semibold tracking-wide text-white">
-                    dirección
+                    ubicación
                   </span>
-                  {store.address}
+                  {store.location}
                 </p>
+                {store.address && (
+                  <p className="whitespace-pre-line font-outfit text-sm leading-relaxed text-white/80">
+                    <span className="mb-1 block font-raleway text-xs font-semibold tracking-wide text-white">
+                      dirección
+                    </span>
+                    {store.address}
+                  </p>
+                )}
+              </div>
+              {onMore && (
+                <ButtonPlus
+                  variant="dark"
+                  className="shrink-0 !min-h-0 !py-1 !text-sm"
+                  aria-label={`ver más de ${store.title}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onMore(store);
+                  }}
+                >
+                  más
+                </ButtonPlus>
               )}
             </div>
           </div>

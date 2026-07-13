@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { StoreCard, StoreData } from "./StoreCard";
+import { PopupStores } from "./PopupStores";
 import {
   motion,
   AnimatePresence,
@@ -23,6 +24,8 @@ const DEFAULT_STORES: StoreData[] = [
     link: "https://lasmercedes.socadocafe.com",
     images: ["/images/mercedes1.jpg", "/images/mercedes2.jpg", "/images/mercedes3.jpg"],
     order: 1,
+    // Placeholder amenity toggles — to be driven from the admin panel later.
+    amenities: { kidsCorner: true, parking: true, petFriendly: true, freeWifi: true },
   },
   {
     id: "la-trinidad",
@@ -33,6 +36,7 @@ const DEFAULT_STORES: StoreData[] = [
     link: "https://latrinidad.socadocafe.com",
     images: ["/images/socadoTrinidad.jpg", "/images/trinidad2.jpg", "/images/trinidad3.jpg"],
     order: 2,
+    amenities: { kidsCorner: true, parking: true, petFriendly: true, freeWifi: true },
   },
   {
     id: "el-rosal",
@@ -43,6 +47,7 @@ const DEFAULT_STORES: StoreData[] = [
     link: "https://elrosal.socadocafe.com",
     images: ["/images/rosal1.jpg", "/images/rosal2.jpg", "/images/rosal3.jpg"],
     order: 3,
+    amenities: { kidsCorner: true, parking: true, petFriendly: true, freeWifi: true },
   },
   {
     id: "socadito-pcv",
@@ -54,6 +59,7 @@ const DEFAULT_STORES: StoreData[] = [
     link: "",
     images: ["/images/pcv1.JPG", "/images/pcv2.JPG", "/images/pcv3.jpg"],
     order: 4,
+    amenities: { kidsCorner: true, parking: true, petFriendly: false, freeWifi: true },
   },
   {
     id: "socadito-la-castellana",
@@ -65,6 +71,7 @@ const DEFAULT_STORES: StoreData[] = [
     link: "",
     images: ["/images/locatel1.png", "/images/locatel2.JPG", "/images/locatel3.JPG"],
     order: 5,
+    amenities: { kidsCorner: false, parking: true, petFriendly: false, freeWifi: true },
   },
 ];
 
@@ -95,6 +102,8 @@ export function StoresCards() {
   const [activeStores, setActiveStores] = useState<StoreData[]>(DEFAULT_STORES);
   const [dragConstraints, setDragConstraints] = useState({ left: 0, right: 0 });
   const [showHint, setShowHint] = useState(true);
+  const [popupStore, setPopupStore] = useState<StoreData | null>(null);
+  const [popupOpen, setPopupOpen] = useState(false);
   const x = useMotionValue(0);
 
   const { scrollYProgress } = useScroll({
@@ -161,6 +170,9 @@ export function StoresCards() {
                     )
                   : [],
               order: typeof doc.order === "number" ? doc.order : undefined,
+              // Amenity toggles — passed through when the admin panel provides them.
+              amenities:
+                doc.amenities && typeof doc.amenities === "object" ? doc.amenities : undefined,
             }));
 
             const currentStringified = localStorage.getItem(STORES_CACHE_KEY);
@@ -184,9 +196,9 @@ export function StoresCards() {
     <section
       ref={sectionRef}
       id="tiendas"
-      className="relative w-full overflow-hidden bg-white px-6 py-24 lg:px-12"
+      className="relative w-full overflow-hidden bg-white px-6 py-24 lg:px-12 2xl:px-20"
     >
-      <motion.div style={{ filter, scale, opacity }} className="mx-auto max-w-[1400px]">
+      <motion.div style={{ filter, scale, opacity }} className="w-full">
         {/* Título + categoría (mismo borde izquierdo que Promotion1) */}
         <div className="mb-12 text-left">
           <h2 className="font-raleway text-4xl font-normal tracking-tight text-azul-socado sm:text-5xl lg:text-6xl">
@@ -220,7 +232,16 @@ export function StoresCards() {
               })
               .map((store, index) => {
                 const uniqueStore = { ...store, id: `${store.id}-${index}` };
-                return <StoreCard key={uniqueStore.id} store={uniqueStore} />;
+                return (
+                  <StoreCard
+                    key={uniqueStore.id}
+                    store={uniqueStore}
+                    onMore={(s) => {
+                      setPopupStore(s);
+                      setPopupOpen(true);
+                    }}
+                  />
+                );
               })}
           </motion.div>
         </div>
@@ -249,6 +270,26 @@ export function StoresCards() {
           )}
         </AnimatePresence>
       </motion.div>
+
+      {/* Store detail popup — content bound to the selected card */}
+      <PopupStores
+        store={
+          popupStore
+            ? {
+                name: popupStore.title
+                  .toLowerCase()
+                  .replace(/\b\w/g, (l) => l.toUpperCase()),
+                location: popupStore.location,
+                schedule: popupStore.schedule ?? SCHEDULE,
+                address: popupStore.address,
+                image: popupStore.images?.[0],
+                amenities: popupStore.amenities,
+              }
+            : null
+        }
+        open={popupOpen}
+        onClose={() => setPopupOpen(false)}
+      />
     </section>
   );
 }
