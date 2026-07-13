@@ -29,7 +29,7 @@ export class SlackService {
             fields: [
               {
                 type: 'mrkdwn',
-                text: `*Cliente:*\n${quote.fullName || 'N/A'}`
+                text: `*Cliente:*\n${quote.fullName || 'N/A'}\n*CI:* ${quote.documentId || 'N/A'}`
               },
               {
                 type: 'mrkdwn',

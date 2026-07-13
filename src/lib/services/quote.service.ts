@@ -20,6 +20,7 @@ export class QuoteService {
         collection: "quotes",
         data: {
           fullName: quoteData.fullName,
+          documentId: quoteData.documentId,
           email: quoteData.email,
           phone: quoteData.phone,
           eventDate: new Date(quoteData.eventDate).toISOString(),
@@ -39,10 +40,11 @@ export class QuoteService {
       await EmailService.sendQuoteConfirmation(newQuote);
       await EmailService.sendQuoteNotificationToAdmin(newQuote);
 
-      // 4. Enviar notificación a Slack (inyectamos eventLocation en caso de que Payload no haya actualizado el esquema en memoria aún)
+      // 4. Enviar notificación a Slack (inyectamos eventLocation y documentId en caso de que Payload no haya actualizado el esquema en memoria aún)
       await SlackService.sendQuoteNotification({ 
         ...newQuote, 
-        eventLocation: newQuote.eventLocation || quoteData.eventLocation 
+        eventLocation: (newQuote as any).eventLocation || quoteData.eventLocation,
+        documentId: (newQuote as any).documentId || quoteData.documentId
       });
 
       return { success: true, quote: newQuote };

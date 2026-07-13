@@ -16,6 +16,26 @@ export default function CateringCheckoutPage() {
   const { items, clearCart, discountRules, fetchDiscountRules, taxes, fetchTaxes } = useCartStore();
   const router = useRouter();
 
+  // Validación de mínimos por subcategoría
+  const subcategoryTotals: Record<string, { name: string, total: number, minRequired: number }> = {};
+  
+  items.forEach(item => {
+    const subCat = item.product.subCategory;
+    if (subCat && typeof subCat === 'object' && subCat.id) {
+      const id = String(subCat.id);
+      if (!subcategoryTotals[id]) {
+        subcategoryTotals[id] = {
+          name: subCat.name || 'Categoría',
+          total: 0,
+          minRequired: subCat.minQuantity || 5
+        };
+      }
+      subcategoryTotals[id].total += item.quantity;
+    }
+  });
+
+  const unmetSubcategories = Object.values(subcategoryTotals).filter(sub => sub.total < sub.minRequired);
+
   useEffect(() => {
     fetchDiscountRules();
     fetchTaxes();
@@ -24,6 +44,7 @@ export default function CateringCheckoutPage() {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
+    documentId: "",
     phone: "",
     eventDate: "",
     guests: "",
@@ -108,16 +129,18 @@ export default function CateringCheckoutPage() {
     return (
       <div className="flex min-h-screen flex-col bg-[#f2eae6] dark:bg-[#042430]">
         <Header activePage="catering" />
-        <main className="flex flex-1 flex-col items-center justify-center px-6 pt-20 text-center">
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white shadow-xl dark:bg-[#063547]">
-            <CheckCircle2 className="h-12 w-12 text-[#b45b38]" />
+        <main className="flex flex-1 flex-col items-center justify-center px-6 pt-20 pb-20 text-center">
+          <div className="flex items-center justify-center opacity-80">
+            <Image src="/images/isotipo.png" alt="Socado Isotipo" width={36} height={36} className="w-[36px] h-auto object-contain" />
           </div>
           <h1 className="mt-8 font-raleway text-4xl font-bold text-[#063547] dark:text-[#f2eae6]">
             ¡Cotización Enviada!
           </h1>
-          <p className="mt-4 max-w-lg text-[#6e7c7c] dark:text-[#b2b5a9]">
-            Hemos recibido tu solicitud de catering. Nuestro equipo la revisará y se pondrá en contacto contigo pronto al correo <b>{formData.email}</b>.
-          </p>
+          <div className="mt-4 max-w-lg text-[#6e7c7c] dark:text-[#b2b5a9] flex flex-col gap-1">
+            <p>Recibimos tu solicitud.</p>
+            <p>Pronto nos contactaremos contigo para continuar con la planificación de tu evento.</p>
+            <p className="font-bold mt-2">¡Gracias por elegirnos!</p>
+          </div>
           <Link href="/catering" className="mt-8 rounded-full bg-[#063547] px-8 py-4 font-bold uppercase tracking-wider text-white transition-opacity hover:opacity-90 dark:bg-white dark:text-[#063547]">
             Volver al Inicio
           </Link>
@@ -151,6 +174,10 @@ export default function CateringCheckoutPage() {
                     <input required name="fullName" value={formData.fullName} onChange={handleChange} className="rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-[#063547] focus:border-[#b45b38] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" placeholder="Tu nombre" />
                   </div>
                   <div className="flex flex-col gap-2">
+                    <label className="text-sm font-bold text-[#063547] dark:text-[#f2eae6]">Cédula de Identidad (CI) *</label>
+                    <input required name="documentId" value={formData.documentId} onChange={handleChange} className="rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-[#063547] focus:border-[#b45b38] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" placeholder="V-12345678" />
+                  </div>
+                  <div className="flex flex-col gap-2">
                     <label className="text-sm font-bold text-[#063547] dark:text-[#f2eae6]">Correo Electrónico *</label>
                     <input required type="email" name="email" value={formData.email} onChange={handleChange} className="rounded-xl border border-black/10 bg-black/5 px-4 py-3 text-[#063547] focus:border-[#b45b38] focus:outline-none dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" placeholder="ejemplo@correo.com" />
                   </div>
@@ -179,7 +206,19 @@ export default function CateringCheckoutPage() {
 
                 {error && <p className="text-red-500 font-bold">{error}</p>}
 
-                <button disabled={isSubmitting} type="submit" className="w-full rounded-full bg-[#b45b38] py-4 font-bold text-white transition-opacity hover:opacity-90 disabled:bg-[#b45b38]/50 sm:w-auto sm:px-12">
+                {unmetSubcategories.length > 0 && (
+                  <div className="mb-6 rounded-lg bg-red-50 p-4 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+                    <p className="font-bold mb-2">No se puede procesar la solicitud por mínimo de categoría:</p>
+                    <ul className="list-disc pl-5">
+                      {unmetSubcategories.map(sub => (
+                        <li key={sub.name}>
+                          {sub.name}: Llevas {sub.total} en total, por subcategoría debes elegir al menos {sub.minRequired}.
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                <button disabled={isSubmitting || unmetSubcategories.length > 0} type="submit" className={`w-full rounded-full py-4 font-bold text-white transition-opacity sm:w-auto sm:px-12 ${isSubmitting || unmetSubcategories.length > 0 ? 'bg-gray-400 cursor-not-allowed opacity-50' : 'bg-[#b45b38] hover:opacity-90'}`}>
                   {isSubmitting ? "Enviando..." : "Solicitar Cotización"}
                 </button>
               </form>

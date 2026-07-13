@@ -214,6 +214,10 @@ export interface Subcategory {
   id: number;
   name: string;
   parentCategory?: (number | null) | Category;
+  /**
+   * Mínimo de productos requeridos para hacer checkout si el usuario lleva algo de esta subcategoría.
+   */
+  minQuantity?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -236,6 +240,7 @@ export interface Product {
   category?: (number | null) | Category;
   subCategory?: (number | null) | Subcategory;
   image?: (number | null) | Media;
+  gallery?: (number | Media)[] | null;
   /**
    * Añade diferentes versiones de este producto (ej. Mini, Grande).
    */
@@ -312,6 +317,7 @@ export interface Promotion {
 export interface Quote {
   id: number;
   fullName: string;
+  documentId: string;
   email: string;
   phone: string;
   eventDate: string;
@@ -628,6 +634,7 @@ export interface CategoriesSelect<T extends boolean = true> {
 export interface SubcategoriesSelect<T extends boolean = true> {
   name?: T;
   parentCategory?: T;
+  minQuantity?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -646,6 +653,7 @@ export interface ProductsSelect<T extends boolean = true> {
   category?: T;
   subCategory?: T;
   image?: T;
+  gallery?: T;
   variations?:
     | T
     | {
@@ -697,6 +705,7 @@ export interface PromotionsSelect<T extends boolean = true> {
  */
 export interface QuotesSelect<T extends boolean = true> {
   fullName?: T;
+  documentId?: T;
   email?: T;
   phone?: T;
   eventDate?: T;

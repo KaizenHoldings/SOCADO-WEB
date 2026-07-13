@@ -36,7 +36,7 @@ export const useCartStore = create<CartState>()(
   isDrawerOpen: false,
 
   addItem: (product, quantity, selectedVariation) => set((state) => {
-    const qtyToAdd = quantity || product.minPortions || 1;
+    const qtyToAdd = quantity || 1;
     
     // Generar un ID único para el item en el carrito basado en el producto y su variación
     const variationsKey = selectedVariation || '';

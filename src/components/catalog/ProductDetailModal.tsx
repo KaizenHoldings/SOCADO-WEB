@@ -89,18 +89,10 @@ export function ProductDetailModal({ product, isOpen, onClose, onAdd }: ProductD
           </div>
 
           {/* Detalles específicos */}
-          {(product.details || product.minPortions) && (
+          {(product.details) && (
             <div className="mb-8 space-y-4 rounded-2xl bg-white p-5 shadow-sm dark:bg-[#1a1f24]">
-              <div className="flex items-start gap-3">
-                <Info className="mt-0.5 h-5 w-5 shrink-0 text-[#b45b38]" />
-                <div>
-                  <h4 className="font-semibold text-[#063547] dark:text-[#f2eae6]">Pedido Mínimo</h4>
-                  <p className="text-sm text-[#6e7c7c] dark:text-[#b2b5a9]">Se requiere un mínimo de {product.minPortions} unidades/porciones para catering.</p>
-                </div>
-              </div>
-
               {product.details?.servingTemp && (
-                <div className="flex items-start gap-3 border-t border-black/5 pt-4 dark:border-white/5">
+                <div className="flex items-start gap-3">
                   <Thermometer className="mt-0.5 h-5 w-5 shrink-0 text-[#b45b38]" />
                   <div>
                     <h4 className="font-semibold text-[#063547] dark:text-[#f2eae6]">Temperatura de Servicio</h4>
@@ -136,15 +128,24 @@ export function ProductDetailModal({ product, isOpen, onClose, onAdd }: ProductD
 
           {/* Footer Modal */}
           <div className="mt-auto flex flex-col sm:flex-row sm:items-center justify-between border-t border-black/10 pt-6 dark:border-white/10 gap-4">
-            <div className="text-center sm:text-left">
-              <span className="block text-sm font-medium text-[#6e7c7c] dark:text-[#b2b5a9]">Precio estimado</span>
-              <span className="font-raleway text-3xl font-bold text-[#063547] dark:text-[#f2eae6]">
-                ${product.price.toFixed(2)} <span className="text-sm font-normal text-[#6e7c7c]">/ud</span>
-              </span>
+            <div className="flex items-center gap-4">
+              <input 
+                type="number"
+                min={1}
+                value={quantity}
+                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                className="w-16 rounded-lg border border-gray-300 p-2 text-center dark:bg-transparent dark:border-white/20"
+              />
+              <div className="text-center sm:text-left">
+                <span className="block text-sm font-medium text-[#6e7c7c] dark:text-[#b2b5a9]">Total estimado</span>
+                <span className="font-raleway text-3xl font-bold text-[#063547] dark:text-[#f2eae6]">
+                  ${(product.price * quantity).toFixed(2)}
+                </span>
+              </div>
             </div>
             <button
               onClick={() => {
-                onAdd(product);
+                onAdd(product, quantity);
                 onClose();
               }}
               className="w-full sm:w-auto rounded-full bg-[#b45b38] px-8 py-4 font-bold text-white shadow-lg transition-transform hover:scale-105 hover:bg-[#a04b2b]"

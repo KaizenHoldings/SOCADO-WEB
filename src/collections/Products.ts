@@ -109,6 +109,14 @@ export const Products: CollectionConfig = {
       required: false,
     },
     {
+      name: 'gallery',
+      type: 'relationship',
+      relationTo: 'media',
+      hasMany: true,
+      label: 'Galería de Imágenes (Hover Slide)',
+      required: false,
+    },
+    {
       name: 'variations',
       type: 'array',
       label: 'Versiones / Opciones (Variaciones)',

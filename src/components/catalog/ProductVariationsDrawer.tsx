@@ -25,7 +25,7 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
   useEffect(() => {
     if (product) {
       setSelectedVariation('');
-      setQuantity(product.minPortions || 1);
+      setQuantity(1);
     }
   }, [product]);
 
@@ -183,15 +183,8 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
           )}
 
           {/* Detalles específicos */}
-          {(product.details || product.minPortions) && (
+          {product.details && (
             <div className="space-y-4 rounded-xl border border-black/5 bg-white p-5 shadow-sm dark:border-white/5 dark:bg-white/5">
-              <div className="flex items-start gap-3">
-                <Info className="mt-0.5 h-5 w-5 shrink-0 text-[#b45b38]" />
-                <div>
-                  <h4 className="font-semibold text-[#063547] dark:text-[#f2eae6]">Pedido Mínimo</h4>
-                  <p className="text-sm text-[#6e7c7c] dark:text-[#b2b5a9]">Se requiere un mínimo de {product.minPortions || 1} unidades/porciones para catering.</p>
-                </div>
-              </div>
 
               {product.details?.servingTemp && (
                 <div className="flex items-start gap-3 border-t border-black/5 pt-4 dark:border-white/5">
@@ -223,7 +216,7 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
-                onClick={() => setQuantity(q => Math.max(product.minPortions || 1, q - 1))}
+                onClick={() => setQuantity(q => Math.max(1, q - 1))}
                 className="flex h-7 w-7 items-center justify-center rounded-full bg-black/5 text-lg font-medium text-[#063547] hover:bg-black/10 dark:bg-white/10 dark:text-white dark:hover:bg-white/20"
               >
                 -
@@ -231,8 +224,8 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
               <input
                 type="number"
                 value={quantity}
-                onChange={(e) => setQuantity(Math.max(product.minPortions || 1, parseInt(e.target.value) || 1))}
-                min={product.minPortions || 1}
+                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                min={1}
                 className="w-12 rounded-md border border-black/10 bg-transparent px-1 py-1 text-center text-sm font-bold text-[#063547] focus:border-[#b45b38] focus:outline-none dark:border-white/10 dark:text-[#f2eae6]"
               />
               <button

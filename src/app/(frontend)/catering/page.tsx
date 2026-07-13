@@ -143,7 +143,13 @@ export default function CateringPage() {
           price: p.price,
           categoryId: p.category?.id || p.category,
           subcategoryId: p.subCategory?.id || p.subCategory,
+          subCategory: p.subCategory && typeof p.subCategory === 'object' ? {
+            id: p.subCategory.id,
+            name: p.subCategory.name,
+            minQuantity: typeof p.subCategory.minQuantity === 'number' ? p.subCategory.minQuantity : 5
+          } : undefined,
           image: p.image?.url || p.image || "/images/isotipo.png",
+          gallery: Array.isArray(p.gallery) ? p.gallery.map((media: any) => media?.url || media).filter(Boolean) : [],
           minPortions: p.minPortions || 5,
           tags: p.tags || ["Recomendado"],
           categoryCateringId: p.categoryCatering?.id || p.categoryCatering,
@@ -316,7 +322,7 @@ export default function CateringPage() {
           <>
 
             {/* Barra Sticky */}
-            <div className="sticky top-[76px] z-40 w-full border-b-2 border-[#063547] bg-white/95 backdrop-blur-md dark:bg-[#042430]/95">
+            <div className="sticky top-[76px] z-40 w-full bg-white/95 backdrop-blur-md dark:bg-[#042430]/95">
               
               {/* Fila 1: Toggle (Ancho completo) */}
               <div className="w-full">

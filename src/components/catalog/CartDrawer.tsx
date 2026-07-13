@@ -30,6 +30,26 @@ export function CartDrawer() {
     router.push("/catering/checkout");
   };
 
+  // Validación de mínimos por subcategoría
+  const subcategoryTotals: Record<string, { name: string, total: number, minRequired: number }> = {};
+  
+  items.forEach(item => {
+    const subCat = item.product.subCategory;
+    if (subCat && typeof subCat === 'object' && subCat.id) {
+      const id = String(subCat.id);
+      if (!subcategoryTotals[id]) {
+        subcategoryTotals[id] = {
+          name: subCat.name || 'Categoría',
+          total: 0,
+          minRequired: subCat.minQuantity || 5 // default 5
+        };
+      }
+      subcategoryTotals[id].total += item.quantity;
+    }
+  });
+
+  const unmetSubcategories = Object.values(subcategoryTotals).filter(sub => sub.total < sub.minRequired);
+
   return (
     <>
       <div 
@@ -127,7 +147,7 @@ export function CartDrawer() {
                         </label>
                         <input 
                           type="number" 
-                          min={item.product.minPortions || 1}
+                          min={1}
                           value={item.quantity}
                           onChange={(e) => updateQuantity(item.id || item.product.id, parseInt(e.target.value) || 1)}
                           className="w-16 rounded-md border border-black/10 bg-transparent px-2 py-1 text-sm dark:border-white/10 dark:text-[#f2eae6]"
@@ -174,9 +194,24 @@ export function CartDrawer() {
                 ${totalFinal.toFixed(2)}
               </span>
             </div>
+
+            {unmetSubcategories.length > 0 && (
+              <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+                <p className="font-bold mb-1">Mínimo por categoría no alcanzado:</p>
+                <ul className="list-disc pl-4">
+                  {unmetSubcategories.map(sub => (
+                    <li key={sub.name}>
+                      {sub.name}: Llevas {sub.total}, por subcategoría debes elegir al menos {sub.minRequired}.
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <button 
               onClick={handleCheckout}
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#b45b38] py-4 font-bold text-white transition-opacity hover:opacity-90"
+              disabled={unmetSubcategories.length > 0}
+              className={`flex w-full items-center justify-center gap-2 rounded-full py-4 font-bold text-white transition-opacity ${unmetSubcategories.length > 0 ? 'bg-gray-400 cursor-not-allowed opacity-50' : 'bg-[#b45b38] hover:opacity-90'}`}
             >
               Crear cotización <ArrowRight className="h-5 w-5" />
             </button>

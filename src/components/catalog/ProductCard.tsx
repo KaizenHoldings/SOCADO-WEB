@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Product } from "@/lib/types/catalog";
 import { Plus } from "lucide-react";
@@ -10,57 +11,78 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onViewDetails, onAdd }: ProductCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const images = [product.image, ...(product.gallery || [])].filter(Boolean);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isHovered && images.length > 1) {
+      interval = setInterval(() => {
+        setCurrentImageIndex((prev) => (prev + 1) % images.length);
+      }, 1500);
+    } else {
+      setCurrentImageIndex(0);
+    }
+    return () => clearInterval(interval);
+  }, [isHovered, images.length]);
+
   return (
     <div 
-      className="group flex flex-col transition-all cursor-pointer"
-      onClick={() => onViewDetails(product)}
+      className="group flex cursor-pointer flex-col"
+      onClick={() => onAdd(product)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Imagen Edge-to-Edge */}
+      {/* Imagen Portrait Edge-to-Edge */}
       <div 
-        className="relative aspect-[3/3] w-full overflow-hidden rounded-2xl bg-[#f2eae6] dark:bg-black/20"
+        className="relative aspect-[4/5] w-full overflow-hidden bg-[#f2eae6] dark:bg-[#042430] rounded-2xl"
       >
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          className={`transition-transform duration-700 ease-out group-hover:scale-105 ${
-            product.image.includes('isotipo.png') 
-              ? 'object-contain p-8 opacity-30 dark:opacity-50' 
-              : 'object-cover'
-          }`}
-        />
+        {images.map((img, idx) => (
+          <Image
+            key={idx}
+            src={img}
+            alt={`${product.name} - ${idx}`}
+            fill
+            className={`transition-all duration-700 ease-out group-hover:scale-105 ${
+              img.includes('isotipo.png') 
+                ? 'object-contain p-8 opacity-30 dark:opacity-50' 
+                : 'object-cover'
+            } ${
+              idx === currentImageIndex 
+                ? 'opacity-100 z-10' 
+                : 'opacity-0 z-0'
+            }`}
+            sizes="(max-width: 768px) 50vw, 25vw"
+          />
+        ))}
       </div>
 
-      {/* Contenido Limpio */}
-      <div className="flex flex-1 flex-col pt-4 pb-4 px-2">
-        <div className="flex-1">
-          <h3 className="font-raleway text-lg font-bold leading-tight text-[#063547] dark:text-[#f2eae6] transition-colors">
+      {/* Contenido Minimalista */}
+      <div className="flex flex-col pt-3 pb-2">
+        <div className="flex items-center justify-between border-b border-[#063547]/10 pb-2 dark:border-white/10">
+          <h3 className="font-raleway text-sm font-bold text-[#063547] dark:text-[#f2eae6]">
             {product.name}
           </h3>
-          {product.description && (
-            <p className="mt-1.5 line-clamp-2 text-sm font-light text-[#6e7c7c] dark:text-[#b2b5a9]">
-              {product.description}
-            </p>
-          )}
-        </div>
-
-        <div className="mt-3 flex items-center justify-between">
-          <div>
-            <span className="text-xs font-medium uppercase tracking-wider text-[#b45b38]">
-              Min {product.minPortions}
-            </span>
-          </div>
           <button
             onClick={(e) => {
               e.stopPropagation();
               onAdd(product);
             }}
-            className="group/btn flex h-10 w-10 items-center justify-center rounded-full border border-[#063547]/20 text-[#063547] transition-all hover:border-[#b45b38] hover:bg-[#b45b38] hover:text-white dark:border-white/20 dark:text-[#f2eae6] dark:hover:border-[#b45b38]"
+            className="text-[#063547] transition-colors hover:text-[#b45b38] dark:text-[#f2eae6] dark:hover:text-[#b45b38]"
             aria-label="Agregar a cotización"
           >
-            <Plus className="h-5 w-5 transition-transform group-hover/btn:rotate-90" />
+            <Plus className="h-4 w-4" strokeWidth={2} />
           </button>
         </div>
+        {product.description && (
+          <div className="pt-2">
+            <p className="line-clamp-2 text-xs font-light text-[#6e7c7c] dark:text-[#b2b5a9]">
+              {product.description}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

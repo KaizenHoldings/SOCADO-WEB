@@ -28,7 +28,13 @@ export interface Product {
   price: number; // Precio unitario o por porción
   categoryId: string; 
   subcategoryId: string;
+  subCategory?: {
+    id: string;
+    name: string;
+    minQuantity?: number;
+  };
   image: string;
+  gallery?: string[];
   minPortions: number; // Mínimo de unidades o porciones para catering
   categoryCateringId?: string; // ID en payload CMS de la categoría para el armado de combos
   tags?: string[]; // Ej: "Vegano", "Sin Azúcar", "Recomendado"
