@@ -70,9 +70,9 @@ export default function CateringCheckoutPage() {
       <div className="flex min-h-screen flex-col bg-[#f2eae6] dark:bg-[#042430]">
         <Header activePage="catering" />
         <main className="flex flex-1 flex-col items-center justify-center pt-20 text-center">
-          <h2 className="font-raleway text-3xl font-bold text-[#063547] dark:text-[#f2eae6]">Tu carrito está vacío</h2>
-          <Link href="/catering" className="mt-6 rounded-full bg-[#b45b38] px-8 py-3 font-bold text-white transition-opacity hover:opacity-90">
-            Volver al Catering
+          <h2 className="font-raleway text-3xl font-bold text-[#063547] dark:text-[#f2eae6] lowercase">tu carrito está vacío</h2>
+          <Link href="/catering" className="mt-6 rounded-full bg-[#b45b38] px-8 py-3 font-bold text-white transition-opacity hover:opacity-90 lowercase">
+            volver al catering
           </Link>
         </main>
         <Footer />
@@ -133,16 +133,16 @@ export default function CateringCheckoutPage() {
           <div className="flex items-center justify-center opacity-80">
             <Image src="/images/isotipo.png" alt="Socado Isotipo" width={36} height={36} className="w-[36px] h-auto object-contain" />
           </div>
-          <h1 className="mt-8 font-raleway text-4xl font-bold text-[#063547] dark:text-[#f2eae6]">
-            ¡Cotización Enviada!
+          <h1 className="mt-8 font-raleway text-4xl font-bold text-[#063547] dark:text-[#f2eae6] lowercase">
+            ¡cotización enviada!
           </h1>
-          <div className="mt-4 max-w-lg text-[#6e7c7c] dark:text-[#b2b5a9] flex flex-col gap-1">
-            <p>Recibimos tu solicitud.</p>
-            <p>Pronto nos contactaremos contigo para continuar con la planificación de tu evento.</p>
-            <p className="font-bold mt-2">¡Gracias por elegirnos!</p>
+          <div className="mt-4 max-w-lg text-[#6e7c7c] dark:text-[#b2b5a9] flex flex-col gap-1 lowercase">
+            <p>recibimos tu solicitud.</p>
+            <p>pronto nos contactaremos contigo para continuar con la planificación de tu evento.</p>
+            <p className="font-bold mt-2">¡gracias por elegirnos!</p>
           </div>
-          <Link href="/catering" className="mt-8 rounded-full bg-[#063547] px-8 py-4 font-bold uppercase tracking-wider text-white transition-opacity hover:opacity-90 dark:bg-white dark:text-[#063547]">
-            Volver al Inicio
+          <Link href="/catering" className="mt-8 rounded-full bg-[#063547] px-8 py-4 font-bold lowercase tracking-wider text-white transition-opacity hover:opacity-90 dark:bg-white dark:text-[#063547]">
+            volver al inicio
           </Link>
         </main>
         <Footer />
@@ -159,8 +159,8 @@ export default function CateringCheckoutPage() {
             <ArrowLeft className="h-4 w-4" /> Volver al menú
           </Link>
           
-          <h1 className="mt-6 font-raleway text-4xl font-bold tracking-tight text-[#063547] md:text-5xl dark:text-[#f2eae6]">
-            Completar Cotización
+          <h1 className="mt-6 font-raleway text-4xl font-bold tracking-tight text-[#063547] md:text-5xl dark:text-[#f2eae6] lowercase">
+            completar cotización
           </h1>
 
           <div className="mt-10 grid grid-cols-1 gap-12 lg:grid-cols-12">

@@ -46,7 +46,7 @@ export function ButtonLight({
 }: ButtonLightProps) {
   const classes = `group relative inline-flex max-w-full min-h-[56px] cursor-pointer items-center justify-center gap-5 ${
     pill ? "rounded-full" : "rounded-xl"
-  } border border-[#0a3547]/15 bg-white px-7 py-4 font-raleway shadow-[0_1px_3px_rgba(10,53,71,0.08)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.02] hover:border-[#0a3547]/25 hover:bg-[#f2eae6] hover:shadow-[0_12px_28px_-8px_rgba(10,53,71,0.25)] active:translate-y-0 active:scale-100 disabled:pointer-events-none disabled:opacity-50 sm:px-10 sm:py-5 ${
+  } border border-[#0a3547]/10 bg-[#f2eae6] px-7 py-4 font-raleway shadow-[0_2px_6px_rgba(10,53,71,0.15)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.02] hover:border-[#37738d]/40 hover:bg-white hover:shadow-[0_14px_34px_-8px_rgba(55,115,141,0.25)] active:translate-y-0 active:scale-100 disabled:pointer-events-none disabled:opacity-50 sm:px-10 sm:py-5 ${
     className ?? ""
   }`;
 

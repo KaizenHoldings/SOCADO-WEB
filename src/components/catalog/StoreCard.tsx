@@ -80,17 +80,19 @@ export function StoreCard({
         >
           {store.titleLine1 ? (
             <>
-              <span className="block">{store.titleLine1}</span>
-              <span className="block">{store.titleLine2}</span>
+              <span className="block">{store.titleLine1.toLowerCase().replace(/socado/gi, "Socado").replace(/socadito/gi, "Socadito")}</span>
+              {store.titleLine2 && (
+                <span className="block">{store.titleLine2.toLowerCase().replace(/socado/gi, "Socado").replace(/socadito/gi, "Socadito")}</span>
+              )}
             </>
           ) : (
-            store.title.toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase())
+            store.title.toLowerCase().replace(/socado/gi, "Socado").replace(/socadito/gi, "Socadito")
           )}
         </motion.h3>
 
         {/* Expandable info (on hover) */}
         <div className="relative z-10 grid grid-rows-[0fr] transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:grid-rows-[1fr]">
-          <div className="overflow-hidden">
+          <div className="overflow-hidden -mr-2 pr-2 -mt-2 pt-2">
             <div className="flex items-end justify-between gap-4 pt-4 opacity-0 transition-opacity delay-100 duration-500 group-hover:opacity-100">
               <div className="flex min-w-0 flex-col gap-4">
                 <p className="whitespace-pre-line font-outfit text-sm leading-relaxed text-white/80">

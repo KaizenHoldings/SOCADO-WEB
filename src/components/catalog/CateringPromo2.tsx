@@ -1,32 +1,32 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { ButtonLight } from "@/components/catalog/ButtonLight";
 
 export function CateringPromo2() {
   return (
     <section id="catering-pedido" className="relative w-full overflow-hidden bg-terra">
-      <div className="flex min-h-[70vh] w-full flex-col-reverse md:flex-row">
+      <div className="flex min-h-screen w-full flex-col-reverse md:flex-row">
         {/* Left Side: Text Content */}
         <div className="z-10 flex w-full items-center bg-terra md:w-1/2">
           <div className="section-shell max-w-none py-16 text-left text-ivory md:py-20">
             <div className="max-w-xl">
-              <p className="mb-2 font-raleway text-xl font-light uppercase tracking-widest text-ivory">
-                SERVICIO DE CATERING
+              <p className="mb-2 font-raleway text-xl font-light lowercase tracking-widest text-ivory">
+                servicio de catering
               </p>
-              <h2 className="font-raleway text-4xl font-normal leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl">
+              <h2 className="font-raleway text-4xl font-normal leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl lowercase">
                 Socado en tu evento
               </h2>
-              <p className="mt-5 max-w-md font-outfit text-base text-ivory/85 sm:text-lg">
-                Descubre nuestras opciones de catering. Disfruta de la experiencia Socado en tus
+              <p className="mt-5 max-w-md font-outfit text-base text-ivory/85 sm:text-lg lowercase">
+                descubre nuestras opciones de catering. disfruta de la experiencia Socado en tus
                 reuniones, celebraciones o eventos corporativos.
               </p>
-              <Link
+              <ButtonLight
                 href="/catering"
-                className="group mt-8 inline-flex items-center gap-3 rounded-full bg-white px-7 py-3 font-outfit text-sm font-semibold uppercase tracking-widest text-terra transition-colors duration-300 hover:bg-ivory"
+                className="mt-8"
               >
-                Hacer un Pedido
-                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Link>
+                hacer un pedido
+              </ButtonLight>
             </div>
           </div>
         </div>

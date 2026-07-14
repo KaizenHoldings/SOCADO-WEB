@@ -14,20 +14,20 @@ export interface LoyaltyProgramCardItem {
 const DEFAULT_ITEMS: LoyaltyProgramCardItem[] = [
   {
     icon: "stamp",
-    title: "Pide tu Loyalty Card",
+    title: "pide tu loyalty card",
     description:
-      "Órdenes mayores a REF.10 con café, matcha o infusión, reciben un sello.",
+      "órdenes mayores a ref.10 con café, matcha o infusión, reciben un sello.",
   },
   {
     icon: "gift",
-    title: "Tu recompensa te espera",
+    title: "tu recompensa te espera",
     description:
-      "Al completar 9 sellos, te regalamos una bebida de barismo: café, matcha o infusión.",
+      "al completar 9 sellos, te regalamos una bebida de barismo: café, matcha o infusión.",
   },
   {
     icon: "mail",
-    title: "Mantente cerca de Socado",
-    description: "Déjanos tu correo y recibe beneficios exclusivos.",
+    title: "mantente cerca de Socado",
+    description: "déjanos tu correo y recibe beneficios exclusivos.",
   },
 ];
 
@@ -77,6 +77,9 @@ function CardIcon({ icon }: { icon: LoyaltyProgramCardIcon }) {
 export interface LoyaltyProgramCardsProps {
   items?: LoyaltyProgramCardItem[];
   className?: string;
+  activeIndex?: number;
+  onActiveChange?: (index: number) => void;
+  onItemClick?: (index: number) => void;
 }
 
 const AUTO_CYCLE_MS = 5000;
@@ -84,17 +87,30 @@ const AUTO_CYCLE_MS = 5000;
 export function LoyaltyProgramCards({
   items = DEFAULT_ITEMS,
   className,
+  activeIndex,
+  onActiveChange,
+  onItemClick,
 }: LoyaltyProgramCardsProps) {
-  const [active, setActive] = useState(0);
+  const [internalActive, setInternalActive] = useState(0);
   const [paused, setPaused] = useState(false);
+
+  const isControlled = activeIndex !== undefined && onActiveChange !== undefined;
+  const active = isControlled ? activeIndex : internalActive;
 
   // Auto-activate cards top-to-bottom, looping. Pauses while the user hovers
   // the group so real hover always takes priority.
   useEffect(() => {
     if (paused) return;
-    const t = setInterval(() => setActive((i) => (i + 1) % items.length), AUTO_CYCLE_MS);
+    const t = setInterval(() => {
+      const next = (active + 1) % items.length;
+      if (isControlled) {
+        onActiveChange(next);
+      } else {
+        setInternalActive(next);
+      }
+    }, AUTO_CYCLE_MS);
     return () => clearInterval(t);
-  }, [paused, items.length]);
+  }, [paused, active, items.length, isControlled, onActiveChange]);
 
   return (
     <div
@@ -105,9 +121,15 @@ export function LoyaltyProgramCards({
       {items.map((item, i) => (
         <div
           key={i}
+          onClick={() => {
+            if (isControlled) onActiveChange(i);
+            else setInternalActive(i);
+            setPaused(true); // pause auto-cycle when manually clicked
+            if (onItemClick) onItemClick(i);
+          }}
           className={`${styles.card} ${
             !paused && i === active ? styles.cardActive : ""
-          } relative flex h-full items-center gap-4 overflow-hidden rounded-2xl bg-white p-5 shadow-[0_2px_10px_rgba(10,53,71,0.06)] sm:gap-6 sm:rounded-[22px] sm:p-7`}
+          } relative flex h-full cursor-pointer items-center gap-4 overflow-hidden rounded-2xl bg-white p-5 shadow-[0_2px_10px_rgba(10,53,71,0.06)] transition-all hover:scale-[1.02] hover:shadow-[0_8px_20px_rgba(10,53,71,0.12)] sm:gap-6 sm:rounded-[22px] sm:p-7`}
         >
           <div
             className={`${styles.chip} flex h-12 w-12 flex-none items-center justify-center rounded-full bg-[#37738d]/12 p-3 text-[#37738d] sm:h-[58px] sm:w-[58px] sm:p-4`}

@@ -47,7 +47,7 @@ export function Header({
       setScrolled(window.scrollY > 10);
 
       if (activePage === "home") {
-        const sections = ["tiendas", "nosotros", "catering", "contacto"];
+        const sections = ["tiendas", "nosotros", "catering"];
         let current = "inicio";
 
         for (const section of sections) {
@@ -135,21 +135,18 @@ export function Header({
                 href="/#inicio"
                 className={`${navLinkBase} ${activeSection === "inicio" ? navLinkActive : navLinkInactive}`}
               >
-                Inicio
+                inicio
               </a>
               <a href="/#tiendas" className={`${navLinkBase} ${activeSection === "tiendas" ? navLinkActive : navLinkInactive}`}>
-                Tiendas
+                tiendas
               </a>
               
               <a href="/#nosotros" className={`${navLinkBase} ${activeSection === "nosotros" ? navLinkActive : navLinkInactive}`}>
-                Nosotros
+                nosotros
               </a>
-              <a href="/#catering" className={`${navLinkBase} ${activeSection === "catering" ? navLinkActive : navLinkInactive}`}>
-                Catering
-              </a>
-              <a href="/#contacto" className={`${navLinkBase} ${activeSection === "contacto" ? navLinkActive : navLinkInactive}`}>
-                Contacto
-              </a>
+              <Link href="/catering" className={`${navLinkBase} ${activeSection === "catering" ? navLinkActive : navLinkInactive}`}>
+                catering
+              </Link>
             </nav>
           </div>
 
@@ -173,7 +170,7 @@ export function Header({
                 onClick={() => setIsEcommerceModalOpen(true)}
                 className={`group hidden md:flex items-center gap-1.5 text-[13px] font-semibold tracking-wide transition-opacity hover:opacity-60 ${textColor}`}
               >
-                Delivery
+                delivery
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
             )}
@@ -241,36 +238,29 @@ export function Header({
             onClick={() => setIsMobileMenuOpen(false)}
             className={`transition-colors hover:text-[#b45b38] ${activeSection === "inicio" ? "text-[#b45b38]" : ""}`}
           >
-            Inicio
+            inicio
           </a>
           <a 
             href="/#tiendas" 
             onClick={() => setIsMobileMenuOpen(false)}
             className={`transition-colors hover:text-[#b45b38] ${activeSection === "tiendas" ? "text-[#b45b38]" : ""}`}
           >
-            Tiendas
+            tiendas
           </a>
           <a 
             href="/#nosotros" 
             onClick={() => setIsMobileMenuOpen(false)}
             className={`transition-colors hover:text-[#b45b38] ${activeSection === "nosotros" ? "text-[#b45b38]" : ""}`}
           >
-            Nosotros
+            nosotros
           </a>
-          <a
-            href="/#catering"
+          <Link
+            href="/catering"
             onClick={() => setIsMobileMenuOpen(false)}
             className={`transition-colors hover:text-[#b45b38] ${activeSection === "catering" ? "text-[#b45b38]" : ""}`}
           >
-            Catering
-          </a>
-          <a 
-            href="/#contacto" 
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={`transition-colors hover:text-[#b45b38] ${activeSection === "contacto" ? "text-[#b45b38]" : ""}`}
-          >
-            Contacto
-          </a>
+            catering
+          </Link>
 
           {activePage === "home" && (
             <Link
@@ -279,7 +269,7 @@ export function Header({
               onClick={() => setIsMobileMenuOpen(false)}
               className="mt-6 flex items-center gap-2 rounded-full border-2 border-[#063547] px-8 py-3 text-lg font-bold transition-all hover:bg-[#063547] hover:text-white dark:border-[#f2eae6] dark:hover:bg-[#f2eae6] dark:hover:text-[#042430]"
             >
-              Ir a Delivery <ArrowUpRight className="h-5 w-5" />
+              ir a delivery <ArrowUpRight className="h-5 w-5" />
             </Link>
           )}
         </nav>

@@ -125,7 +125,7 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
         {/* Content */}
         <div className="flex-1 overflow-y-auto px-6 py-6">
           <div className="flex items-start justify-between gap-4 mb-2">
-            <h2 className="font-raleway text-3xl font-bold text-[#063547] dark:text-[#f2eae6]">
+            <h2 className="font-raleway text-3xl font-bold text-[#063547] dark:text-[#f2eae6] lowercase">
               {product.name}
             </h2>
             <div className="flex-shrink-0 pt-1">
@@ -142,14 +142,14 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
                   key={idx}
                   className="inline-flex items-center gap-1 rounded-full bg-[#b45b38] px-3 py-1 text-xs font-bold text-white shadow-sm"
                 >
-                  <Flame className="h-3 w-3" /> {tag}
+                  <Flame className="h-3 w-3" /> <span className="lowercase">{tag}</span>
                 </span>
               ))}
             </div>
           )}
 
           {activeContent.description && (
-            <p className="mb-6 text-sm text-[#6e7c7c] dark:text-[#b2b5a9]">
+            <p className="mb-6 text-sm text-[#6e7c7c] dark:text-[#b2b5a9] lowercase">
               {activeContent.description}
             </p>
           )}
@@ -157,7 +157,7 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
           {/* Variaciones */}
           {product.variations && product.variations.length > 0 && (
             <div className="mb-6 space-y-3">
-              <h3 className="mb-3 font-semibold text-[#063547] dark:text-[#f2eae6]">
+              <h3 className="mb-3 font-semibold text-[#063547] dark:text-[#f2eae6] lowercase">
                 Opciones Disponibles
               </h3>
               <div className="space-y-3">
@@ -166,9 +166,9 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
                   onChange={(e) => handleVariationChange(e.target.value)}
                   className="w-full rounded-md border border-black/10 bg-white px-3 py-2 text-sm font-medium text-[#063547] focus:border-[#b45b38] focus:outline-none focus:ring-1 focus:ring-[#b45b38] dark:border-white/10 dark:bg-[#063547] dark:text-[#f2eae6]"
                 >
-                  <option value="">Esta versión (${product.price.toFixed(2)})</option>
+                  <option value="" className="lowercase">esta versión (${product.price.toFixed(2)})</option>
                   {product.variations.map((choice, cIdx) => (
-                    <option key={cIdx} value={choice.label}>
+                    <option key={cIdx} value={choice.label} className="lowercase">
                       {choice.label}{' '}
                       {typeof choice.price === 'number' 
                         ? `($${choice.price.toFixed(2)})` 
@@ -190,8 +190,8 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
                 <div className="flex items-start gap-3 border-t border-black/5 pt-4 dark:border-white/5">
                   <Thermometer className="mt-0.5 h-5 w-5 shrink-0 text-[#b45b38]" />
                   <div>
-                    <h4 className="font-semibold text-[#063547] dark:text-[#f2eae6]">Temperatura de Servicio</h4>
-                    <p className="text-sm text-[#6e7c7c] dark:text-[#b2b5a9]">{product.details.servingTemp}</p>
+                    <h4 className="font-semibold text-[#063547] dark:text-[#f2eae6] lowercase">temperatura de servicio</h4>
+                    <p className="text-sm text-[#6e7c7c] dark:text-[#b2b5a9] lowercase">{product.details.servingTemp}</p>
                   </div>
                 </div>
               )}
@@ -200,8 +200,8 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
                 <div className="flex items-start gap-3 border-t border-black/5 pt-4 dark:border-white/5">
                   <Utensils className="mt-0.5 h-5 w-5 shrink-0 text-[#b45b38]" />
                   <div>
-                    <h4 className="font-semibold text-[#063547] dark:text-[#f2eae6]">Presentación</h4>
-                    <p className="text-sm text-[#6e7c7c] dark:text-[#b2b5a9]">{product.details.presentation}</p>
+                    <h4 className="font-semibold text-[#063547] dark:text-[#f2eae6] lowercase">presentación</h4>
+                    <p className="text-sm text-[#6e7c7c] dark:text-[#b2b5a9] lowercase">{product.details.presentation}</p>
                   </div>
                 </div>
               )}
@@ -212,7 +212,7 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
         {/* Footer */}
         <div className="border-t border-black/10 bg-white p-6 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] dark:border-white/10 dark:bg-[#042430]">
           <div className="mb-5 flex items-center justify-between">
-            <span className="font-semibold text-[#063547] dark:text-[#f2eae6]">Cantidad</span>
+            <span className="font-semibold text-[#063547] dark:text-[#f2eae6] lowercase">cantidad</span>
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
@@ -239,7 +239,7 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
           </div>
           
           <div className="mb-4 flex items-center justify-between border-t border-black/5 pt-4 dark:border-white/5">
-            <span className="font-semibold text-[#063547] dark:text-[#f2eae6]">Total Calculado</span>
+            <span className="font-semibold text-[#063547] dark:text-[#f2eae6] lowercase">total calculado</span>
             <span className="font-raleway text-2xl font-bold text-[#063547] dark:text-[#f2eae6]">
               ${totalPrice.toFixed(2)}
             </span>
@@ -248,7 +248,7 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
             onClick={handleAdd}
             className="w-full rounded-full bg-[#b45b38] py-4 font-bold text-white shadow-lg transition-transform hover:scale-[1.02] hover:bg-[#a04b2b]"
           >
-            Añadir a la cotización
+            <span className="lowercase">añadir a la cotización</span>
           </button>
         </div>
 

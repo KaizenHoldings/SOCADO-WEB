@@ -1,44 +1,107 @@
+"use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import Script from "next/script";
 import { ButtonDark } from "@/components/catalog/ButtonDark";
 
 // Inverted counterpart of LoyaltyCard: white text half on the left,
 // illustration half (with the title stuck to the right) on the right.
 export function SocadoClub() {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  // Close modal on escape
+  useEffect(() => {
+    if (!isFormOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setIsFormOpen(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isFormOpen]);
+
   return (
-    <section id="socado-club" className="relative bg-white">
-      <div className="grid w-full grid-cols-1 lg:grid-cols-2">
-        {/* Left square — description + CTA on pure white */}
-        <div className="flex w-full items-center bg-white px-6 py-16 lg:aspect-square lg:px-12 lg:py-0 2xl:px-20">
-          <div className="max-w-xl">
-            <p className="font-outfit text-base text-azul-socado/85 sm:text-lg">
-              sé parte de nuestra comunidad
-              <span className="block">y disfruta de los beneficios.</span>
-            </p>
-            <ButtonDark className="mt-8" type="button">
-              regístrate
-            </ButtonDark>
+    <>
+      <section id="socado-club" className="relative bg-white">
+        <div className="grid w-full grid-cols-1 lg:grid-cols-2">
+          {/* Left square — description + CTA on pure white */}
+          <div className="flex w-full items-center bg-white px-6 py-16 lg:aspect-square lg:px-12 lg:py-0 2xl:px-20">
+            <div className="max-w-xl">
+              <h2 className="font-raleway text-4xl font-normal leading-[1.05] tracking-tight text-[#063547] sm:text-5xl lg:text-6xl">
+                mantente cerca
+                <span className="block">de Socado</span>
+              </h2>
+              <p className="mt-5 font-outfit text-base text-[#6e7c7c] sm:text-lg">
+                déjanos tu correo y recibe beneficios exclusivos.
+              </p>
+              <ButtonDark className="mt-8" type="button" onClick={() => setIsFormOpen(true)}>
+                regístrate
+              </ButtonDark>
+            </div>
+          </div>
+
+          {/* Right square — illustration */}
+          <div className="relative order-first aspect-square w-full overflow-hidden lg:order-none">
+            <Image
+              src="/images/club.jpg"
+              alt="Ilustración del Socado Club"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover object-left"
+            />
           </div>
         </div>
+      </section>
 
-        {/* Right square — illustration with the title overlaid, right-aligned */}
-        <div className="relative order-first aspect-square w-full overflow-hidden lg:order-none">
-          <Image
-            src="/images/socadoclub.png"
-            alt="Ilustración del Socado Club"
-            fill
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover object-left"
-          />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-azul-socado/70 via-azul-socado/25 to-transparent" />
+      {/* JotForm Modal */}
+      <div
+        className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-500 ${
+          isFormOpen ? "visible" : "invisible pointer-events-none"
+        }`}
+      >
+        <div
+          aria-hidden="true"
+          onClick={() => setIsFormOpen(false)}
+          className={`absolute inset-0 bg-[#0a3547]/40 backdrop-blur-sm transition-opacity duration-500 ${
+            isFormOpen ? "opacity-100" : "opacity-0"
+          }`}
+        />
+        <div
+          role="dialog"
+          aria-modal="true"
+          className={`relative flex w-full max-h-[90vh] max-w-[800px] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            isFormOpen ? "translate-y-0 scale-100 opacity-100" : "translate-y-8 scale-[0.96] opacity-0"
+          }`}
+        >
+          <button
+            onClick={() => setIsFormOpen(false)}
+            className="absolute right-4 top-4 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-[#0a3547] shadow-sm transition-transform hover:rotate-90 hover:bg-gray-200"
+            aria-label="Cerrar"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
 
-          <div className="absolute inset-0 z-10 flex items-center justify-end px-6 lg:px-12 2xl:px-20">
-            <h2 className="text-right font-raleway text-4xl font-normal leading-[1.05] tracking-tight text-ivory sm:text-5xl lg:text-6xl">
-              conecta
-              <span className="block">con Socado</span>
-            </h2>
+          <div className="flex-1 min-h-0 overflow-y-auto bg-white p-4 pt-16 sm:p-8 sm:pt-16">
+            <iframe
+              id="JotFormIFrame-261095276983671"
+              title="Socado Club."
+              onLoad={() => window.parent.scrollTo(0,0)}
+              allow="geolocation; microphone; camera; fullscreen; payment"
+              src="https://form.jotform.com/261095276983671"
+              frameBorder="0"
+              style={{ minWidth: "100%", maxWidth: "100%", height: "539px", border: "none" }}
+              scrolling="no"
+            />
+            <Script 
+              src="https://cdn.jotfor.ms/s/umd/latest/for-form-embed-handler.js" 
+              onLoad={() => {
+                if (typeof window !== "undefined" && (window as any).jotformEmbedHandler) {
+                  (window as any).jotformEmbedHandler("iframe[id='JotFormIFrame-261095276983671']", "https://form.jotform.com/");
+                }
+              }}
+            />
           </div>
         </div>
       </div>
-    </section>
+    </>
   );
 }

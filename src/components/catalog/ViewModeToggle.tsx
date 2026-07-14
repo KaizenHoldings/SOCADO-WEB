@@ -30,11 +30,11 @@ export function ViewModeToggle({ viewMode, onChange, selectedBoxName }: ViewMode
           individuales
         </h3>
         <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2 mt-1">
-          <p className="font-outfit text-white/90 text-[10px] md:text-xs uppercase tracking-widest">
+          <p className="font-outfit text-white/90 text-[10px] md:text-xs lowercase tracking-widest">
             Boxes por persona
           </p>
           {selectedBoxName && (
-            <span className="font-outfit text-white text-[10px] md:text-xs uppercase font-bold tracking-widest bg-black/10 px-2 py-0.5 rounded-sm w-fit">
+            <span className="font-outfit text-white text-[10px] md:text-xs lowercase font-bold tracking-widest bg-black/10 px-2 py-0.5 rounded-sm w-fit">
               Armando: {selectedBoxName}
             </span>
           )}
@@ -65,7 +65,7 @@ export function ViewModeToggle({ viewMode, onChange, selectedBoxName }: ViewMode
           <h3 className="font-outfit text-3xl md:text-4xl font-light text-white lowercase tracking-wide">
             para compartir
           </h3>
-          <p className="font-outfit text-white/90 text-[10px] md:text-xs mt-1 uppercase tracking-widest">
+          <p className="font-outfit text-white/90 text-[10px] md:text-xs mt-1 lowercase tracking-widest">
             Bandejas y opciones grupales
           </p>
           {/* Active Indicator */}

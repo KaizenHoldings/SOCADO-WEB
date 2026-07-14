@@ -7,23 +7,23 @@ export function HowItWorksCatering() {
   const steps = [
     {
       number: 1,
-      title: "Selecciona tipo de catering",
-      description: "Identifica el tipo de pedido ideal para tu evento. Boxes individuales o para compartir."
+      title: "selecciona tipo de catering",
+      description: "identifica el tipo de pedido ideal para tu evento. boxes individuales o para compartir."
     },
     {
       number: 2,
-      title: "Solicita un presupuesto",
-      description: "Rellena nuestro sencillo formulario de pedido personalizado o configura una Box para indicarnos lo que necesitas."
+      title: "solicita un presupuesto",
+      description: "rellena nuestro sencillo formulario de pedido personalizado o configura una box para indicarnos lo que necesitas."
     },
     {
       number: 3,
-      title: "Recibe un presupuesto",
-      description: "Envía una cotización y la información del evento y nuestro equipo te enviará un presupuesto detallado en función de tus necesidades específicas."
+      title: "recibe un presupuesto",
+      description: "envía una cotización y la información del evento y nuestro equipo te enviará un presupuesto detallado en función de tus necesidades específicas."
     },
     {
       number: 4,
-      title: "Disfruta de los productos",
-      description: "Disfruta de tu pedido sin preocupaciones."
+      title: "disfruta de los productos",
+      description: "disfruta de tu pedido sin preocupaciones."
     },
   ];
 
@@ -39,11 +39,11 @@ export function HowItWorksCatering() {
   }, [isHoveredManually, steps.length]);
 
   return (
-    <section className="w-full px-6 lg:px-12 text-[#063547] my-16 lg:my-24">
-      <div className="mx-auto max-w-[1400px]">
+    <section className="min-h-screen flex flex-col justify-center w-full px-6 lg:px-12 text-[#063547]">
+      <div className="mx-auto max-w-[1400px] w-full">
         <div className="text-center mb-16">
-          <h2 className="font-raleway text-4xl md:text-5xl font-bold uppercase tracking-wider text-[#063547] dark:text-white">
-            Cómo Funciona
+          <h2 className="font-raleway text-4xl md:text-5xl font-bold lowercase tracking-wider text-[#063547] dark:text-white">
+            cómo funciona
           </h2>
         </div>
         
@@ -71,7 +71,7 @@ export function HowItWorksCatering() {
                 </div>
                 
                 {/* Título y Descripción */}
-                <h3 className={`font-raleway text-lg font-bold uppercase tracking-wider mb-4 leading-tight min-h-[48px] flex items-center justify-center px-4 transition-colors duration-500 ${isActive ? 'text-[#b45b38]' : 'text-[#063547] dark:text-[#f2eae6]'}`}>
+                <h3 className={`font-raleway text-lg font-bold lowercase tracking-wider mb-4 leading-tight min-h-[48px] flex items-center justify-center px-4 transition-colors duration-500 ${isActive ? 'text-[#b45b38]' : 'text-[#063547] dark:text-[#f2eae6]'}`}>
                   {step.title}
                 </h3>
                 <p className="text-sm font-medium text-[#5c8ea0] dark:text-[#b2b5a9] leading-relaxed max-w-[280px]">

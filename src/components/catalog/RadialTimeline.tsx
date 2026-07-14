@@ -95,19 +95,11 @@ export function RadialTimeline() {
     <section 
       ref={containerRef} 
       id="radial-timeline" 
-      className="relative h-[100vh] min-h-[800px] w-full bg-black overflow-hidden flex items-center justify-center font-raleway cursor-crosshair md:cursor-auto"
+      className="relative h-[100vh] min-h-[800px] w-full bg-[#063547] overflow-hidden flex items-center justify-center font-raleway cursor-crosshair md:cursor-auto"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
     >
-      {/* Background Video */}
-      <div className="absolute inset-0 h-full w-full pointer-events-none">
-        <video autoPlay loop muted playsInline className="h-full w-full object-cover">
-          <source src="/videos/people.webm" type="video/webm" />
-        </video>
-        {/* Dark overlay requested by user */}
-        <div className="absolute inset-0 bg-black/60" />
-      </div>
 
       <motion.div 
         className="absolute top-16 w-full text-center z-10 pointer-events-none"
@@ -146,10 +138,10 @@ export function RadialTimeline() {
             cy={radius} 
             r={radius} 
             fill="none" 
-            stroke="#b45b38"
+            stroke="#ffffff"
             strokeWidth="3" 
             strokeLinecap="round"
-            style={{ filter: "drop-shadow(0 0 10px rgba(180,91,56,0.8))" }}
+            style={{ filter: "drop-shadow(0 0 10px rgba(255,255,255,0.8))" }}
             initial={{ pathLength: 0 }}
             animate={{
               pathLength: introPhase === "drawing" ? 1 : introPhase === "erasing" ? 0 : (activeIndex + 1) / totalPoints
@@ -217,8 +209,8 @@ export function RadialTimeline() {
               transition={{ duration: 0.5 }}
               className="flex flex-col items-center justify-center"
             >
-              <h2 className="text-white text-4xl md:text-6xl font-bold uppercase tracking-widest leading-tight">
-                Social<br/>Café<br/><span className="text-celeste-socado">Conectado</span>
+              <h2 className="text-white text-4xl md:text-6xl font-bold lowercase tracking-widest leading-tight">
+                social<br/>café<br/><span className="text-celeste-socado">conectado</span>
               </h2>
             </motion.div>
           ) : (
@@ -230,8 +222,8 @@ export function RadialTimeline() {
               transition={{ duration: 0.4 }}
               className="flex flex-col items-center"
             >
-              <h3 className="text-terra text-xl font-bold font-outfit mb-2 tracking-widest">{timelineData[activeIndex].year}</h3>
-              <h2 className="text-white text-3xl md:text-5xl font-bold uppercase tracking-wider mb-6 leading-tight">
+              <h3 className="text-white text-xl font-bold font-outfit mb-2 tracking-widest">{timelineData[activeIndex].year}</h3>
+              <h2 className="text-white text-3xl md:text-5xl font-bold lowercase tracking-wider mb-6 leading-tight">
                 {timelineData[activeIndex].title}
               </h2>
               <p className="text-white/80 font-outfit text-base leading-relaxed mb-8">
@@ -292,7 +284,7 @@ function ProximityDot({
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
             className="absolute flex items-center justify-center w-9 h-9 rounded-full border-[1.5px] border-[#5c8ea0]"
           >
-            <div className="w-3 h-3 rounded-full bg-terra shadow-[0_0_12px_rgba(180,91,56,0.8)]" />
+            <div className="w-3 h-3 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.8)]" />
           </motion.div>
         ) : (
           <motion.div 
@@ -305,7 +297,7 @@ function ProximityDot({
       {/* Label near the point */}
       <motion.div 
         className={`absolute whitespace-nowrap ${
-          isActive ? "text-terra font-bold scale-110" : "text-white font-medium"
+          isActive ? "text-white font-bold scale-110" : "text-white font-medium"
         }`}
         style={{
           transform: `translate(${Math.cos(angle) * 40}px, ${Math.sin(angle) * 40}px)`,

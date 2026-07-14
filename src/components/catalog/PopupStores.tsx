@@ -132,20 +132,34 @@ const DEFAULT_AMENITIES: StoreAmenities = {
   freeWifi: true,
 };
 
-/** Wraps digit runs in Outfit so numbers always render in the numeric font. */
+/** Wraps digit runs in Outfit so numbers always render in the numeric font. Also bolds sub-labels (tags). */
 function NumText({ text }: { text: string }) {
-  const parts = String(text).split(/(\d[\d.,:%–-]*)/g);
+  const parts = String(text).split(/(tienda:|delivery\/pickup:|delivery:|pickup:)/gi);
   return (
     <>
-      {parts.map((p, i) =>
-        /^\d/.test(p) ? (
-          <span key={i} className="font-outfit">
-            {p}
-          </span>
-        ) : (
-          <Fragment key={i}>{p}</Fragment>
-        ),
-      )}
+      {parts.map((p, i) => {
+        if (/^(tienda:|delivery\/pickup:|delivery:|pickup:)$/i.test(p)) {
+          return (
+            <strong key={i} className="font-bold text-[#0a3547] lowercase">
+              {p}
+            </strong>
+          );
+        }
+        const numParts = p.split(/(\d[\d.,:%–-]*)/g);
+        return (
+          <Fragment key={i}>
+            {numParts.map((np, j) =>
+              /^\d/.test(np) ? (
+                <span key={j} className="font-outfit">
+                  {np}
+                </span>
+              ) : (
+                <Fragment key={j}>{np}</Fragment>
+              ),
+            )}
+          </Fragment>
+        );
+      })}
     </>
   );
 }
@@ -168,55 +182,52 @@ function AmenityRail({ amenities }: { amenities: StoreAmenities }) {
   if (icons.length === 0) return null;
 
   return (
-    <div className="rounded-2xl bg-white px-2.5 py-2.5 ring-1 ring-[#0a3547]/10 shadow-[0_8px_28px_rgba(10,53,71,0.08)]">
+    <div className="rounded-[1.25rem] bg-white px-3 py-3 ring-1 ring-black/5 min-w-[200px]">
       <ul
         aria-label="Comodidades de la tienda"
-        className="flex flex-col items-stretch gap-0.5"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
+        className="flex flex-col items-stretch gap-1"
       >
-        {icons.map((icon, i) => {
-          const lit = !paused && i === autoIndex;
-          return (
-            <li
-              key={icon.key}
-              className="group relative flex items-center justify-center rounded-xl px-1.5 py-1"
-              title={icon.label}
+        {icons.map((icon) => (
+          <li
+            key={icon.key}
+            className="group relative flex items-center gap-3 rounded-xl cursor-default px-2 py-1.5 transition-all duration-300 ring-1 ring-transparent hover:ring-[#37738d]"
+            title={icon.label}
+          >
+            {/* Icon Container */}
+            <span
+              className="relative flex shrink-0 items-center justify-center"
+              style={{ width: "min(40px, 5.5vh)", height: "min(40px, 5.5vh)" }}
             >
               <span
-                className="relative flex shrink-0 items-center justify-center"
-                style={{ width: "min(44px, 6.5vh)", height: "min(44px, 6.5vh)" }}
+                aria-hidden="true"
+                className="absolute inset-0 rounded-xl bg-[#f2eae6] transition-all duration-300 ease-out scale-75 opacity-0 group-hover:scale-100 group-hover:opacity-100"
+              />
+              <svg
+                viewBox={icon.viewBox}
+                role="img"
+                aria-label={icon.label}
+                fill="currentColor"
+                className="relative h-[65%] w-[65%] transition-all duration-300 ease-out text-[#37738d]/80 group-hover:scale-110 group-hover:text-[#0a3547]"
               >
-                <span
-                  aria-hidden="true"
-                  className={`absolute inset-0 rounded-xl bg-[#f2eae6] transition-all duration-300 ease-out group-hover:scale-100 group-hover:opacity-100 ${
-                    lit ? "scale-100 opacity-100" : "scale-[0.55] opacity-0"
-                  }`}
-                />
-                <svg
-                  viewBox={icon.viewBox}
-                  role="img"
-                  aria-label={icon.label}
-                  fill="currentColor"
-                  className={`relative h-[62%] w-[62%] transition-all duration-300 ease-out group-hover:scale-110 group-hover:text-[#37738d] group-hover:drop-shadow-[0_6px_12px_rgba(55,115,141,0.4)] ${
-                    lit
-                      ? "scale-110 text-[#37738d] drop-shadow-[0_6px_12px_rgba(55,115,141,0.4)]"
-                      : "text-[#0a3547]"
-                  }`}
-                >
-                  <title>{icon.label}</title>
-                  {icon.shapes.map((s, k) =>
-                    "d" in s ? (
-                      <path key={k} d={s.d} transform={s.transform} />
-                    ) : (
-                      <circle key={k} cx={s.cx} cy={s.cy} r={s.r} />
-                    ),
-                  )}
-                </svg>
-              </span>
-            </li>
-          );
-        })}
+                <title>{icon.label}</title>
+                {icon.shapes.map((s, k) =>
+                  "d" in s ? (
+                    <path key={k} d={s.d} transform={s.transform} />
+                  ) : (
+                    <circle key={k} cx={s.cx} cy={s.cy} r={s.r} />
+                  ),
+                )}
+              </svg>
+            </span>
+            
+            {/* Text Label */}
+            <span 
+              className="font-raleway text-[15px] font-bold tracking-wide transition-colors duration-300 text-[#37738d]/80 group-hover:text-[#0a3547]"
+            >
+              {icon.label}
+            </span>
+          </li>
+        ))}
       </ul>
     </div>
   );
@@ -293,7 +304,7 @@ export function PopupStores({ store, open, onClose }: PopupStoresProps) {
           </button>
 
           {/* left column — content + amenity rail bottom-left */}
-          <div className="order-2 flex min-h-0 flex-1 flex-col justify-between px-8 pb-6 pt-7 sm:px-12 sm:pt-10 md:order-1">
+          <div className="order-2 flex min-h-0 flex-1 flex-col justify-between px-8 pb-6 pt-7 sm:px-12 sm:pt-10 md:order-1 overflow-y-auto overscroll-contain">
             <div>
               <h2 className="text-2xl font-medium tracking-wide text-[#37738d] sm:text-[28px]">
                 {store.name}

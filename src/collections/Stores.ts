@@ -27,6 +27,18 @@ export const Stores: CollectionConfig = {
       required: true,
     },
     {
+      name: 'titleLine1',
+      type: 'text',
+      label: 'Título Línea 1 (Opcional)',
+      admin: { description: 'Ej: Socadito' }
+    },
+    {
+      name: 'titleLine2',
+      type: 'text',
+      label: 'Título Línea 2 (Opcional)',
+      admin: { description: 'Ej: La Castellana' }
+    },
+    {
       name: 'subtitle',
       type: 'text',
       label: 'Subtítulo',
@@ -36,8 +48,14 @@ export const Stores: CollectionConfig = {
     {
       name: 'location',
       type: 'textarea',
-      label: 'Ubicación',
+      label: 'Ubicación (Zona)',
       required: true,
+    },
+    {
+      name: 'address',
+      type: 'textarea',
+      label: 'Dirección Completa',
+      required: false,
     },
     {
       name: 'schedule',
@@ -65,6 +83,17 @@ export const Stores: CollectionConfig = {
           label: 'Imagen',
           required: true,
         }
+      ]
+    },
+    {
+      name: 'amenities',
+      type: 'group',
+      label: 'Comodidades (Etiquetas)',
+      fields: [
+        { name: 'kidsCorner', type: 'checkbox', label: 'Kids Corner', defaultValue: false },
+        { name: 'parking', type: 'checkbox', label: 'Estacionamiento', defaultValue: false },
+        { name: 'petFriendly', type: 'checkbox', label: 'Pet Friendly', defaultValue: false },
+        { name: 'freeWifi', type: 'checkbox', label: 'Wi-Fi Gratis', defaultValue: false },
       ]
     },
     {

@@ -382,14 +382,29 @@ export interface Store {
   id: number;
   storeId: string;
   title: string;
+  /**
+   * Ej: Socadito
+   */
+  titleLine1?: string | null;
+  /**
+   * Ej: La Castellana
+   */
+  titleLine2?: string | null;
   subtitle: string;
   location: string;
+  address?: string | null;
   schedule: string;
   link: string;
   images: {
     image: number | Media;
     id?: string | null;
   }[];
+  amenities?: {
+    kidsCorner?: boolean | null;
+    parking?: boolean | null;
+    petFriendly?: boolean | null;
+    freeWifi?: boolean | null;
+  };
   order?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -758,8 +773,11 @@ export interface CatCategoriesSelect<T extends boolean = true> {
 export interface StoresSelect<T extends boolean = true> {
   storeId?: T;
   title?: T;
+  titleLine1?: T;
+  titleLine2?: T;
   subtitle?: T;
   location?: T;
+  address?: T;
   schedule?: T;
   link?: T;
   images?:
@@ -767,6 +785,14 @@ export interface StoresSelect<T extends boolean = true> {
     | {
         image?: T;
         id?: T;
+      };
+  amenities?:
+    | T
+    | {
+        kidsCorner?: T;
+        parking?: T;
+        petFriendly?: T;
+        freeWifi?: T;
       };
   order?: T;
   updatedAt?: T;

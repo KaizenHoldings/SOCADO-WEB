@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { ArrowLeft } from "lucide-react";
 import { Header } from "@/components/catalog/Header";
 import { CategoryFilter } from "@/components/catalog/CategoryFilter";
 import { ProductCard } from "@/components/catalog/ProductCard";
@@ -122,12 +123,12 @@ export default function CateringPage() {
       try {
         let query = "";
         if (viewMode === "libre") {
-          query = `?limit=20&page=${page}&where[category][equals]=${selectedCategory}`;
+          query = `?limit=20&page=${page}&depth=1&where[category][equals]=${selectedCategory}`;
           if (selectedSubcategory) {
             query += `&where[subCategory][equals]=${selectedSubcategory}`;
           }
         } else {
-          query = "?limit=200"; // En modo BoxBuilder traemos todos para que puedan filtrarse localmente
+          query = "?limit=200&depth=1"; // En modo BoxBuilder traemos todos para que puedan filtrarse localmente
         }
         const resProd = await fetch(`/api/products${encodeURI(query)}`);
         const dataProd = await resProd.json();
@@ -253,25 +254,26 @@ export default function CateringPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
               <div className="absolute inset-0 bg-[#063547]/20" /> {/* Overlay Azul Socado sutil */}
               <div className="absolute inset-0 flex flex-col justify-end text-left p-10 lg:p-20 pb-20 lg:pb-32">
-                <h1 className="font-raleway text-5xl md:text-7xl lg:text-[5rem] font-bold tracking-tight text-white mb-6 drop-shadow-lg">
-                  Catering Socado
+                <h1 className="font-raleway text-5xl md:text-7xl lg:text-[5rem] font-bold tracking-tight text-white mb-6 drop-shadow-lg lowercase">
+                  catering Socado
                 </h1>
-                <p className="font-outfit text-white/90 text-xl md:text-2xl max-w-2xl font-light drop-shadow-md">
-                  Llevamos la experiencia Socado a tus reuniones y eventos con opciones para compartir o individuales.
+                <p className="font-outfit text-white/90 text-xl md:text-2xl max-w-2xl font-light drop-shadow-md lowercase">
+                  llevamos la experiencia Socado a tus reuniones y eventos con opciones para compartir o individuales.
                 </p>
               </div>
             </section>
             
             <HowItWorksCatering />
             
-            <div className="w-full text-center mb-8 px-6">
-              <h2 className="font-raleway text-3xl md:text-4xl font-bold uppercase tracking-wider text-[#063547] dark:text-[#f2eae6]">
-                Selecciona tu tipo de catering
-              </h2>
-            </div>
-            
-            <div className="flex flex-col md:flex-row w-full" style={{ minHeight: "70vh" }}>
-            {/* Mitad 1: Individuales */}
+            <section className="min-h-screen flex flex-col">
+              <div className="w-full text-center py-12 px-6">
+                <h2 className="font-raleway text-3xl md:text-4xl font-bold lowercase tracking-wider text-[#063547] dark:text-[#f2eae6]">
+                  selecciona tu tipo de catering
+                </h2>
+              </div>
+              
+              <div className="flex flex-col md:flex-row w-full flex-1">
+              {/* Mitad 1: Individuales */}
             <div
               onClick={() => { setViewMode("box"); setHasSelectedMode(true); }}
               className="relative w-full md:w-1/2 min-h-[50vh] md:min-h-0 cursor-pointer group overflow-hidden"
@@ -288,8 +290,8 @@ export default function CateringPage() {
                 <h3 className="font-outfit text-4xl lg:text-5xl font-light text-white lowercase tracking-wide transition-transform duration-300 group-hover:translate-y-[-4px]">
                   individuales
                 </h3>
-                <p className="font-outfit text-white/60 text-sm mt-2 uppercase tracking-widest">
-                  Boxes por persona
+                <p className="font-outfit text-white/60 text-sm mt-2 lowercase tracking-widest">
+                  boxes por persona
                 </p>
               </div>
             </div>
@@ -311,19 +313,34 @@ export default function CateringPage() {
                 <h3 className="font-outfit text-4xl lg:text-5xl font-light text-white lowercase tracking-wide transition-transform duration-300 group-hover:translate-y-[-4px]">
                   para compartir
                 </h3>
-                <p className="font-outfit text-white/60 text-sm mt-2 uppercase tracking-widest">
-                  Bandejas y opciones grupales
+                <p className="font-outfit text-white/60 text-sm mt-2 lowercase tracking-widest">
+                  bandejas y opciones grupales
                 </p>
               </div>
             </div>
-          </div>
+              </div>
+            </section>
           </>
         ) : (
           <>
 
+            {/* Botón superior no sticky */}
+            <div className="w-full bg-white dark:bg-[#042430]">
+              <div className="mx-auto max-w-[1400px] px-6 py-4 w-full">
+                <button 
+                  onClick={() => { 
+                    setHasSelectedMode(false); 
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                  }}
+                  className="flex items-center gap-2 text-sm font-bold lowercase tracking-wider text-[#6e7c7c] hover:text-[#b45b38] dark:text-[#b2b5a9] transition-colors w-fit"
+                >
+                  <ArrowLeft className="w-4 h-4" /> volver
+                </button>
+              </div>
+            </div>
+
             {/* Barra Sticky */}
-            <div className="sticky top-[76px] z-40 w-full bg-white/95 backdrop-blur-md dark:bg-[#042430]/95">
-              
+            <div className="sticky top-[76px] z-40 w-full">
               {/* Fila 1: Toggle (Ancho completo) */}
               <div className="w-full">
                 <ViewModeToggle 
@@ -345,13 +362,13 @@ export default function CateringPage() {
           ) : filteredCategories.length === 0 ? (
              <div className="flex flex-col items-center justify-center py-20 text-center">
                 <div className="mb-4 h-16 w-16 rounded-full bg-black/5 flex items-center justify-center dark:bg-white/5">
-                  <span className="text-2xl">📋</span>
+                  <Image src="/images/isotipo.png" alt="Socado" width={32} height={32} className="opacity-50" />
                 </div>
-                <h3 className="font-raleway text-xl font-bold text-[#063547] dark:text-[#f2eae6]">
-                  Aún no hay categorías
+                <h3 className="font-raleway text-xl font-bold text-[#063547] dark:text-[#f2eae6] lowercase">
+                  aún no hay categorías
                 </h3>
-                <p className="mt-2 text-[#6e7c7c] dark:text-[#b2b5a9]">
-                  No hay categorías asignadas a esta sección por el momento.
+                <p className="mt-2 text-[#6e7c7c] dark:text-[#b2b5a9] lowercase">
+                  no hay categorías asignadas a esta sección por el momento.
                 </p>
               </div>
           ) : (
@@ -389,6 +406,19 @@ export default function CateringPage() {
             onBoxChange={setSelectedBoxName}
           />
         )}
+
+        {/* Botón inferior */}
+        <div className="w-full py-16 flex justify-center mt-8">
+          <button 
+            onClick={() => { 
+              setHasSelectedMode(false); 
+              window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            }}
+            className="rounded-full bg-black/5 px-8 py-3 font-outfit text-sm font-bold lowercase tracking-wider text-[#063547] transition-all hover:bg-[#b45b38] hover:text-white dark:bg-white/5 dark:text-[#f2eae6] dark:hover:bg-[#b45b38] dark:hover:text-white flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" /> volver
+          </button>
+        </div>
           </>
         )}
       </main>

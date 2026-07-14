@@ -12,26 +12,25 @@ import {
 } from "motion/react";
 
 const SCHEDULE =
-  "Lunes a viernes de 7 a.m. a 9 p.m.\nSábados, domingos y feriados de 8 a.m. a 8 p.m.";
+  "tienda: lun – vie • 7:00 a.m. - 9:00 p.m.\nsáb - dom • 8:00 a.m. - 9:00 p.m.\ndelivery/pickup: lun - vie • 8:00 a.m. - 7:00 p.m.\nsáb • 9:00 a.m. - 5:00 p.m.";
 
 const DEFAULT_STORES: StoreData[] = [
   {
     id: "las-mercedes",
-    title: "LAS MERCEDES",
-    location: "Las Mercedes",
-    address: "Av. Veracruz, Torre Aba, Las Mercedes.",
+    title: "las mercedes",
+    location: "las mercedes",
+    address: "av. veracruz, torre aba, las mercedes.",
     schedule: SCHEDULE,
     link: "https://lasmercedes.socadocafe.com",
     images: ["/images/mercedes1.jpg", "/images/mercedes2.jpg", "/images/mercedes3.jpg"],
     order: 1,
-    // Placeholder amenity toggles — to be driven from the admin panel later.
     amenities: { kidsCorner: true, parking: true, petFriendly: true, freeWifi: true },
   },
   {
     id: "la-trinidad",
-    title: "LA TRINIDAD",
-    location: "La Trinidad",
-    address: "Calle Altagracia, Edificio Caracas Campus, La Trinidad.",
+    title: "la trinidad",
+    location: "la trinidad",
+    address: "calle altagracia, edificio caracas campus, la trinidad.",
     schedule: SCHEDULE,
     link: "https://latrinidad.socadocafe.com",
     images: ["/images/socadoTrinidad.jpg", "/images/trinidad2.jpg", "/images/trinidad3.jpg"],
@@ -40,9 +39,9 @@ const DEFAULT_STORES: StoreData[] = [
   },
   {
     id: "el-rosal",
-    title: "EL ROSAL",
-    location: "El Rosal",
-    address: "Av. Tamanaco, El Rosal.",
+    title: "el rosal",
+    location: "el rosal",
+    address: "av. tamanaco, el rosal.",
     schedule: SCHEDULE,
     link: "https://elrosal.socadocafe.com",
     images: ["/images/rosal1.jpg", "/images/rosal2.jpg", "/images/rosal3.jpg"],
@@ -51,11 +50,11 @@ const DEFAULT_STORES: StoreData[] = [
   },
   {
     id: "socadito-pcv",
-    title: "SOCADITO PARQUE CERRO VERDE",
+    title: "Socadito parque cerro verde",
     titleLine1: "Socadito",
-    titleLine2: "Parque Cerro Verde",
-    location: "Parque Cerro Verde",
-    address: "Subida de Los Naranjos, Av. Raimundo Reinoso,\nCC PCV, piso 1.",
+    titleLine2: "parque cerro verde",
+    location: "parque cerro verde",
+    address: "subida de los naranjos, av. raimundo reinoso,\ncc pcv, piso 1.",
     link: "",
     images: ["/images/pcv1.JPG", "/images/pcv2.JPG", "/images/pcv3.jpg"],
     order: 4,
@@ -63,11 +62,11 @@ const DEFAULT_STORES: StoreData[] = [
   },
   {
     id: "socadito-la-castellana",
-    title: "SOCADITO LA CASTELLANA",
+    title: "Socadito la castellana",
     titleLine1: "Socadito",
-    titleLine2: "La Castellana",
-    location: "La Castellana",
-    address: "Avenida San Felipe, cruce, con C. El Bosque, Locatel.",
+    titleLine2: "la castellana",
+    location: "la castellana",
+    address: "avenida san felipe, cruce, con c. el bosque, locatel.",
     link: "",
     images: ["/images/locatel1.png", "/images/locatel2.JPG", "/images/locatel3.JPG"],
     order: 5,
@@ -151,13 +150,15 @@ export function StoresCards() {
     // 2. Fetch desde la API (Payload CMS) para actualizar
     const fetchStores = async () => {
       try {
-        const res = await fetch("/api/stores?limit=100");
+        const res = await fetch("/api/stores?limit=100&depth=1");
         if (res.ok) {
           const data = await res.json();
           if (data && data.docs && Array.isArray(data.docs) && data.docs.length > 0) {
             const mappedStores: StoreData[] = data.docs.map((doc: any) => ({
               id: doc.storeId || doc.id,
               title: doc.title,
+              titleLine1: doc.titleLine1,
+              titleLine2: doc.titleLine2,
               subtitle: doc.subtitle,
               location: doc.location,
               address: doc.address || doc.location,
@@ -206,7 +207,7 @@ export function StoresCards() {
           </h2>
           <div className="mt-5 flex gap-6">
             <span className="border-b-2 border-azul-socado pb-1 font-raleway text-sm font-medium tracking-wide text-azul-socado">
-              Caracas
+              caracas
             </span>
           </div>
         </div>
@@ -276,9 +277,7 @@ export function StoresCards() {
         store={
           popupStore
             ? {
-                name: popupStore.title
-                  .toLowerCase()
-                  .replace(/\b\w/g, (l) => l.toUpperCase()),
+                name: popupStore.title.toLowerCase().replace(/socado/gi, "Socado").replace(/socadito/gi, "Socadito"),
                 location: popupStore.location,
                 schedule: popupStore.schedule ?? SCHEDULE,
                 address: popupStore.address,

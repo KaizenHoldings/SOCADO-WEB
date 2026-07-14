@@ -73,8 +73,14 @@ export function CartDrawer() {
         <div className="flex-1 overflow-y-auto px-6 py-6">
           {items.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-black/5 text-2xl dark:bg-white/5">
-                🛒
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-black/5 dark:bg-white/5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 80 80" className="text-[#063547] dark:text-[#f2eae6]">
+                  <path d="M0 0h80v80H0z" fill="none" />
+                  <g fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M26 49h38l7-28H19m9.95 39.803L17 13H9" />
+                    <path d="M26.402 61.499a5.196 5.196 0 1 1 5.196 9a5.196 5.196 0 0 1-5.196-9M30.419 61H60.58m-1.178.499a5.196 5.196 0 1 1 5.196 9a5.196 5.196 0 0 1-5.196-9" />
+                  </g>
+                </svg>
               </div>
               <p className="font-bold text-[#063547] dark:text-[#f2eae6]">Tu carrito está vacío</p>
               <p className="mt-2 text-sm text-[#6e7c7c] dark:text-[#b2b5a9]">
@@ -85,7 +91,7 @@ export function CartDrawer() {
             <div className="space-y-8">
               {/* Vista de últimos 3 productos (Requisito) */}
               <div className="rounded-xl bg-black/5 p-4 dark:bg-white/5">
-                <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-[#b45b38]">
+                <h3 className="mb-3 text-sm font-bold lowercase tracking-wider text-[#b45b38]">
                   Agregados Recientemente
                 </h3>
                 <div className="flex flex-wrap gap-3">

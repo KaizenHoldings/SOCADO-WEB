@@ -33,7 +33,7 @@ export default function Home() {
         <div className="hidden lg:block">
           <RadialTimeline />
         </div>
-        <CateringPromo1 />
+        {/* <CateringPromo1 /> */}
         <CateringPromo2 />
     
       </main>

@@ -10,7 +10,7 @@ const DEFAULT_STORES: StoreData[] = [
   {
     id: "las-mercedes",
     title: "Las Mercedes",
-    subtitle: "UBICACIÓN",
+    subtitle: "ubicación",
     location: "Av. Veracruz, Torre Aba, Las Mercedes.",
     schedule: "Lunes a viernes de 7 a.m. a 9 p.m.\nSábados, domingos y feriados de 8 a.m. a 8 p.m.",
     link: "https://lasmercedes.socadocafe.com",
@@ -20,7 +20,7 @@ const DEFAULT_STORES: StoreData[] = [
   {
     id: "la-trinidad",
     title: "La Trinidad",
-    subtitle: "UBICACIÓN",
+    subtitle: "ubicación",
     location: "Calle Altagracia, Edificio Caracas Campus, La Trinidad.",
     schedule: "Lunes a viernes de 7 a.m. a 9 p.m.\nSábados, domingos y feriados de 8 a.m. a 8 p.m.",
     link: "https://latrinidad.socadocafe.com",
@@ -30,7 +30,7 @@ const DEFAULT_STORES: StoreData[] = [
   {
     id: "el-rosal",
     title: "El Rosal",
-    subtitle: "UBICACIÓN",
+    subtitle: "ubicación",
     location: "Av. Tamanaco, El Rosal.",
     schedule: "Lunes a viernes de 7 a.m. a 9 p.m.\nSábados, domingos y feriados de 8 a.m. a 8 p.m.",
     link: "https://elrosal.socadocafe.com",
@@ -56,7 +56,7 @@ export function EcommerceModal({ isOpen, onClose }: EcommerceModalProps) {
           const mapped: StoreData[] = data.docs.map((doc: any) => ({
             id: doc.storeId || doc.id,
             title: doc.title,
-            subtitle: doc.subtitle || "UBICACIÓN",
+            subtitle: doc.subtitle || "ubicación",
             location: doc.location,
             schedule: doc.schedule,
             link: doc.link,
@@ -120,11 +120,11 @@ export function EcommerceModal({ isOpen, onClose }: EcommerceModalProps) {
               {/* Header azul */}
               <div className="flex items-center justify-between px-8 py-6 bg-[#063547]">
                 <div>
-                  <p className="font-outfit text-[10px] uppercase tracking-[0.25em] text-white/50 mb-1">
+                  <p className="font-outfit text-[10px] lowercase tracking-[0.25em] text-white/50 mb-1">
                     Socado Café
                   </p>
-                  <h2 className="font-raleway text-2xl font-bold text-white">
-                    Elige tu tienda
+                  <h2 className="font-raleway text-2xl font-bold text-white lowercase">
+                    elige tu tienda
                   </h2>
                 </div>
                 <button

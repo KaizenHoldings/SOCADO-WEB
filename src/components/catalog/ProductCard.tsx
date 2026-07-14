@@ -62,7 +62,7 @@ export function ProductCard({ product, onViewDetails, onAdd }: ProductCardProps)
       {/* Contenido Minimalista */}
       <div className="flex flex-col pt-3 pb-2">
         <div className="flex items-center justify-between border-b border-[#063547]/10 pb-2 dark:border-white/10">
-          <h3 className="font-raleway text-sm font-bold text-[#063547] dark:text-[#f2eae6]">
+          <h3 className="font-raleway text-sm font-bold text-[#063547] dark:text-[#f2eae6] lowercase">
             {product.name}
           </h3>
           <button
@@ -78,7 +78,7 @@ export function ProductCard({ product, onViewDetails, onAdd }: ProductCardProps)
         </div>
         {product.description && (
           <div className="pt-2">
-            <p className="line-clamp-2 text-xs font-light text-[#6e7c7c] dark:text-[#b2b5a9]">
+            <p className="line-clamp-2 text-xs font-light text-[#6e7c7c] dark:text-[#b2b5a9] lowercase">
               {product.description}
             </p>
           </div>

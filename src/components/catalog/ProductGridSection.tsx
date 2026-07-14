@@ -36,10 +36,10 @@ export function ProductGridSection({
       {/* Título de la categoría activa y Grid de Productos */}
       <div className="mt-6 min-h-[calc(100vh-200px)]">
         <div className="mb-8 border-t border-black/10 pt-8 dark:border-white/10">
-          <h2 className="font-raleway text-3xl font-bold text-[#063547] dark:text-[#f2eae6]">
+          <h2 className="font-raleway text-3xl font-bold text-[#063547] dark:text-[#f2eae6] lowercase">
             {filteredCategories.find((c) => c.id === selectedCategory)?.name || "Categoría"}
           </h2>
-          <p className="mt-2 text-[#6e7c7c] dark:text-[#b2b5a9]">
+          <p className="mt-2 text-[#6e7c7c] dark:text-[#b2b5a9] lowercase">
             {filteredCategories.find((c) => c.id === selectedCategory)?.description}
           </p>
         </div>
@@ -67,7 +67,7 @@ export function ProductGridSection({
                 <button
                   onClick={onPrevPage}
                   disabled={!hasPrevPage}
-                  className="rounded-full border border-[#063547]/20 px-6 py-2 font-outfit text-sm font-semibold uppercase tracking-wider text-[#063547] transition-all hover:bg-[#063547] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed dark:border-white/20 dark:text-[#f2eae6] dark:hover:bg-white dark:hover:text-[#042430]"
+                  className="rounded-full border border-[#063547]/20 px-6 py-2 font-outfit text-sm font-semibold lowercase tracking-wider text-[#063547] transition-all hover:bg-[#063547] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed dark:border-white/20 dark:text-[#f2eae6] dark:hover:bg-white dark:hover:text-[#042430]"
                 >
                   Anterior
                 </button>
@@ -77,7 +77,7 @@ export function ProductGridSection({
                 <button
                   onClick={onNextPage}
                   disabled={!hasNextPage}
-                  className="rounded-full border border-[#063547]/20 px-6 py-2 font-outfit text-sm font-semibold uppercase tracking-wider text-[#063547] transition-all hover:bg-[#063547] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed dark:border-white/20 dark:text-[#f2eae6] dark:hover:bg-white dark:hover:text-[#042430]"
+                  className="rounded-full border border-[#063547]/20 px-6 py-2 font-outfit text-sm font-semibold lowercase tracking-wider text-[#063547] transition-all hover:bg-[#063547] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed dark:border-white/20 dark:text-[#f2eae6] dark:hover:bg-white dark:hover:text-[#042430]"
                 >
                   Siguiente
                 </button>
@@ -87,13 +87,13 @@ export function ProductGridSection({
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="mb-4 h-16 w-16 rounded-full bg-black/5 flex items-center justify-center dark:bg-white/5">
-              <span className="text-2xl">🍃</span>
+              <Image src="/images/isotipo.png" alt="Socado" width={32} height={32} className="opacity-50" />
             </div>
-            <h3 className="font-raleway text-xl font-bold text-[#063547] dark:text-[#f2eae6]">
-              Explorando nuevos sabores
+            <h3 className="font-raleway text-xl font-bold text-[#063547] dark:text-[#f2eae6] lowercase">
+              explorando nuevos sabores
             </h3>
-            <p className="mt-2 text-[#6e7c7c] dark:text-[#b2b5a9]">
-              No hay productos en esta categoría por el momento.
+            <p className="mt-2 text-[#6e7c7c] dark:text-[#b2b5a9] lowercase">
+              no hay productos en esta categoría por el momento.
             </p>
           </div>
         )}

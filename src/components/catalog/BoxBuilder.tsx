@@ -99,7 +99,7 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
           popup: 'rounded-3xl border border-black/10 shadow-lg bg-white dark:bg-[#042430] dark:border-white/10',
           title: 'font-raleway text-2xl font-bold text-[#063547] dark:text-[#f2eae6]',
           htmlContainer: 'text-[#6e7c7c] dark:text-[#b2b5a9] mt-2',
-          confirmButton: 'rounded-full px-8 py-3 font-bold uppercase tracking-wider text-white bg-[#b45b38] hover:bg-[#b45b38]/90 transition-all shadow-md hover:shadow-lg mt-4'
+          confirmButton: 'rounded-full px-8 py-3 font-bold lowercase tracking-wider text-white bg-[#b45b38] hover:bg-[#b45b38]/90 transition-all shadow-md hover:shadow-lg mt-4'
         }
       });
       return;
@@ -323,7 +323,7 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
           {/* Checkout Area */}
           <div className="flex flex-col gap-4 border-t border-black/10 pt-6 dark:border-white/10 mt-2">
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#6e7c7c] dark:text-[#b2b5a9]">
+              <label className="text-xs font-bold lowercase tracking-wider text-[#6e7c7c] dark:text-[#b2b5a9]">
                 Cantidad de Personas / Cajas
               </label>
               <div className="flex items-center gap-2">
@@ -341,7 +341,7 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
             <button
               onClick={handleAddBoxToCart}
               disabled={!isBoxComplete}
-              className={`mt-4 w-full h-[50px] rounded-full px-8 font-bold uppercase tracking-wider text-white transition-all ${
+              className={`mt-4 w-full h-[50px] rounded-full px-8 font-bold lowercase tracking-wider text-white transition-all ${
                 isBoxComplete 
                   ? 'bg-[#b45b38] hover:bg-[#b45b38]/90 shadow-lg hover:shadow-xl hover:-translate-y-0.5' 
                   : 'bg-black/20 cursor-not-allowed dark:bg-white/20'

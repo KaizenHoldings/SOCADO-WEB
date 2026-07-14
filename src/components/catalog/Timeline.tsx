@@ -7,33 +7,33 @@ import { motion, useScroll, useTransform } from "motion/react";
 export const timelineData = [
   {
     year: "2021",
-    title: "NACE SOCADO",
-    description: "En una Caracas congestionada, luego de una pandemia mundial y de mucho aislamiento, Socado nace de una gran necesidad de reconectar a través de una buena taza de café, comida reconfortante y conversaciones enriquecedoras. Abrimos nuestras puertas en la Torre ABA de Las Mercedes el 21 de septiembre de 2021.",
-    image: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=600&auto=format&fit=crop"
+    title: "nace Socado",
+    description: "nacemos de la necesidad de reconectar a través de un buen café y conversaciones enriquecedoras. abrimos nuestras puertas en la torre aba de las mercedes el 21 de septiembre.",
+    image: "/images/mercedes1.jpg"
   },
   {
     year: "2022",
-    title: "CONSOLIDANDO LA MARCA",
-    description: "Fue un año de darnos a conocer, de mucho aprendizaje y de consolidar nuestra marca. Confirmamos que Socado tenía un lugar en Caracas. Gracias a la gran receptividad que tuvimos, comenzamos a pensar en llegar a nuevos rincones de la ciudad.",
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=600&auto=format&fit=crop"
+    title: "consolidando la marca",
+    description: "un año de mucho aprendizaje y de consolidación de nuestra marca. confirmamos nuestro lugar en caracas y comenzamos a pensar en llevar la experiencia a nuevos rincones de la ciudad.",
+    image: "/images/mercedes2.jpg"
   },
   {
     year: "2023",
-    title: "EL PROYECTO DE EXPANSIÓN",
-    description: "Arrancamos el proyecto de expansión de Socado: el 1 de noviembre abrimos nuestra segunda tienda en el Pueblo de El Hatillo y nos planteamos el reto de crear más espacios de conexión para el 2024. Este gran reto requería de una mejor forma de comunicar lo que era Socado para nosotros, por lo que refrescamos nuestro logo y branding.",
-    image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=600&auto=format&fit=crop"
+    title: "el proyecto de expansión",
+    description: "arrancamos nuestra expansión abriendo una segunda tienda en el hatillo. para acompañar este crecimiento, refrescamos nuestro branding, preparándonos para crear aún más espacios de conexión.",
+    image: "/images/rosal1.jpg"
   },
   {
     year: "2024",
-    title: "UN GRAN FUTURO",
-    description: "El 6 de febrero abrimos nuestra tercera tienda en la Torre P&G en La Trinidad y nos mudamos a un nuevo Centro de Producción, un reto emocionante que consolida las bases del gran futuro que proyectamos para Socado. También realizamos la expansión de nuestra primera tienda en Las Mercedes, con el objetivo de ofrecer una mejor experiencia a nuestros clientes y abrimos nuestra tienda más grande hasta la fecha, en un nuevo municipio, Socado El Rosal el 15 de mayo.",
-    image: "https://images.unsplash.com/photo-1555244162-803834f70033?q=80&w=600&auto=format&fit=crop"
+    title: "un gran futuro",
+    description: "abrimos tiendas en la trinidad y el rosal (nuestra sede más grande), expandimos nuestro local en las mercedes y estrenamos un nuevo centro de producción, consolidando las bases de nuestro futuro.",
+    image: "/images/trinida1.jpg"
   },
   {
     year: "2025",
-    title: "NACE SOCADITO",
-    description: "Dimos la bienvenida a un nuevo concepto dentro de la familia Socado: Socadito, una propuesta más ágil y de oferta reducida, pensada para nuevos espacios y momentos de consumo. El 23 de agosto abrimos nuestro primer Socadito en Parque Cerro Verde, marcando además nuestra primera experiencia dentro de un centro comercial. Luego, el 6 de septiembre, abrimos nuestro segundo Socadito en Locatel La Castellana, continuando así la expansión de la marca a través de formatos más compactos y versátiles.",
-    image: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?q=80&w=600&auto=format&fit=crop"
+    title: "nace Socadito",
+    description: "lanzamos 'Socadito', una propuesta más ágil y versátil. con aperturas en parque cerro verde y locatel la castellana, llevamos la esencia de Socado a formatos más compactos y dinámicos.",
+    image: "/images/pcv1.JPG"
   }
 ];
 
@@ -115,8 +115,8 @@ export function Timeline() {
     <section id="historia" className="relative bg-ivory py-24 overflow-hidden">
       <div className="mx-auto max-w-6xl px-6 lg:px-12 relative z-10">
         <div className="text-center mb-4">
-          <h2 className="font-raleway text-4xl md:text-5xl font-bold tracking-tight text-azul-socado uppercase">
-            Timeline
+          <h2 className="font-raleway text-4xl md:text-5xl font-bold tracking-tight text-azul-socado lowercase">
+            timeline
           </h2>
         </div>
 
@@ -229,7 +229,7 @@ function TimelineText({ item }: { item: typeof timelineData[0] }) {
       <h3 className="font-outfit italic font-bold text-2xl md:text-3xl text-terra mb-2">
         {item.year}
       </h3>
-      <h2 className="font-raleway text-2xl md:text-3xl font-bold text-azul-socado uppercase tracking-wider mb-5 leading-tight">
+      <h2 className="font-raleway text-2xl md:text-3xl font-bold text-azul-socado lowercase tracking-wider mb-5 leading-tight">
         {item.title}
       </h2>
       <p className="font-outfit text-gris-metropolis text-base md:text-lg leading-relaxed">
