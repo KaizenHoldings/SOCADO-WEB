@@ -4,8 +4,8 @@ import { Raleway, Outfit } from 'next/font/google'
 import './styles.css'
 
 export const metadata: Metadata = {
-  description: 'A blank template using Payload in a Next.js app.',
-  title: 'Payload Blank Template',
+  description: 'Socado Café - Social. Coffee. Connection',
+  title: 'Socado Café',
   icons: {
     icon: '/icons/isotipo.svg',
   },

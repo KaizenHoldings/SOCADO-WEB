@@ -9,7 +9,7 @@ export class SlackService {
 
     try {
       const itemsList = quote.items && Array.isArray(quote.items) 
-        ? quote.items.map((i: any) => `- ${i.quantity}x ${i.name || i.title} ${i.codigo ? `(SKU: ${i.codigo})` : ''} ($${(i.price * i.quantity) || i.total || 0})`).join('\n')
+        ? quote.items.map((i: any) => `- ${i.quantity}x ${i.name || i.title} ${i.codigo ? `(SKU: ${i.codigo})` : ''} (REF ${(i.price * i.quantity) || i.total || 0})`).join('\n')
         : 'Sin items detallados';
 
       const eventDateStr = quote.eventDate ? new Date(quote.eventDate).toLocaleDateString() : 'No especificada';
@@ -64,11 +64,11 @@ export class SlackService {
               fields: [
                 {
                   type: 'mrkdwn',
-                  text: `*Subtotal (Sin desc.):*\n$${quote.totalOriginal || 0}`
+                  text: `*Subtotal (Sin desc.):*\nREF ${quote.totalOriginal || 0}`
                 },
                 {
                   type: 'mrkdwn',
-                  text: `*Descuento por Volumen:*\n-$${quote.totalDiscount || 0}`
+                  text: `*Descuento por Volumen:*\n-REF ${quote.totalDiscount || 0}`
                 }
               ]
             }
@@ -79,7 +79,7 @@ export class SlackService {
               fields: [
                 {
                   type: 'mrkdwn',
-                  text: `*Impuestos Aplicados:*\n+$${quote.totalTax || 0}`
+                  text: `*Impuestos Aplicados:*\n+REF ${quote.totalTax || 0}`
                 }
               ]
             }
@@ -89,7 +89,7 @@ export class SlackService {
             fields: [
               {
                 type: 'mrkdwn',
-                text: `*Total Estimado (Final):*\n$${quote.total || 0}`
+                text: `*Total Estimado (Final):*\nREF ${quote.total || 0}`
               }
             ]
           },

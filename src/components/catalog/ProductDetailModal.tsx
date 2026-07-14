@@ -139,7 +139,7 @@ export function ProductDetailModal({ product, isOpen, onClose, onAdd }: ProductD
               <div className="text-center sm:text-left">
                 <span className="block text-sm font-medium text-[#6e7c7c] dark:text-[#b2b5a9]">Total estimado</span>
                 <span className="font-raleway text-3xl font-bold text-[#063547] dark:text-[#f2eae6]">
-                  ${(product.price * quantity).toFixed(2)}
+                  REF {(product.price * quantity).toFixed(2)}
                 </span>
               </div>
             </div>

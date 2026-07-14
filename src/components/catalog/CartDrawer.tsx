@@ -6,6 +6,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { calculateDiscounts, getItemUnitPrice } from "@/lib/utils/discount.utils";
+import { motion, AnimatePresence } from "motion/react";
+import { ButtonDark } from "@/components/catalog/ButtonDark";
 
 export function CartDrawer() {
   const { isDrawerOpen, closeDrawer, items, removeItem, updateQuantity, discountRules, fetchDiscountRules, taxes, fetchTaxes } = useCartStore();
@@ -18,7 +20,7 @@ export function CartDrawer() {
     }
   }, [isDrawerOpen, fetchDiscountRules, fetchTaxes]);
 
-  if (!isDrawerOpen) return null;
+
 
   const { totalOriginal, totalDiscount, totalTax, totalFinal, appliedRules, appliedTaxes } = calculateDiscounts(items, discountRules, taxes);
 
@@ -51,13 +53,24 @@ export function CartDrawer() {
   const unmetSubcategories = Object.values(subcategoryTotals).filter(sub => sub.total < sub.minRequired);
 
   return (
-    <>
-      <div 
-        className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm transition-opacity"
-        onClick={closeDrawer}
-      />
-      
-      <div className="fixed inset-y-0 right-0 z-[110] flex w-full flex-col bg-white shadow-xl sm:max-w-md dark:bg-[#042430]">
+    <AnimatePresence>
+      {isDrawerOpen && (
+        <>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm"
+            onClick={closeDrawer}
+          />
+          
+          <motion.div 
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-y-0 right-0 z-[110] flex w-full flex-col bg-white shadow-xl sm:max-w-md dark:bg-[#042430] lowercase"
+          >
         <div className="flex items-center justify-between border-b border-black/5 px-6 py-4 dark:border-white/5">
           <h2 className="font-raleway text-2xl font-bold text-[#063547] dark:text-[#f2eae6]">
             Tu Cotización
@@ -144,7 +157,7 @@ export function CartDrawer() {
                       )}
 
                       <p className="mt-1 text-sm font-bold text-[#b45b38]">
-                        ${getItemUnitPrice(item).toFixed(2)} c/u
+                        REF {getItemUnitPrice(item).toFixed(2)} c/u
                       </p>
                       
                       <div className="mt-auto flex items-center gap-3 pt-2">
@@ -172,7 +185,7 @@ export function CartDrawer() {
             <div className="mb-2 flex items-center justify-between text-sm">
               <span className="text-[#6e7c7c] dark:text-[#b2b5a9]">Subtotal</span>
               <span className="font-bold text-[#063547] dark:text-[#f2eae6]">
-                ${totalOriginal.toFixed(2)}
+                REF {totalOriginal.toFixed(2)}
               </span>
             </div>
             
@@ -180,7 +193,7 @@ export function CartDrawer() {
               <div key={idx} className="mb-2 flex items-center justify-between text-sm text-[#b45b38]">
                 <span className="font-bold">{rule.ruleName} ({rule.percentage}%)</span>
                 <span className="font-bold">
-                  -${rule.discountAmount.toFixed(2)}
+                  -REF {rule.discountAmount.toFixed(2)}
                 </span>
               </div>
             ))}
@@ -189,7 +202,7 @@ export function CartDrawer() {
               <div key={`tax-${idx}`} className="mb-2 flex items-center justify-between text-sm text-[#6e7c7c] dark:text-[#b2b5a9]">
                 <span className="font-bold">{tax.taxName} ({tax.percentage}%)</span>
                 <span className="font-bold">
-                  +${tax.taxAmount.toFixed(2)}
+                  +REF {tax.taxAmount.toFixed(2)}
                 </span>
               </div>
             ))}
@@ -197,7 +210,7 @@ export function CartDrawer() {
             <div className="mb-4 mt-2 border-t border-black/5 pt-2 flex items-center justify-between">
               <span className="font-bold text-[#6e7c7c] dark:text-[#b2b5a9]">Total Estimado</span>
               <span className="font-raleway text-2xl font-bold text-[#063547] dark:text-[#f2eae6]">
-                ${totalFinal.toFixed(2)}
+                REF {totalFinal.toFixed(2)}
               </span>
             </div>
 
@@ -214,16 +227,18 @@ export function CartDrawer() {
               </div>
             )}
 
-            <button 
+            <ButtonDark 
               onClick={handleCheckout}
               disabled={unmetSubcategories.length > 0}
-              className={`flex w-full items-center justify-center gap-2 rounded-full py-4 font-bold text-white transition-opacity ${unmetSubcategories.length > 0 ? 'bg-gray-400 cursor-not-allowed opacity-50' : 'bg-[#b45b38] hover:opacity-90'}`}
+              className={`w-full !px-4 !py-4 ${unmetSubcategories.length > 0 ? '!bg-gray-400 !border-none !shadow-none' : ''}`}
             >
-              Crear cotización <ArrowRight className="h-5 w-5" />
-            </button>
+              <span className="lowercase">crear cotización</span>
+            </ButtonDark>
           </div>
         )}
-      </div>
-    </>
+      </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }

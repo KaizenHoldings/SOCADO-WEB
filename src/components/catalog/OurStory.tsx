@@ -17,14 +17,14 @@ export function OurStory() {
   );
 
   return (
-    <section id="nosotros" className="relative bg-white py-24 overflow-hidden ">
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
+    <section id="nosotros" className="relative bg-white lg:py-24 overflow-hidden ">
+      <div className="mx-auto max-w-[1400px] px-0 lg:px-12">
         
         <div className="flex flex-col-reverse lg:flex-row items-center justify-center">
           
           {/* Tarjeta de Texto (Fondo) */}
-          <div className="w-full lg:w-[45%] z-0 relative lg:-mr-12 mt-[-3rem] lg:mt-0">
-            <div className="bg-[#063547] text-[#f2eae6] p-10 md:p-16 lg:pr-24 rounded-[2.5rem] shadow-xl">
+          <div className="w-full lg:w-[45%] z-0 relative lg:-mr-12 lg:mt-0">
+            <div className="bg-[#063547] text-[#f2eae6] p-10 py-16 md:p-16 lg:pr-24 rounded-none lg:rounded-[2.5rem] lg:shadow-xl">
               <h2 className="font-raleway text-3xl font-bold mb-8 tracking-tight md:text-4xl lowercase">
                 nuestra historia
               </h2>
@@ -40,7 +40,7 @@ export function OurStory() {
                 <span className="font-raleway font-light text-xl text-white mb-2 lowercase">
                   ignacio weill
                 </span>
-                <span className="font-outfit text-xs font-bold uppercase tracking-widest opacity-60">
+                <span className="font-outfit text-xs font-bold  tracking-widest opacity-60">
                   fundador
                 </span>
               </div>
@@ -51,14 +51,14 @@ export function OurStory() {
           <motion.div 
             ref={ref}
             style={{ clipPath }}
-            className="w-full lg:w-[45%] relative h-[350px] lg:h-[450px] z-10"
+            className="w-full lg:w-[45%] relative h-[400px] lg:h-[450px] z-10"
           >
             <video
               autoPlay
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-cover rounded-[3rem] shadow-xl"
+              className="absolute inset-0 w-full h-full object-cover rounded-none lg:rounded-[3rem] lg:shadow-xl"
             >
               <source src="/videos/people.webm" type="video/webm" />
               <source src="/videos/people.mov" type="video/quicktime" />
