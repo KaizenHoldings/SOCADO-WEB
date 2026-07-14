@@ -87,13 +87,13 @@ export function ProductGridSection({
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="mb-4 h-16 w-16 rounded-full bg-black/5 flex items-center justify-center dark:bg-white/5">
-              <Image src="/images/isotipo.png" alt="Socado" width={32} height={32} className="opacity-50" />
+              <span className="text-2xl">🍃</span>
             </div>
-            <h3 className="font-raleway text-xl font-bold text-[#063547] dark:text-[#f2eae6] lowercase">
-              explorando nuevos sabores
+            <h3 className="font-raleway text-xl font-bold text-[#063547] dark:text-[#f2eae6]">
+              Explorando nuevos sabores
             </h3>
-            <p className="mt-2 text-[#6e7c7c] dark:text-[#b2b5a9] lowercase">
-              no hay productos en esta categoría por el momento.
+            <p className="mt-2 text-[#6e7c7c] dark:text-[#b2b5a9]">
+              No hay productos en esta categoría por el momento.
             </p>
           </div>
         )}

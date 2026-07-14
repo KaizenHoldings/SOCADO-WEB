@@ -8,8 +8,8 @@ export function CateringPromo2() {
     <section id="catering-pedido" className="relative w-full overflow-hidden bg-terra">
       <div className="flex min-h-screen w-full flex-col-reverse md:flex-row">
         {/* Left Side: Text Content */}
-        <div className="z-10 flex w-full items-center bg-terra md:w-1/2">
-          <div className="section-shell max-w-none py-16 text-left text-ivory md:py-20">
+        <div className="z-10 flex w-full items-center bg-terra md:w-1/2 ">
+          <div className="section-shell max-w-none py-16 text-left text-ivory md:py-20 lg:px-12 lg:py-0 2xl:px-20">
             <div className="max-w-xl">
               <p className="mb-2 font-raleway text-xl font-light lowercase tracking-widest text-ivory">
                 servicio de catering
