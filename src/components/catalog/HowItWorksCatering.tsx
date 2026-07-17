@@ -47,7 +47,7 @@ export function HowItWorksCatering() {
           </h2>
         </div>
         
-        <div className="relative flex flex-col md:flex-row justify-center  items-center bg-red-800gap-8 md:gap-4 w-full mx-auto">
+        <div className="relative flex flex-col md:flex-row justify-center md:justify-between items-center md:items-start gap-24 md:gap-4 w-full mx-auto">
 
           {steps.map((step, index) => {
             const isActive = activeStep === index;
@@ -56,7 +56,7 @@ export function HowItWorksCatering() {
             return (
               <div 
                 key={index} 
-                className={`relative z-10 flex flex-col items-center justify-center text-center w-full   md:flex-1 mx-auto transition-all duration-500 cursor-default ${isDimmed ? 'opacity-40 grayscale scale-95' : 'opacity-100 scale-105'}`}
+                className={`relative z-10 flex flex-col items-center text-center w-full md:flex-1 mx-auto transition-all duration-500 cursor-default ${isDimmed ? 'opacity-40 grayscale scale-95' : 'opacity-100 scale-105'}`}
                 onMouseEnter={() => {
                   setActiveStep(index);
                   setIsHoveredManually(true);
@@ -69,7 +69,7 @@ export function HowItWorksCatering() {
                 </div>
                 
                 {/* Título y Descripción */}
-                <h3 className={`font-raleway text-lg font-bold lowercase tracking-wider mb-4 leading-tight min-h-[48px] flex items-center justify-center px-4 transition-colors duration-500 ${isActive ? 'text-[#b45b38]' : 'text-[#063547] dark:text-[#f2eae6]'}`}>
+                <h3 className={`font-raleway text-lg font-bold lowercase tracking-wider mb-1 md:mb-4 leading-tight md:min-h-[48px] flex items-center justify-center px-4 transition-colors duration-500 ${isActive ? 'text-[#b45b38]' : 'text-[#063547] dark:text-[#f2eae6]'}`}>
                   {step.title}
                 </h3>
                 <p className="text-sm font-medium text-[#5c8ea0] dark:text-[#b2b5a9] leading-relaxed max-w-[280px]">

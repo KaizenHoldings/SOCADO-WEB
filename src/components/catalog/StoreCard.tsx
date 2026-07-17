@@ -52,7 +52,12 @@ export function StoreCard({
       layoutId={`card-${store.id}`}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
-      className="group relative flex aspect-square min-w-[78%] shrink-0 flex-col overflow-hidden border border-black/5 shadow-sm transition-shadow duration-700 hover:shadow-2xl md:min-w-[calc(44%-0.5rem)] lg:min-w-[calc(30%-0.6rem)]"
+      onClick={() => {
+        if (typeof window !== "undefined" && window.innerWidth < 768 && onMore) {
+          onMore(store);
+        }
+      }}
+      className="group relative flex aspect-square min-w-[78%] shrink-0 flex-col overflow-hidden border border-black/5 shadow-sm transition-shadow duration-700 hover:shadow-2xl md:min-w-[calc(44%-0.5rem)] lg:min-w-[calc(30%-0.6rem)] cursor-pointer md:cursor-default"
     >
       {/* Image crossfade */}
       <div className="absolute inset-0 bg-black/10">
