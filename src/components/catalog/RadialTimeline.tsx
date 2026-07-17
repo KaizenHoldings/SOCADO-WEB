@@ -95,7 +95,7 @@ export function RadialTimeline() {
     <section 
       ref={containerRef} 
       id="radial-timeline" 
-      className="relative h-[100vh] min-h-[800px] w-full bg-[#063547] overflow-hidden flex items-center justify-center font-raleway cursor-crosshair md:cursor-auto"
+      className="relative h-[70vh] min-h-[500px] md:h-[100vh] md:min-h-[800px] w-full bg-[#063547] overflow-hidden flex items-center justify-center font-raleway cursor-crosshair md:cursor-auto"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
@@ -197,7 +197,7 @@ export function RadialTimeline() {
 
       {/* Central Content Area */}
       <motion.div 
-        className="relative z-10 max-w-lg text-center px-6 pointer-events-none"
+        className="relative z-10 max-w-[200px] sm:max-w-[240px] md:max-w-lg text-center px-2 pointer-events-none"
       >
         <AnimatePresence mode="wait">
           {introPhase !== "finished" ? (
@@ -209,7 +209,7 @@ export function RadialTimeline() {
               transition={{ duration: 0.5 }}
               className="flex flex-col items-center justify-center"
             >
-              <h2 className="text-white text-4xl md:text-6xl  lowercase tracking-widest leading-tight">
+              <h2 className="text-white text-3xl sm:text-4xl md:text-6xl lowercase tracking-widest leading-tight">
                 social.<br/>café.<br/><span className="text-celeste-socado">conectado.</span>
               </h2>
             </motion.div>
@@ -222,11 +222,10 @@ export function RadialTimeline() {
               transition={{ duration: 0.4 }}
               className="flex flex-col items-center"
             >
-              <h3 className="text-white text-xl font-outfit mb-2 tracking-widest">{timelineData[activeIndex].year}</h3>
-              <h2 className="text-white text-3xl md:text-5xl lowercase tracking-wider mb-6 leading-tight">
+              <h2 className="text-white text-xl sm:text-2xl md:text-5xl lowercase tracking-wider mb-2 sm:mb-4 leading-tight">
                 {timelineData[activeIndex].title}
               </h2>
-              <p className="text-white/80 font-outfit text-base leading-relaxed mb-8">
+              <p className="text-white/80 font-outfit text-xs sm:text-sm md:text-base leading-relaxed">
                 {timelineData[activeIndex].description}
               </p>
             </motion.div>

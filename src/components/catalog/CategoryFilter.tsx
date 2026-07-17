@@ -141,7 +141,7 @@ export function CategoryFilter({
               <button
                 key={sub.id}
                 onClick={() => onSelectSubcategory(sub.id)}
-                className={`rounded-full px-5 py-2.5 text-xs font-bold lowercase tracking-wider transition-all md:text-sm ${
+                className={`truncate max-w-[200px] sm:max-w-xs md:max-w-sm rounded-full px-5 py-2.5 text-xs font-bold lowercase tracking-wider transition-all md:text-sm ${
                   isSubActive
                     ? "bg-celeste-socado text-white shadow-md"
                     : "bg-black/5 text-[#6e7c7c] hover:bg-black/10 hover:text-[#063547] dark:bg-white/5 dark:text-[#b2b5a9] dark:hover:bg-white/10 dark:hover:text-[#f2eae6]"

@@ -39,7 +39,7 @@ export function HowItWorksCatering() {
   }, [isHoveredManually, steps.length]);
 
   return (
-    <section className="min-h-screen flex flex-col justify-center w-full px-6 lg:px-12 text-[#063547]">
+    <section className="min-h-screen flex flex-col justify-start md:justify-center w-full px-6 pt-32 pb-24 lg:py-32 lg:px-12 text-[#063547]">
       <div className="mx-auto max-w-[1400px] w-full">
         <div className="text-center mb-16">
           <h2 className="font-raleway text-4xl md:text-5xl font-light text-[#063547] dark:text-white">
@@ -47,7 +47,7 @@ export function HowItWorksCatering() {
           </h2>
         </div>
         
-        <div className="relative flex flex-col md:flex-row justify-between items-start gap-12 md:gap-4">
+        <div className="relative flex flex-col md:flex-row justify-center  items-center bg-red-800gap-8 md:gap-4 w-full mx-auto">
 
           {steps.map((step, index) => {
             const isActive = activeStep === index;
@@ -56,7 +56,7 @@ export function HowItWorksCatering() {
             return (
               <div 
                 key={index} 
-                className={`relative z-10 flex flex-col items-center text-center flex-1 transition-all duration-500 cursor-default ${isDimmed ? 'opacity-40 grayscale scale-95' : 'opacity-100 scale-105'}`}
+                className={`relative z-10 flex flex-col items-center justify-center text-center w-full   md:flex-1 mx-auto transition-all duration-500 cursor-default ${isDimmed ? 'opacity-40 grayscale scale-95' : 'opacity-100 scale-105'}`}
                 onMouseEnter={() => {
                   setActiveStep(index);
                   setIsHoveredManually(true);
