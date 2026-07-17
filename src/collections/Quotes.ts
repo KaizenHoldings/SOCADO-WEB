@@ -27,7 +27,7 @@ export const Quotes: CollectionConfig = {
     {
       name: 'documentId',
       type: 'text',
-      required: true,
+      required: false,
       label: 'Cédula de Identidad (CI)',
     },
     {
