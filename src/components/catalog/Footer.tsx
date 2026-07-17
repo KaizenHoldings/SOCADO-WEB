@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AtSign, Mail } from "lucide-react";
 
 const NAV_LINKS = [
   { label: "inicio", href: "/#inicio" },
@@ -38,7 +37,13 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2.5 transition-colors duration-200 hover:text-ivory"
               >
-                <AtSign className="h-4 w-4 shrink-0" />
+                <Image
+                  src="/icons/instagram.svg"
+                  alt="Instagram"
+                  width={30}
+                  height={30}
+                  className="h-6 w-6 shrink-0"
+                />
                 @socadocafe
               </a>
             </div>
@@ -47,7 +52,7 @@ export function Footer() {
           {/* Right — navigation + stores */}
           <div className="grid grid-cols-2 gap-8 sm:gap-12 md:ml-auto">
             <div className="flex flex-col gap-3">
-              <h4 className="font-raleway text-[11px] font-bold lowercase tracking-[0.25em] text-ivory/50">
+              <h4 className="font-raleway lowercase text-ivory/50">
                 navegación
               </h4>
               <ul className="flex flex-col gap-2.5">
@@ -65,8 +70,8 @@ export function Footer() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <h4 className="font-raleway text-[11px] font-bold lowercase tracking-[0.25em] text-ivory/50">
-                nuestras tiendas
+              <h4 className="font-raleway lowercase text-ivory/50">
+                pide aquí
               </h4>
               <ul className="flex flex-col gap-2.5">
                 {STORES.map((store) => (

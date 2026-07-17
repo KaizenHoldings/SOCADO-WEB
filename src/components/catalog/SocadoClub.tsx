@@ -40,7 +40,7 @@ export function SocadoClub() {
           </div>
 
           {/* Right square — illustration on white */}
-          <div className="relative order-first flex aspect-square w-full items-center justify-center overflow-hidden bg-white p-10 lg:order-none lg:p-16 2xl:p-20">
+          <div className="relative order-first flex aspect-square w-full items-center justify-center overflow-hidden bg-[#053647]  lg:order-none">
             <motion.div
               className="h-full w-full"
               initial={reduce ? false : { opacity: 0, x: 48 }}
@@ -48,13 +48,15 @@ export function SocadoClub() {
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: reduce ? 0 : 0.8, ease: [0.22, 1, 0.36, 1] }}
             >
+              <div className="h-full w-full translate-x-38">
               <Image
                 src="/images/socado-club-ilustracion.svg"
                 alt="Ilustración del Socado Club"
-                width={862}
-                height={727}
+                width={962}
+                height={827}
                 className="h-full w-full object-contain"
               />
+              </div>
             </motion.div>
           </div>
         </div>

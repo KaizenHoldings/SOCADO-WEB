@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Product } from "@/lib/types/catalog";
 import { X, Info, Thermometer, Utensils } from "lucide-react";
@@ -7,10 +7,12 @@ interface ProductDetailModalProps {
   product: Product | null;
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (product: Product) => void;
+  onAdd: (product: Product, quantity?: number) => void;
 }
 
 export function ProductDetailModal({ product, isOpen, onClose, onAdd }: ProductDetailModalProps) {
+  const [quantity, setQuantity] = useState(1);
+
   // Prevenir scroll en el body cuando el modal está abierto
   useEffect(() => {
     if (isOpen) {

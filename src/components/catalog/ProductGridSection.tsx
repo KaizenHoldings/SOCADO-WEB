@@ -86,8 +86,8 @@ export function ProductGridSection({
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="mb-4 h-16 w-16 rounded-full bg-black/5 flex items-center justify-center dark:bg-white/5">
-              <Image src="/icons/isotipo.svg" alt="Socado Isotipo" width={28} height={28} className="opacity-80 dark:invert" />
+            <div className="mb-6 flex items-center justify-center">
+              <Image src="/icons/logo_oscuro.svg" alt="Socado Logo" width={140} height={40} className="opacity-80 dark:invert" />
             </div>
             <h3 className="font-raleway text-xl font-bold text-[#063547] dark:text-[#f2eae6] lowercase">
               Explorando nuevos sabores

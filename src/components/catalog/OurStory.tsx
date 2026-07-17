@@ -25,13 +25,19 @@ export function OurStory() {
           {/* Tarjeta de Texto (Fondo) */}
           <div className="w-full lg:w-[45%] z-0 relative lg:-mr-12 lg:mt-0">
             <div className="bg-[#063547] text-[#f2eae6] p-10 py-16 md:p-16 lg:pr-24 rounded-none lg:rounded-[2.5rem] lg:shadow-xl">
-              <h2 className="font-raleway text-3xl font-bold mb-8 tracking-tight md:text-4xl lowercase">
+              <h2 className="font-raleway text-3xl mb-8 tracking-tight md:text-4xl lowercase">
                 nuestra historia
               </h2>
 
-              <div className="font-outfit text-base md:text-lg leading-relaxed font-light mb-12 opacity-95 space-y-4 lowercase">
+              <div className="font-outfit text-base md:text-sm leading-relaxed font-light mb-12 opacity-95 space-y-4 lowercase">
                 <p>
-                  lorem ipsum dolor sit amet, consectetur adipiscing elit. sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                  Todo comenzó con una idea simple: crear un lugar al que siempre quieras volver. Un espacio que se sienta como una segunda casa, donde el café abre conversaciones y cada detalle invita a quedarse.
+                </p>
+                <p>
+                  Así nació Socado: para conectar personas y compartir cultura. Evolucionamos día a día sin perder nuestra esencia: hacer que cada visita sea especial.
+                </p>
+                <p>
+                  Nuestra historia vive en cada encuentro dentro de nuestras tiendas. Y esto apenas comienza.
                 </p>
               </div>
 
@@ -60,8 +66,7 @@ export function OurStory() {
               playsInline
               className="absolute inset-0 w-full h-full object-cover rounded-none lg:rounded-[3rem] lg:shadow-xl"
             >
-              <source src="/videos/people.webm" type="video/webm" />
-              <source src="/videos/people.mov" type="video/quicktime" />
+              <source src="/videos/history.mp4" type="video/mp4" />
             </video>
           </motion.div>
 

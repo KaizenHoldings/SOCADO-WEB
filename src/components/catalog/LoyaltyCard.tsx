@@ -37,7 +37,7 @@ export function LoyaltyCard() {
                 alt="Ilustración de la tarjeta de fidelidad Socado"
                 width={886}
                 height={573}
-                className="h-auto w-[1400px] shrink-0 -translate-x-16 translate-y-2 object-contain sm:w-[1680px] sm:-translate-x-24 sm:translate-y-4 lg:w-[1900px] lg:-translate-x-32 lg:translate-y-6"
+                className="h-auto w-[1400px] shrink-0 -translate-x-16 translate-y-2 object-contain sm:w-[1680px] sm:-translate-x-24 sm:translate-y-4 lg:w-[1900px] lg:-translate-x-22 lg:translate-y-6"
               />
             </motion.div>
           </div>

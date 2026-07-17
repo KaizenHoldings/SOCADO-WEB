@@ -94,8 +94,8 @@ export function CategoryFilter({
                       }`}
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-4xl">
-                      🍃
+                    <div className="flex h-full w-full items-center justify-center opacity-60">
+                      <Image src="/icons/logo_oscuro.svg" alt="Socado" width={120} height={40} className="dark:invert" />
                     </div>
                   )}
                 </div>

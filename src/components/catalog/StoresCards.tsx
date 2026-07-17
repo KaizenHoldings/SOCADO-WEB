@@ -9,6 +9,8 @@ import {
   useMotionValue,
   useScroll,
   useTransform,
+  useMotionValueEvent,
+  animate,
 } from "motion/react";
 
 const SCHEDULE =
@@ -93,6 +95,22 @@ function HandIcon() {
   );
 }
 
+function ChevronLeftIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
+      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 18l-6-6 6-6" />
+    </svg>
+  );
+}
+
+function ChevronRightIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
+      <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 18l6-6-6-6" />
+    </svg>
+  );
+}
+
 export function StoresCards() {
   const sectionRef = useRef<HTMLElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -104,6 +122,26 @@ export function StoresCards() {
   const [popupStore, setPopupStore] = useState<StoreData | null>(null);
   const [popupOpen, setPopupOpen] = useState(false);
   const x = useMotionValue(0);
+
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  useMotionValueEvent(x, "change", (latest) => {
+    setCanScrollLeft(latest < -5);
+    setCanScrollRight(latest > dragConstraints.left + 5);
+  });
+
+  const scrollCarousel = (direction: "left" | "right") => {
+    const currentX = x.get();
+    const containerWidth = carouselRef.current?.offsetWidth || 0;
+    const scrollAmount = Math.max(300, containerWidth * 0.75);
+
+    let newX = currentX + (direction === "left" ? scrollAmount : -scrollAmount);
+    newX = Math.max(Math.min(newX, dragConstraints.right), dragConstraints.left);
+
+    animate(x, newX, { type: "spring", stiffness: 300, damping: 30 });
+    setShowHint(false);
+  };
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -117,10 +155,13 @@ export function StoresCards() {
   useEffect(() => {
     const measure = () => {
       if (carouselRef.current && innerRef.current) {
+        const leftConstraint = carouselRef.current.offsetWidth - innerRef.current.scrollWidth;
+        const newLeft = Math.min(0, leftConstraint);
         setDragConstraints({
           right: 0,
-          left: carouselRef.current.offsetWidth - innerRef.current.scrollWidth,
+          left: newLeft,
         });
+        setCanScrollRight(newLeft < 0 && x.get() > newLeft + 5);
       }
     };
 
@@ -245,6 +286,36 @@ export function StoresCards() {
                 );
               })}
           </motion.div>
+
+          <AnimatePresence>
+            {canScrollLeft && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                onClick={() => scrollCarousel("left")}
+                className="absolute left-2 top-1/2 z-10 flex -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-3 text-azul-socado shadow-md backdrop-blur-sm transition-all hover:bg-white hover:scale-110 md:left-4"
+                aria-label="Desplazar a la izquierda"
+              >
+                <ChevronLeftIcon className="h-6 w-6" />
+              </motion.button>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {canScrollRight && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                onClick={() => scrollCarousel("right")}
+                className="absolute right-2 top-1/2 z-10 flex -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-3 text-azul-socado shadow-md backdrop-blur-sm transition-all hover:bg-white hover:scale-110 md:right-4"
+                aria-label="Desplazar a la derecha"
+              >
+                <ChevronRightIcon className="h-6 w-6" />
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Hint "agarra y mueve" — se oculta tras la primera interacción */}

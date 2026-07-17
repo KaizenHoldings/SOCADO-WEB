@@ -209,8 +209,8 @@ export function RadialTimeline() {
               transition={{ duration: 0.5 }}
               className="flex flex-col items-center justify-center"
             >
-              <h2 className="text-white text-4xl md:text-6xl font-bold lowercase tracking-widest leading-tight">
-                social<br/>café<br/><span className="text-celeste-socado">conectado</span>
+              <h2 className="text-white text-4xl md:text-6xl  lowercase tracking-widest leading-tight">
+                social.<br/>café.<br/><span className="text-celeste-socado">conectado.</span>
               </h2>
             </motion.div>
           ) : (
@@ -222,8 +222,8 @@ export function RadialTimeline() {
               transition={{ duration: 0.4 }}
               className="flex flex-col items-center"
             >
-              <h3 className="text-white text-xl font-bold font-outfit mb-2 tracking-widest">{timelineData[activeIndex].year}</h3>
-              <h2 className="text-white text-3xl md:text-5xl font-bold lowercase tracking-wider mb-6 leading-tight">
+              <h3 className="text-white text-xl font-outfit mb-2 tracking-widest">{timelineData[activeIndex].year}</h3>
+              <h2 className="text-white text-3xl md:text-5xl lowercase tracking-wider mb-6 leading-tight">
                 {timelineData[activeIndex].title}
               </h2>
               <p className="text-white/80 font-outfit text-base leading-relaxed mb-8">

@@ -42,14 +42,12 @@ export function HowItWorksCatering() {
     <section className="min-h-screen flex flex-col justify-center w-full px-6 lg:px-12 text-[#063547]">
       <div className="mx-auto max-w-[1400px] w-full">
         <div className="text-center mb-16">
-          <h2 className="font-raleway text-4xl md:text-5xl font-bold lowercase tracking-wider text-[#063547] dark:text-white">
+          <h2 className="font-raleway text-4xl md:text-5xl font-light text-[#063547] dark:text-white">
             cómo funciona
           </h2>
         </div>
         
         <div className="relative flex flex-col md:flex-row justify-between items-start gap-12 md:gap-4">
-          {/* Línea conectora (solo visible en pantallas medianas o grandes) */}
-          <div className="hidden md:block absolute top-10 left-[10%] right-[10%] border-t-2 border-dashed border-[#5c8ea0] dark:border-[#b2b5a9] z-0"></div>
 
           {steps.map((step, index) => {
             const isActive = activeStep === index;

@@ -246,7 +246,7 @@ export default function CateringPage() {
             {/* Hero de Catering */}
             <section className="relative w-full h-screen -mt-24 overflow-hidden">
               <Image
-                src="/images/catering.jpg"
+                src="/images/catering.JPG"
                 alt="Socado Catering"
                 fill
                 className="object-cover"
@@ -255,7 +255,7 @@ export default function CateringPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
               <div className="absolute inset-0 bg-[#063547]/20" /> {/* Overlay Azul Socado sutil */}
               <div className="absolute inset-0 flex flex-col justify-end text-left p-10 lg:p-20 pb-20 lg:pb-32">
-                <h1 className="font-raleway text-5xl md:text-7xl lg:text-[5rem] font-bold tracking-tight text-white mb-6 drop-shadow-lg lowercase">
+                <h1 className="font-raleway text-5xl md:text-7xl lg:text-[5rem] font-light tracking-tight text-white mb-6 drop-shadow-lg lowercase">
                   catering Socado
                 </h1>
                 <p className="font-outfit text-white/90 text-xl md:text-2xl max-w-2xl font-light drop-shadow-md lowercase">
