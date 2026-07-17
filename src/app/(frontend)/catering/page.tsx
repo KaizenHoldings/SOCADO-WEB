@@ -280,7 +280,7 @@ export default function CateringPage() {
               className="relative w-full md:w-1/2 min-h-[50vh] md:min-h-0 cursor-pointer group overflow-hidden"
             >
               <Image
-                src="/images/promotion2.png"
+                src="/images/individuales.png"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 alt="Individuales"

@@ -18,7 +18,7 @@ export function ViewModeToggle({ viewMode, onChange, selectedBoxName }: ViewMode
         }`}
       >
         <Image
-          src="/images/promotion2.png"
+          src="/images/individuales.png"
           fill
           className="object-cover"
           alt="Individuales"

@@ -238,7 +238,7 @@ export function StoresCards() {
     <section
       ref={sectionRef}
       id="tiendas"
-      className="relative w-full overflow-hidden bg-white px-6 py-24 lg:px-12 2xl:px-20"
+      className="relative lowercase w-full overflow-hidden bg-white px-6 py-24 lg:px-12 2xl:px-20"
     >
       <motion.div style={{ filter, scale, opacity }} className="w-full">
         {/* Título + categoría (mismo borde izquierdo que Promotion1) */}

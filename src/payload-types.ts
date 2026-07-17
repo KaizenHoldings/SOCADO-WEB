@@ -317,7 +317,7 @@ export interface Promotion {
 export interface Quote {
   id: number;
   fullName: string;
-  documentId: string;
+  documentId?: string | null;
   email: string;
   phone: string;
   eventDate: string;
