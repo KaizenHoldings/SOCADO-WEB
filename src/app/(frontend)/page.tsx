@@ -4,7 +4,6 @@ import { ArrowRight, Coffee, UtensilsCrossed, Sparkles } from "lucide-react";
 import { Header } from "@/components/catalog/Header";
 import { HeroLeft } from "@/components/catalog/HeroLeft";
 import { OurStory } from "@/components/catalog/OurStory";
-import { Timeline } from "@/components/catalog/Timeline";
 import { RadialTimeline } from "@/components/catalog/RadialTimeline";
 import { StoresCards } from "@/components/catalog/StoresCards";
 import { Footer } from "@/components/catalog/Footer";
@@ -27,12 +26,7 @@ export default function Home() {
         <SocadoClub />
         <StoresCards />
         <OurStory />
-        <div className="block lg:hidden">
-          <Timeline />
-        </div>
-        <div className="hidden lg:block">
-          <RadialTimeline />
-        </div>
+        <RadialTimeline />
         {/* <CateringPromo1 /> */}
         <CateringPromo2 />
     

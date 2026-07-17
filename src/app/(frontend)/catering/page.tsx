@@ -15,6 +15,7 @@ import { Footer } from "@/components/catalog/Footer";
 import { Product } from "@/lib/types/catalog";
 import { useCartStore } from "@/lib/store/cart.store";
 import { CartDrawer } from "@/components/catalog/CartDrawer";
+import { ButtonLightBack } from "@/components/catalog/ButtonLightBack";
 
 export default function CateringPage() {
   const [macrocategories, setMacrocategories] = useState<any[]>([]);
@@ -327,15 +328,15 @@ export default function CateringPage() {
             {/* Botón superior no sticky */}
             <div className="w-full bg-white dark:bg-[#042430]">
               <div className="mx-auto max-w-[1400px] px-6 py-4 w-full">
-                <button 
+                <ButtonLightBack
                   onClick={() => { 
                     setHasSelectedMode(false); 
                     window.scrollTo({ top: 0, behavior: 'smooth' }); 
                   }}
-                  className="flex items-center gap-2 text-sm font-bold lowercase tracking-wider text-[#6e7c7c] hover:text-[#b45b38] dark:text-[#b2b5a9] transition-colors w-fit"
+                  className="!min-h-0 !py-2.5 !px-5 shadow-none hover:shadow-none bg-transparent hover:bg-black/5 dark:hover:bg-white/5 border-none"
                 >
-                  <ArrowLeft className="w-4 h-4" /> volver
-                </button>
+                  <span className="lowercase">volver a selección</span>
+                </ButtonLightBack>
               </div>
             </div>
 
@@ -409,15 +410,14 @@ export default function CateringPage() {
 
         {/* Botón inferior */}
         <div className="w-full py-16 flex justify-center mt-8">
-          <button 
+          <ButtonLightBack
             onClick={() => { 
               setHasSelectedMode(false); 
               window.scrollTo({ top: 0, behavior: 'smooth' }); 
             }}
-            className="rounded-full bg-black/5 px-8 py-3 font-outfit text-sm font-bold lowercase tracking-wider text-[#063547] transition-all hover:bg-[#b45b38] hover:text-white dark:bg-white/5 dark:text-[#f2eae6] dark:hover:bg-[#b45b38] dark:hover:text-white flex items-center gap-2"
           >
-            <ArrowLeft className="w-4 h-4" /> volver
-          </button>
+            <span className="lowercase">volver a selección</span>
+          </ButtonLightBack>
         </div>
           </>
         )}

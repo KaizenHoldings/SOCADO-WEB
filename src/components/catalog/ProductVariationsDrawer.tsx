@@ -5,6 +5,8 @@ import Image from "next/image";
 import { Product } from "@/lib/types/catalog";
 import { X, Info, Thermometer, Utensils, Flame } from "lucide-react";
 import { useCartStore } from "@/lib/store/cart.store";
+import { motion, AnimatePresence } from "motion/react";
+import { ButtonDark } from "@/components/catalog/ButtonDark";
 
 interface ProductVariationsDrawerProps {
   product: Product | null;
@@ -93,18 +95,29 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
     }
   };
 
-  if (!isOpen || !product) return null;
+
 
   return (
-    <>
-      {/* Backdrop */}
-      <div 
-        className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
-      />
-      
-      {/* Drawer */}
-      <div className="fixed inset-y-0 right-0 z-[110] flex w-full flex-col bg-white shadow-xl sm:max-w-md dark:bg-[#042430]">
+    <AnimatePresence>
+      {(isOpen && product) && (
+        <>
+          {/* Backdrop */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm"
+            onClick={onClose}
+          />
+          
+          {/* Drawer */}
+          <motion.div 
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-y-0 right-0 z-[110] flex w-full flex-col bg-white shadow-xl sm:max-w-md dark:bg-[#042430]"
+          >
         
         {/* Header con botón cerrar superpuesto a la imagen o arriba */}
         <div className="relative h-28 w-full flex-shrink-0 bg-[#f2eae6] dark:bg-black/20">
@@ -130,7 +143,7 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
             </h2>
             <div className="flex-shrink-0 pt-1">
               <span className="font-raleway text-2xl font-bold text-[#b45b38]">
-                ${unitPrice.toFixed(2)}
+                REF {unitPrice.toFixed(2)}
               </span>
             </div>
           </div>
@@ -166,14 +179,14 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
                   onChange={(e) => handleVariationChange(e.target.value)}
                   className="w-full rounded-md border border-black/10 bg-white px-3 py-2 text-sm font-medium text-[#063547] focus:border-[#b45b38] focus:outline-none focus:ring-1 focus:ring-[#b45b38] dark:border-white/10 dark:bg-[#063547] dark:text-[#f2eae6]"
                 >
-                  <option value="" className="lowercase">esta versión (${product.price.toFixed(2)})</option>
+                  <option value="" className="lowercase">esta versión (REF {product.price.toFixed(2)})</option>
                   {product.variations.map((choice, cIdx) => (
                     <option key={cIdx} value={choice.label} className="lowercase">
                       {choice.label}{' '}
                       {typeof choice.price === 'number' 
-                        ? `($${choice.price.toFixed(2)})` 
+                        ? `(REF ${choice.price.toFixed(2)})` 
                         : typeof choice.priceAdjustment === 'number' && choice.priceAdjustment !== 0 
-                          ? `(${choice.priceAdjustment > 0 ? '+' : ''}$${choice.priceAdjustment.toFixed(2)})` 
+                          ? `(${choice.priceAdjustment > 0 ? '+' : ''}REF ${choice.priceAdjustment.toFixed(2)})` 
                           : ''}
                     </option>
                   ))}
@@ -241,18 +254,20 @@ export function ProductVariationsDrawer({ product, isOpen, onClose }: ProductVar
           <div className="mb-4 flex items-center justify-between border-t border-black/5 pt-4 dark:border-white/5">
             <span className="font-semibold text-[#063547] dark:text-[#f2eae6] lowercase">total calculado</span>
             <span className="font-raleway text-2xl font-bold text-[#063547] dark:text-[#f2eae6]">
-              ${totalPrice.toFixed(2)}
+              REF {totalPrice.toFixed(2)}
             </span>
           </div>
-          <button
+          <ButtonDark
             onClick={handleAdd}
-            className="w-full rounded-full bg-[#b45b38] py-4 font-bold text-white shadow-lg transition-transform hover:scale-[1.02] hover:bg-[#a04b2b]"
+            className="w-full !px-4 !py-4"
           >
             <span className="lowercase">añadir a la cotización</span>
-          </button>
+          </ButtonDark>
         </div>
 
-      </div>
-    </>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 }

@@ -19,6 +19,8 @@ export interface StoreData {
   images: string[];
   order?: number;
   amenities?: StoreAmenities; // comodidades — toggles per store (admin later)
+  lat?: number;
+  lng?: number;
 }
 
 const HOVER_CYCLE_MS = 3300;
