@@ -2,12 +2,14 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Script from "next/script";
+import { motion, useReducedMotion } from "motion/react";
 import { ButtonDark } from "@/components/catalog/ButtonDark";
 
 // Inverted counterpart of LoyaltyCard: white text half on the left,
 // illustration half (with the title stuck to the right) on the right.
 export function SocadoClub() {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const reduce = useReducedMotion();
 
   // Close modal on escape
   useEffect(() => {
@@ -37,15 +39,23 @@ export function SocadoClub() {
             </div>
           </div>
 
-          {/* Right square — illustration */}
-          <div className="relative order-first aspect-square w-full overflow-hidden lg:order-none">
-            <Image
-              src="/images/club.jpg"
-              alt="Ilustración del Socado Club"
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover object-left"
-            />
+          {/* Right square — illustration on white */}
+          <div className="relative order-first flex aspect-square w-full items-center justify-center overflow-hidden bg-white p-10 lg:order-none lg:p-16 2xl:p-20">
+            <motion.div
+              className="h-full w-full"
+              initial={reduce ? false : { opacity: 0, x: 48 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: reduce ? 0 : 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Image
+                src="/images/socado-club-ilustracion.svg"
+                alt="Ilustración del Socado Club"
+                width={862}
+                height={727}
+                className="h-full w-full object-contain"
+              />
+            </motion.div>
           </div>
         </div>
       </section>

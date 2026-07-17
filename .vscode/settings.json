@@ -37,5 +37,51 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": "explicit"
     }
+  },
+  "customFileOrder.rules": {
+    "c:\\Users\\ANLSRCAP\\OneDrive - KAIZEN HOLDINGS\\Escritorio\\Web Socado\\SOCADO-WEB": {
+      "order": [
+        ".vscode",
+        "CLAUDE.md",
+        "AGENTS.md",
+        "README.md",
+        "docs",
+        "public",
+        "src",
+        "tests",
+        ".env",
+        ".env.example",
+        ".gitignore",
+        ".prettierrc.json",
+        "check-csv.mjs",
+        "docker-compose.yml",
+        "Dockerfile",
+        "eslint.config.mjs",
+        "lcreference.png",
+        "next-env.d.ts",
+        "next.config.ts",
+        "package-lock.json",
+        "package.json",
+        "playwright.config.ts",
+        "postcss.config.mjs",
+        "reference1.png",
+        "reference2.png",
+        "reference3.png",
+        "reference4.png",
+        "reference5.png",
+        "referenceconnect.png",
+        "skills-lock.json",
+        "SOCADO-WEB.code-workspace",
+        "socadoTimeline.txt",
+        "temp.csv",
+        "test-import.mjs",
+        "test.env",
+        "tsconfig.json",
+        "tsconfig.tsbuildinfo",
+        "vitest.config.mts",
+        "vitest.setup.ts"
+      ],
+      "type": "manual"
+    }
   }
 }
