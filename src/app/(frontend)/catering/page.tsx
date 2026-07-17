@@ -268,7 +268,7 @@ export default function CateringPage() {
             
             <section className="min-h-screen flex flex-col">
               <div className="w-full text-center py-12 px-6">
-                <h2 className="font-raleway text-3xl md:text-4xl font-bold lowercase tracking-wider text-[#063547] dark:text-[#f2eae6]">
+                <h2 className="font-raleway text-3xl md:text-4xl lowercase tracking-wider text-[#063547] dark:text-[#f2eae6]">
                   selecciona tu tipo de catering
                 </h2>
               </div>
