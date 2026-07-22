@@ -52,7 +52,7 @@ export function Footer() {
           {/* Right — navigation + stores */}
           <div className="grid grid-cols-2 gap-8 sm:gap-12 md:ml-auto">
             <div className="flex flex-col gap-3">
-              <h4 className="font-raleway lowercase text-ivory/50">
+              <h4 className="font-raleway text-sm text-ivory/85 lowercase">
                 navegación
               </h4>
               <ul className="flex flex-col gap-2.5">
@@ -60,7 +60,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="font-raleway text-sm text-ivory/85 transition-colors duration-200 hover:text-celeste-socado"
+                      className="font-raleway text-ivory/50 transition-colors duration-200 hover:text-celeste-socado"
                     >
                       {link.label}
                     </Link>
@@ -70,7 +70,7 @@ export function Footer() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <h4 className="font-raleway lowercase text-ivory/50">
+              <h4 className="font-raleway text-sm text-ivory/85 lowercase">
                 pide aquí
               </h4>
               <ul className="flex flex-col gap-2.5">
@@ -80,7 +80,7 @@ export function Footer() {
                       href={store.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-raleway text-sm text-ivory/85 transition-colors duration-200 hover:text-terra"
+                      className="font-raleway text-ivory/50 transition-colors duration-200 hover:text-terra"
                     >
                       {store.label}
                     </a>

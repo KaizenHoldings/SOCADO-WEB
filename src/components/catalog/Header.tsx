@@ -7,6 +7,7 @@ import { ShoppingBag, ArrowUpRight, Menu, X } from "lucide-react";
 import { motion } from "motion/react";
 import { useCartStore } from "@/lib/store/cart.store";
 import { EcommerceModal } from "@/components/catalog/EcommerceModal";
+import { PideAhoraSticker } from "@/components/catalog/PideAhoraSticker";
 
 interface HeaderProps {
   activePage?: "home" | "catering";
@@ -170,7 +171,7 @@ export function Header({
                 onClick={() => setIsEcommerceModalOpen(true)}
                 className={`group hidden md:flex items-center gap-1.5 text-[14px] font-semibold tracking-wide transition-opacity hover:opacity-60 ${textColor}`}
               >
-                delivery
+                pide ahora
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
             )}
@@ -193,6 +194,10 @@ export function Header({
         isOpen={isEcommerceModalOpen}
         onClose={() => setIsEcommerceModalOpen(false)}
       />
+
+      {activePage === "home" && (
+        <PideAhoraSticker onClick={() => setIsEcommerceModalOpen(true)} />
+      )}
 
       {/* Menú Móvil Pantalla Completa */}
       <div
@@ -263,14 +268,15 @@ export function Header({
           </Link>
 
           {activePage === "home" && (
-            <Link
-              href="https://latrinidad.socadocafe.com/"
-              target="_blank"
-              onClick={() => setIsMobileMenuOpen(false)}
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                setIsEcommerceModalOpen(true);
+              }}
               className="mt-6 flex items-center gap-2 rounded-full border-2 border-[#063547] px-8 py-3 text-lg font-bold transition-all hover:bg-[#063547] hover:text-white dark:border-[#f2eae6] dark:hover:bg-[#f2eae6] dark:hover:text-[#042430]"
             >
-              ir a delivery <ArrowUpRight className="h-5 w-5" />
-            </Link>
+              pide ahora <ArrowUpRight className="h-5 w-5" />
+            </button>
           )}
         </nav>
       </div>

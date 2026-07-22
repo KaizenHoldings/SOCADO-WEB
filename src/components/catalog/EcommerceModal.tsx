@@ -82,22 +82,25 @@ export function EcommerceModal({ isOpen, onClose }: EcommerceModalProps) {
       .then((r) => r.json())
       .then((data) => {
         if (data?.docs?.length > 0) {
-          const mapped: StoreData[] = data.docs.map((doc: any) => ({
-            id: doc.storeId || doc.id,
-            title: doc.title,
-            subtitle: doc.subtitle || "ubicación",
-            location: doc.location,
-            schedule: doc.schedule,
-            link: doc.link,
-            images: Array.isArray(doc.images)
-              ? doc.images.map((imgObj: any) =>
-                  typeof imgObj.image === "string" ? imgObj.image : imgObj.image?.url || ""
-                )
-              : [],
-            order: typeof doc.order === "number" ? doc.order : undefined,
-            lat: STORE_COORDS[doc.storeId || doc.id]?.lat,
-            lng: STORE_COORDS[doc.storeId || doc.id]?.lng,
-          }));
+          const allowedStoreIds = ["las-mercedes", "la-trinidad", "el-rosal"];
+          const mapped: StoreData[] = data.docs
+            .filter((doc: any) => allowedStoreIds.includes(doc.storeId || doc.id))
+            .map((doc: any) => ({
+              id: doc.storeId || doc.id,
+              title: doc.title,
+              subtitle: doc.subtitle || "ubicación",
+              location: doc.location,
+              schedule: doc.schedule,
+              link: doc.link,
+              images: Array.isArray(doc.images)
+                ? doc.images.map((imgObj: any) =>
+                    typeof imgObj.image === "string" ? imgObj.image : imgObj.image?.url || ""
+                  )
+                : [],
+              order: typeof doc.order === "number" ? doc.order : undefined,
+              lat: STORE_COORDS[doc.storeId || doc.id]?.lat,
+              lng: STORE_COORDS[doc.storeId || doc.id]?.lng,
+            }));
           setStores(mapped);
         }
       })
