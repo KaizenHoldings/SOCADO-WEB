@@ -45,12 +45,16 @@ export function PideAhoraSticker({ onClick }: PideAhoraStickerProps) {
     <>
       <style>{`
         @keyframes sticker-idle-float {
-          0%, 100% { transform: translateY(0) rotate(-1.2deg); }
-          50% { transform: translateY(-9px) rotate(1.2deg); }
+          0%, 86%, 100% { transform: translateY(0) rotate(-1.2deg); }
+          43% { transform: translateY(-9px) rotate(1.2deg); }
+          90% { transform: translateY(-3px) rotate(45deg); }
+          94% { transform: translateY(-3px) rotate(-45deg); }
+          97% { transform: translateY(-3px) rotate(45deg); }
         }
         @keyframes sticker-idle-shadow {
-          0%, 100% { transform: scale(1); opacity: 0.55; }
-          50% { transform: scale(0.88); opacity: 0.38; }
+          0%, 86%, 100% { transform: scale(1); opacity: 0.55; }
+          43% { transform: scale(0.88); opacity: 0.38; }
+          90%, 97% { transform: scale(0.95); opacity: 0.45; }
         }
         @keyframes sticker-auto-sheen {
           0% { background-position: 120% 120%; opacity: 0; }
@@ -75,7 +79,7 @@ export function PideAhoraSticker({ onClick }: PideAhoraStickerProps) {
             left: "22%",
             width: "150px",
             height: "28px",
-            animation: "sticker-idle-shadow 4.5s ease-in-out infinite",
+            animation: "sticker-idle-shadow 7s ease-in-out infinite",
             animationPlayState: idlePlay,
           }}
         >
@@ -93,7 +97,7 @@ export function PideAhoraSticker({ onClick }: PideAhoraStickerProps) {
 
         <div
           style={{
-            animation: "sticker-idle-float 4.5s ease-in-out infinite",
+            animation: "sticker-idle-float 7s ease-in-out infinite",
             animationPlayState: idlePlay,
             pointerEvents: "auto",
           }}
@@ -121,8 +125,8 @@ export function PideAhoraSticker({ onClick }: PideAhoraStickerProps) {
               style={{
                 position: "absolute",
                 inset: 0,
-                WebkitMask: "url(/images/vaso-mask.png) center/contain no-repeat",
-                mask: "url(/images/vaso-mask.png) center/contain no-repeat",
+                WebkitMask: "url(/images/bolsa_sticker.svg) center/contain no-repeat",
+                mask: "url(/images/bolsa_sticker.svg) center/contain no-repeat",
               }}
             >
               <div
@@ -133,63 +137,7 @@ export function PideAhoraSticker({ onClick }: PideAhoraStickerProps) {
                     "linear-gradient(160deg, oklch(0.66 0.16 246), oklch(0.52 0.20 251) 55%, oklch(0.44 0.18 255))",
                 }}
               ></div>
-              <svg
-                viewBox="0 0 200 130"
-                style={{
-                  position: "absolute",
-                  top: "46%",
-                  left: "-7%",
-                  width: "96%",
-                  transform: "rotate(9deg)",
-                  pointerEvents: "none",
-                  overflow: "visible",
-                }}
-              >
-                <defs>
-                  <path id="arc1" d="M 20 34 Q 100 58 180 34" fill="none"></path>
-                  <path id="arc2" d="M 12 74 Q 100 98 188 74" fill="none"></path>
-                  <path id="arc3" d="M 32 100 Q 100 118 168 100" fill="none"></path>
-                </defs>
-                <text
-                  style={{
-                    fontFamily: "'Raleway',sans-serif",
-                    fontWeight: 900,
-                    fontSize: "33px",
-                    fill: "oklch(0.99 0.01 250)",
-                    filter: "drop-shadow(0 2px 2px oklch(0.30 0.12 253 / 0.6))",
-                  }}
-                >
-                  <textPath href="#arc1" startOffset="50%" textAnchor="middle">
-                    pide
-                  </textPath>
-                </text>
-                <text
-                  style={{
-                    fontFamily: "'Raleway',sans-serif",
-                    fontWeight: 900,
-                    fontSize: "33px",
-                    fill: "oklch(0.99 0.01 250)",
-                    filter: "drop-shadow(0 2px 2px oklch(0.30 0.12 253 / 0.6))",
-                  }}
-                >
-                  <textPath href="#arc2" startOffset="50%" textAnchor="middle">
-                    ahora
-                  </textPath>
-                </text>
-                <text
-                  style={{
-                    fontFamily: "'Raleway',sans-serif",
-                    fontWeight: 700,
-                    fontSize: "11px",
-                    letterSpacing: "4px",
-                    fill: "oklch(0.96 0.02 250 / 0.9)",
-                  }}
-                >
-                  <textPath href="#arc3" startOffset="50%" textAnchor="middle">
-                    socado
-                  </textPath>
-                </text>
-              </svg>
+
               <div
                 style={{
                   position: "absolute",
@@ -228,8 +176,8 @@ export function PideAhoraSticker({ onClick }: PideAhoraStickerProps) {
               ></div>
             </div>
             <Image
-              src="/images/vaso-socado.svg"
-              alt="vaso de café Socado"
+              src="/images/bolsa_sticker.svg"
+              alt="bolsa sticker Socado"
               fill
               style={{ objectFit: "contain", pointerEvents: "none", opacity: 0.9 }}
             />

@@ -151,14 +151,14 @@ export function LocationPicker({ onLocationChange }: LocationPickerProps) {
         />
       </div>
 
-      <div className="flex gap-4">
-        <div className="flex-1 flex flex-col gap-1">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-1">
           <label className="text-xs font-bold text-[#063547] dark:text-[#f2eae6]">Latitud</label>
-          <input readOnly value={coords.lat.toFixed(6)} className="rounded-lg border border-black/10 bg-black/5 px-3 py-2 text-sm text-[#063547] dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" />
+          <input readOnly value={coords.lat.toFixed(6)} className="w-full min-w-0 rounded-lg border border-black/10 bg-black/5 px-3 py-2 text-sm text-[#063547] dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" />
         </div>
-        <div className="flex-1 flex flex-col gap-1">
+        <div className="flex flex-col gap-1">
           <label className="text-xs font-bold text-[#063547] dark:text-[#f2eae6]">Longitud</label>
-          <input readOnly value={coords.lng.toFixed(6)} className="rounded-lg border border-black/10 bg-black/5 px-3 py-2 text-sm text-[#063547] dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" />
+          <input readOnly value={coords.lng.toFixed(6)} className="w-full min-w-0 rounded-lg border border-black/10 bg-black/5 px-3 py-2 text-sm text-[#063547] dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" />
         </div>
       </div>
 
