@@ -10,7 +10,7 @@ import { EcommerceModal } from "@/components/catalog/EcommerceModal";
 import { PideAhoraSticker } from "@/components/catalog/PideAhoraSticker";
 
 interface HeaderProps {
-  activePage?: "home" | "catering";
+  activePage?: "home" | "catering" | "nosotros";
   /** Si el fondo debajo del header transparente es oscuro, los textos se muestran en claro */
   heroIsDark?: boolean;
   /** Segundos de espera antes de revelar el navbar (para que aparezca tras la intro del hero) */
@@ -48,7 +48,7 @@ export function Header({
       setScrolled(window.scrollY > 10);
 
       if (activePage === "home") {
-        const sections = ["tiendas", "nosotros", "catering"];
+        const sections = ["tiendas", "catering"];
         let current = "inicio";
 
         for (const section of sections) {
@@ -142,9 +142,9 @@ export function Header({
                 tiendas
               </a>
               
-              <a href="/#nosotros" className={`${navLinkBase} ${activeSection === "nosotros" ? navLinkActive : navLinkInactive}`}>
+              <Link href="/nosotros" className={`${navLinkBase} ${activeSection === "nosotros" ? navLinkActive : navLinkInactive}`}>
                 nosotros
-              </a>
+              </Link>
               <Link href="/catering" className={`${navLinkBase} ${activeSection === "catering" ? navLinkActive : navLinkInactive}`}>
                 catering
               </Link>
@@ -252,13 +252,13 @@ export function Header({
           >
             tiendas
           </a>
-          <a 
-            href="/#nosotros" 
+          <Link 
+            href="/nosotros" 
             onClick={() => setIsMobileMenuOpen(false)}
             className={`transition-colors hover:text-[#b45b38] ${activeSection === "nosotros" ? "text-[#b45b38]" : ""}`}
           >
             nosotros
-          </a>
+          </Link>
           <Link
             href="/catering"
             onClick={() => setIsMobileMenuOpen(false)}

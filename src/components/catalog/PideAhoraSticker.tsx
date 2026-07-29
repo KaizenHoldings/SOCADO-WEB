@@ -29,15 +29,24 @@ export function PideAhoraSticker({ onClick }: PideAhoraStickerProps) {
   const strength = hover ? 1 : 0;
   const moveX = px * 12 * strength;
   const moveY = py * 12 * strength;
-  const rotate = px * 6 * strength;
-  const scale = hover ? 1.05 : 1;
+  const scale = hover ? 0.99 : 1;
   const mag = Math.min(1, (Math.abs(px) + Math.abs(py)) / 1.2);
+  const shOp = 0.45;
+  const shBlur = 16;
+  
+  // Hardcoded values from sticker_final.html defaults
+  const floatDuration = "4.5s";
+  const swingDuration = "5.5s";
+  const swingAmount = 1;
 
   const idlePlay = hover ? "paused" : "running";
-  const buttonTransform = `translate(${moveX}px, ${moveY}px) rotate(${rotate}deg) scale(${scale})`;
-  const shadowTransform = `translate(${moveX * 0.5}px, ${moveY * 0.3 + 4}px) scale(${1 + strength * 0.06})`;
+  const swingPlay = hover ? "paused" : "running";
+  
+  const buttonTransform = `translate(${moveX * 0.4}px, ${moveY * 0.4}px) rotateX(${py * 16 * strength}deg) rotateY(${-px * 16 * strength}deg) scale(${scale}) translateZ(${strength * -12}px)`;
+  const buttonFilter = `drop-shadow(${-moveX * 1.2}px ${16 - strength * 10 - moveY}px ${Math.max(0, shBlur - strength * 10)}px oklch(0.10 0.06 260 / ${Math.max(0, shOp - strength * 0.15)}))`;
+  const shadowTransform = `translate(${moveX * 0.5}px, ${moveY * 0.3 + 4}px) scale(${1 - strength * 0.06})`;
   const holoPos = `${50 + px * 48}% ${50 + py * 48}%`;
-  const holoOpacity = 0.22 + mag * 0.6 * strength;
+  const holoOpacity = 0.15 + mag * 0.45 * strength;
   const sheenPos = `${100 - (px * 0.5 + 0.5) * 100}% ${100 - (py * 0.5 + 0.5) * 100}%`;
   const sheenOpacity = (0.12 + mag * 0.5) * strength;
 
@@ -45,16 +54,21 @@ export function PideAhoraSticker({ onClick }: PideAhoraStickerProps) {
     <>
       <style>{`
         @keyframes sticker-idle-float {
-          0%, 86%, 100% { transform: translateY(0) rotate(-1.2deg); }
-          43% { transform: translateY(-9px) rotate(1.2deg); }
-          90% { transform: translateY(-3px) rotate(45deg); }
-          94% { transform: translateY(-3px) rotate(-45deg); }
-          97% { transform: translateY(-3px) rotate(45deg); }
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-3.5%); }
         }
         @keyframes sticker-idle-shadow {
-          0%, 86%, 100% { transform: scale(1); opacity: 0.55; }
-          43% { transform: scale(0.88); opacity: 0.38; }
-          90%, 97% { transform: scale(0.95); opacity: 0.45; }
+          0%, 100% { transform: scale(1); opacity: 0.45; }
+          50% { transform: scale(0.9); opacity: 0.3; }
+        }
+        @keyframes sticker-idle-swing {
+          0%, 100% { transform: rotate(calc(var(--sw, 1) * -1.5deg)); }
+          15% { transform: rotate(calc(var(--sw, 1) * 1.8deg)); }
+          30% { transform: rotate(calc(var(--sw, 1) * -1.2deg)); }
+          45% { transform: rotate(calc(var(--sw, 1) * 0.8deg)); }
+          60% { transform: rotate(calc(var(--sw, 1) * -0.4deg)); }
+          80% { transform: rotate(calc(var(--sw, 1) * -1deg)); }
+          96% { transform: rotate(calc(var(--sw, 1) * 0.4deg)); }
         }
         @keyframes sticker-auto-sheen {
           0% { background-position: 120% 120%; opacity: 0; }
@@ -63,125 +77,85 @@ export function PideAhoraSticker({ onClick }: PideAhoraStickerProps) {
           100% { background-position: -20% -20%; opacity: 0; }
         }
       `}</style>
+      
+      {/* Container simulating the stage */}
       <div
         className="fixed bottom-6 right-6 z-[90] flex items-center justify-center pointer-events-none"
         style={{
-          width: "230px",
-          height: "368px",
+          width: "200px", // bounded container for the bottom corner
+          height: "250px",
           transformOrigin: "bottom right",
-          transform: "scale(0.33)", // scales the ~368px height down to ~121px
+          transform: "scale(0.35)", // make it smaller to match previous sticker size
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            bottom: "0%", // Adjusted since wrapper is smaller now
-            left: "22%",
-            width: "150px",
-            height: "28px",
-            animation: "sticker-idle-shadow 7s ease-in-out infinite",
-            animationPlayState: idlePlay,
-          }}
-        >
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              borderRadius: "50%",
-              background: "oklch(0.10 0.05 260 / 0.5)",
-              filter: "blur(8px)",
-              transform: shadowTransform,
-            }}
-          ></div>
-        </div>
-
-        <div
-          style={{
-            animation: "sticker-idle-float 7s ease-in-out infinite",
-            animationPlayState: idlePlay,
-            pointerEvents: "auto",
-          }}
-        >
-          <button
-            onClick={onClick}
-            onMouseMove={onMove}
-            onMouseLeave={onLeave}
-            style={{
-              position: "relative",
-              border: "none",
-              padding: 0,
-              background: "transparent",
-              cursor: "pointer",
-              width: "230px",
-              height: "368px",
-              transform: buttonTransform,
-              transition: "transform 60ms ease-out",
-              filter:
-                "drop-shadow(3px 0 0 white) drop-shadow(-3px 0 0 white) drop-shadow(0 3px 0 white) drop-shadow(0 -3px 0 white) drop-shadow(0 20px 20px oklch(0.10 0.06 260 / 0.55))",
-            }}
-            aria-label="pide ahora"
-          >
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                WebkitMask: "url(/images/bolsa_sticker.svg) center/contain no-repeat",
-                mask: "url(/images/bolsa_sticker.svg) center/contain no-repeat",
-              }}
-            >
-              <div
+        <div style={{ position: "relative", width: "380px", height: "420px", display: "flex", alignItems: "center", justifyContent: "center", perspective: "800px" }}>
+          
+          {/* Shadow */}
+          <div style={{ position: "absolute", bottom: "6%", left: "20%", width: "200px", height: "30px", animation: "sticker-idle-shadow 4.5s ease-in-out infinite", animationPlayState: idlePlay }}>
+            <div style={{ width: "100%", height: "100%", borderRadius: "50%", background: "oklch(0.10 0.05 260)", opacity: 0, filter: "blur(9px)", transform: shadowTransform }}></div>
+          </div>
+          
+          {/* Swing wrapper */}
+          <div style={{ transformOrigin: "50% 8%", "--sw": swingAmount } as React.CSSProperties & { "--sw": number }} className="swing-wrapper">
+            <style>{`
+              .swing-wrapper {
+                animation: sticker-idle-swing linear infinite;
+                animation-duration: ${swingDuration};
+                animation-timing-function: ease-in-out;
+                animation-play-state: ${swingPlay};
+              }
+            `}</style>
+            
+            {/* Float wrapper */}
+            <div style={{ animation: "sticker-idle-float ease-in-out infinite", animationDuration: floatDuration, animationPlayState: idlePlay }}>
+              
+              <button
+                onClick={onClick}
+                onMouseMove={onMove}
+                onMouseLeave={onLeave}
+                className="pointer-events-auto"
                 style={{
-                  position: "absolute",
-                  inset: 0,
-                  background:
-                    "linear-gradient(160deg, oklch(0.66 0.16 246), oklch(0.52 0.20 251) 55%, oklch(0.44 0.18 255))",
+                  position: "relative", border: "none", padding: 0, background: "transparent", cursor: "pointer", width: "300px", height: "328px",
+                  transform: buttonTransform, transformStyle: "preserve-3d", transition: "transform 140ms cubic-bezier(0.2, 0.8, 0.3, 1)", filter: buttonFilter
                 }}
-              ></div>
-
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage:
-                    "repeating-linear-gradient(115deg, hsla(0,90%,65%,0.6) 0%, hsla(45,95%,60%,0.6) 6%, hsla(140,90%,55%,0.6) 13%, hsla(195,95%,60%,0.6) 20%, hsla(255,90%,65%,0.6) 27%, hsla(320,90%,65%,0.6) 34%)",
-                  backgroundSize: "220% 220%",
-                  backgroundPosition: holoPos,
-                  mixBlendMode: "screen",
-                  opacity: holoOpacity,
-                }}
-              ></div>
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background:
-                    "linear-gradient(115deg, transparent 40%, oklch(0.99 0.02 250 / 0.9) 50%, transparent 60%)",
-                  backgroundSize: "300% 300%",
-                  backgroundPosition: sheenPos,
-                  mixBlendMode: "screen",
-                  opacity: sheenOpacity,
-                }}
-              ></div>
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background:
-                    "linear-gradient(115deg, transparent 42%, oklch(0.98 0.02 250 / 0.75) 50%, transparent 58%)",
-                  backgroundSize: "300% 300%",
-                  mixBlendMode: "screen",
-                  opacity: 0,
-                  animation: "sticker-auto-sheen 5s ease-in-out infinite",
-                }}
-              ></div>
+              >
+                <Image
+                  src="/images/sticker_final.svg"
+                  alt="bolsa de café Socado - pide aquí"
+                  fill
+                  style={{ objectFit: "contain", pointerEvents: "none" }}
+                  priority
+                />
+                
+                {/* Holographic effects with mask */}
+                <div style={{
+                  position: "absolute", inset: 0,
+                  WebkitMask: `url("/images/sticker_final_mask.png") center/contain no-repeat`,
+                  mask: `url("/images/sticker_final_mask.png") center/contain no-repeat`
+                }}>
+                  <div style={{
+                    position: "absolute", inset: 0,
+                    backgroundImage: "repeating-linear-gradient(115deg, hsla(200,60%,70%,0.45) 0%, hsla(220,50%,75%,0.45) 8%, hsla(180,45%,72%,0.45) 17%, hsla(240,40%,75%,0.45) 26%, hsla(200,60%,70%,0.45) 34%)",
+                    backgroundSize: "220% 220%",
+                    backgroundPosition: holoPos, mixBlendMode: "screen", opacity: holoOpacity
+                  }}></div>
+                  <div style={{
+                    position: "absolute", inset: 0,
+                    background: "linear-gradient(115deg, transparent 40%, oklch(0.99 0.02 250 / 0.9) 50%, transparent 60%)",
+                    backgroundSize: "300% 300%",
+                    backgroundPosition: sheenPos, mixBlendMode: "screen", opacity: sheenOpacity
+                  }}></div>
+                  <div style={{
+                    position: "absolute", inset: 0,
+                    background: "linear-gradient(115deg, transparent 42%, oklch(0.98 0.02 250 / 0.75) 50%, transparent 58%)",
+                    backgroundSize: "300% 300%", mixBlendMode: "screen", opacity: 0,
+                    animation: "sticker-auto-sheen 5s ease-in-out infinite"
+                  }}></div>
+                </div>
+              </button>
+              
             </div>
-            <Image
-              src="/images/bolsa_sticker.svg"
-              alt="bolsa sticker Socado"
-              fill
-              style={{ objectFit: "contain", pointerEvents: "none", opacity: 0.9 }}
-            />
-          </button>
+          </div>
         </div>
       </div>
     </>

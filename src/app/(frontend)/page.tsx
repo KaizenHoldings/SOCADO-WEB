@@ -3,8 +3,7 @@ import Image from "next/image";
 import { ArrowRight, Coffee, UtensilsCrossed, Sparkles } from "lucide-react";
 import { Header } from "@/components/catalog/Header";
 import { HeroLeft } from "@/components/catalog/HeroLeft";
-import { OurStory } from "@/components/catalog/OurStory";
-import { RadialTimeline } from "@/components/catalog/RadialTimeline";
+import { MenuCategories } from "@/components/catalog/MenuCategories";
 import { StoresCards } from "@/components/catalog/StoresCards";
 import { Footer } from "@/components/catalog/Footer";
 import { CateringPromo1 } from "@/components/catalog/CateringPromo1";
@@ -24,9 +23,8 @@ export default function Home() {
         {/* <Promotion /> — temporarily hidden, not deleted */}
         <LoyaltyCard />
         <SocadoClub />
+        <MenuCategories />
         <StoresCards />
-        <OurStory />
-        <RadialTimeline />
         {/* <CateringPromo1 /> */}
         <CateringPromo2 />
     
