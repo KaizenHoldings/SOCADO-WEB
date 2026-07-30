@@ -242,7 +242,13 @@ export function StoresCards() {
     >
       <motion.div style={{ filter, scale, opacity }} className="w-full">
         {/* Título + categoría (mismo borde izquierdo que Promotion1) */}
-        <div className="mb-12 text-left">
+        <motion.div
+          className="mb-12 text-left"
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.4 }}
+          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <h2 className="font-raleway text-4xl font-normal tracking-tight text-azul-socado sm:text-5xl lg:text-6xl">
             nuestras tiendas
           </h2>
@@ -251,7 +257,7 @@ export function StoresCards() {
               caracas
             </span>
           </div>
-        </div>
+        </motion.div>
 
         <div
           className="relative -mx-6 overflow-hidden px-6 md:mx-0 md:px-0"
@@ -278,6 +284,7 @@ export function StoresCards() {
                   <StoreCard
                     key={uniqueStore.id}
                     store={uniqueStore}
+                    entranceDelay={index * 0.1}
                     onMore={(s) => {
                       setPopupStore(s);
                       setPopupOpen(true);

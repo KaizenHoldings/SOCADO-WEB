@@ -4,26 +4,27 @@ import { useState } from "react";
 import Image from "next/image";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "motion/react";
+import { EcommerceModal } from "@/components/catalog/EcommerceModal";
 
 const categories = [
   {
     id: 1,
     title: "Ensaladas",
-    image: "/images/menu/ensaladas.jpg",
+    image: "/images/menu/ensaladas.png",
     description: "Una variedad de bowls y ensaladas que combinan proteínas, vegetales, granos y aderezos llenos de sabor. Opciones completas, coloridas y equilibradas, pensadas para disfrutar una comida diferente sin dejar de lado el gusto.",
     subcategories: ["Bowls de proteína", "Ensaladas frescas", "Granos y aderezos"]
   },
   {
     id: 2,
     title: "Sándwiches y Wraps",
-    image: "/images/menu/wraps.jpg",
+    image: "/images/menu/wraps_new.jpg",
     description: "Una selección de preparaciones prácticas y completas, elaboradas con panes, tortillas, proteínas, vegetales y diferentes salsas. Desde combinaciones clásicas hasta opciones más ligeras y variadas, ideales para disfrutar en cualquier momento del día.",
     subcategories: ["Sándwiches clásicos", "Wraps ligeros", "Opciones variadas"]
   },
   {
     id: 3,
     title: "All Day Brunch",
-    image: "/images/menu/allday.jpg",
+    image: "/images/menu/allday.png",
     description: "Una propuesta pensada para disfrutar el brunch a cualquier hora del día, con alternativas dulces y saladas. Bagels, tostadas, muffins y panquecas que combinan ingredientes variados para crear opciones completas y llenas de sabor.",
     subcategories: ["Bagels y tostadas", "Muffins", "Panquecas"]
   },
@@ -44,21 +45,21 @@ const categories = [
   {
     id: 6,
     title: "Refreshers & Tea",
-    image: "/images/menu/tea.jpg",
+    image: "/images/menu/tea.png",
     description: "Una selección de bebidas refrescantes e infusiones para disfrutar frías o calientes. Limonadas frutales, matcha, hojicha, chai y diferentes variedades de té se combinan con sabores y preparaciones para cada preferencia.",
     subcategories: ["Limonadas frutales", "Matcha y hojicha", "Chai y tés"]
   },
   {
     id: 7,
     title: "Snacks",
-    image: "/images/menu/snacks.jpg",
+    image: "/images/menu/snacks.png",
     description: "Una selección ligera y variada para complementar cualquier momento del día. Avena, chía, frutas, yogures y granola se combinan en opciones prácticas, con distintas texturas y sabores para disfrutar entre comidas.",
     subcategories: ["Avena y chía", "Frutas y yogures", "Granola"]
   },
   {
     id: 8,
     title: "Postres",
-    image: "/images/menu/postre.JPG",
+    image: "/images/menu/prostres.png",
     description: "Una variedad de cookies, muffins, tortas y brownies para acompañar el café o disfrutar algo dulce. Incluye recetas clásicas y una selección de postres Zero, con alternativas sin azúcar añadida y opciones libres de gluten.",
     subcategories: ["Cookies y brownies", "Tortas y muffins", "Postres Zero"]
   },
@@ -69,15 +70,23 @@ const COLLAPSED_HEIGHT = 380;
 
 export function MenuCategories() {
   const [expanded, setExpanded] = useState(false);
+  const [storeModalOpen, setStoreModalOpen] = useState(false);
 
   return (
     <section id="menu-categorias" className="bg-white py-24 px-6 lg:px-12 2xl:px-20 border-t border-black/5">
       <div className="w-full">
-        <div className="mb-12 text-left">
+        {/* Título con animación de entrada */}
+        <motion.div
+          className="mb-12 text-left"
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.4 }}
+          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <h2 className="font-raleway text-4xl font-normal tracking-tight text-azul-socado sm:text-5xl lg:text-6xl lowercase">
             descubre nuestros productos
           </h2>
-        </div>
+        </motion.div>
 
         {/* Contenedor animado en altura */}
         <motion.div
@@ -89,47 +98,67 @@ export function MenuCategories() {
             {categories.map((cat, index) => {
               const isExtra = index >= 4;
               return (
+                /* Wrapper exterior: animación de entrada por scroll */
                 <motion.div
                   key={cat.id}
-                  animate={{
-                    opacity: expanded || !isExtra ? 1 : 0,
-                    y: expanded || !isExtra ? 0 : 16,
-                  }}
+                  initial={{ opacity: 0, y: 32 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false, amount: 0.15 }}
                   transition={{
-                    duration: 0.45,
-                    delay: expanded && isExtra ? (index - 4) * 0.07 : 0,
+                    duration: 0.55,
+                    delay: (index % 4) * 0.08,
                     ease: [0.25, 0.46, 0.45, 0.94],
                   }}
-                  className="group relative h-[380px] overflow-hidden cursor-pointer"
                 >
-                  <Image
-                    src={cat.image}
-                    alt={cat.title}
-                    fill
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
+                  {/* Inner: animación de expand/collapse */}
+                  <motion.div
+                    animate={{
+                      opacity: expanded || !isExtra ? 1 : 0,
+                      y: expanded || !isExtra ? 0 : 16,
+                    }}
+                    transition={{
+                      duration: 0.45,
+                      delay: expanded && isExtra ? (index - 4) * 0.07 : 0,
+                      ease: [0.25, 0.46, 0.45, 0.94],
+                    }}
+                    className="group relative h-[380px] overflow-hidden cursor-pointer"
+                    onClick={() => setStoreModalOpen(true)}
+                  >
+                    <Image
+                      src={cat.image}
+                      alt={cat.title}
+                      fill
+                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
 
-                  {/* Panel blanco que sube al hacer hover */}
-                  <div className="absolute inset-x-0 bottom-0 bg-white border-t-2 border-[#063547] translate-y-[calc(100%-60px)] group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]">
-                    <div className="h-[60px] flex items-center px-6">
-                      <h3 className="font-raleway text-base font-semibold text-[#063547] lowercase leading-tight line-clamp-2">
-                        {cat.title}
-                      </h3>
+                    {/* Panel blanco que sube al hacer hover */}
+                    <div className="absolute inset-x-0 bottom-0 bg-white border-t-2 border-[#063547] translate-y-[calc(100%-60px)] group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]">
+                      <div className="h-[60px] flex items-center px-6">
+                        <h3 className="font-raleway text-base font-semibold text-[#063547] lowercase leading-tight line-clamp-2">
+                          {cat.title}
+                        </h3>
+                      </div>
+                      <div className="px-6 pb-6 pt-1">
+                        <p className="font-outfit text-sm text-[#6e7c7c] leading-relaxed">
+                          {cat.description}
+                        </p>
+                      </div>
                     </div>
-                    <div className="px-6 pb-6 pt-1">
-                      <p className="font-outfit text-sm text-[#6e7c7c] leading-relaxed">
-                        {cat.description}
-                      </p>
-                    </div>
-                  </div>
+                  </motion.div>
                 </motion.div>
               );
             })}
           </div>
         </motion.div>
 
-        <div className="mt-14 flex justify-center">
+        <motion.div
+          className="mt-14 flex justify-center"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.5 }}
+          transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
           <button
             onClick={() => setExpanded(!expanded)}
             className="group flex items-center gap-2 px-8 py-3 rounded-full border-2 border-[#063547] text-[#063547] font-raleway hover:bg-[#063547] hover:text-white transition-colors duration-300"
@@ -141,8 +170,13 @@ export function MenuCategories() {
               <ChevronDown className="w-5 h-5 transition-transform group-hover:translate-y-1" />
             )}
           </button>
-        </div>
+        </motion.div>
       </div>
+
+      <EcommerceModal
+        isOpen={storeModalOpen}
+        onClose={() => setStoreModalOpen(false)}
+      />
     </section>
   );
 }

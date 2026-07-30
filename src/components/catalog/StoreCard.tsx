@@ -28,9 +28,11 @@ const HOVER_CYCLE_MS = 3300;
 export function StoreCard({
   store,
   onMore,
+  entranceDelay = 0,
 }: {
   store: StoreData;
   onMore?: (store: StoreData) => void;
+  entranceDelay?: number;
 }) {
   const images =
     store.images && store.images.length > 0 ? store.images : ["/images/placeholder.jpg"];
@@ -50,6 +52,10 @@ export function StoreCard({
   return (
     <motion.div
       layoutId={`card-${store.id}`}
+      initial={{ opacity: 0, y: 32 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: false, amount: 0.1 }}
+      transition={{ duration: 0.55, delay: entranceDelay, ease: [0.25, 0.46, 0.45, 0.94] }}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
       onClick={() => {
