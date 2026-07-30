@@ -9,7 +9,7 @@ const categories = [
   {
     id: 1,
     title: "Ensaladas",
-    image: "/api/media/file/all-day-breakfast.jpg",
+    image: "/images/menu/ensaladas.jpg",
     description: "Una variedad de bowls y ensaladas que combinan proteínas, vegetales, granos y aderezos llenos de sabor. Opciones completas, coloridas y equilibradas, pensadas para disfrutar una comida diferente sin dejar de lado el gusto.",
     subcategories: ["Bowls de proteína", "Ensaladas frescas", "Granos y aderezos"]
   },
@@ -30,7 +30,7 @@ const categories = [
   {
     id: 4,
     title: "Bollería",
-    image: "/api/media/file/de-nuestro-horno.jpg",
+    image: "/images/menu/bolleria.jpg",
     description: "Una selección de productos horneados que combina opciones clásicas y variadas para cualquier momento del día. Cachitos, croissants, empanadas y quiches con diferentes rellenos, ideales para desayunar, merendar o acompañar tu café.",
     subcategories: ["Cachitos y croissants", "Empanadas", "Quiches"]
   },
