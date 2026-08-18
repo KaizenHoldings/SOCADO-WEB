@@ -6,9 +6,10 @@ import { ProductCard } from "@/components/catalog/ProductCard";
 import { Product } from "@/lib/types/catalog";
 import { BoxDefinition, BoxRequirement } from "@/lib/types/boxes";
 import { useCartStore } from "@/lib/store/cart.store";
-import { CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle, XCircle, ChevronRight, ChevronDown } from "lucide-react";
 import Swal from "sweetalert2";
 import Image from "next/image";
+import { BoxSlotModal } from "@/components/catalog/BoxSlotModal";
 
 interface BoxBuilderProps {
   combos: BoxDefinition[];
@@ -24,6 +25,8 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
   // selections[reqIndex] = array of { product, quantity }
   const [selections, setSelections] = useState<{ [reqIndex: number]: { product: Product, quantity: number }[] }>({});
   const [boxQuantity, setBoxQuantity] = useState<number>(1);
+  // Index of the requirement slot whose modal is currently open; null = closed
+  const [activeSlotModal, setActiveSlotModal] = useState<number | null>(null);
 
   const addItemToCart = useCartStore(state => state.addItem);
 
@@ -122,13 +125,21 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
 
   const handleRemoveProduct = (productId: string, reqIndex: number) => {
     const currentSelected = selections[reqIndex] || [];
-    const newSelected = currentSelected.map(item => 
+    const newSelected = currentSelected.map(item =>
       item.product.id === productId ? { ...item, quantity: item.quantity - 1 } : item
     ).filter(item => item.quantity > 0);
 
     setSelections(prev => ({
       ...prev,
       [reqIndex]: newSelected
+    }));
+  };
+
+  // Remove ALL units of a product from a slot (used by BoxSlotModal deselect action)
+  const handleRemoveAllFromSlot = (productId: string, reqIndex: number) => {
+    setSelections(prev => ({
+      ...prev,
+      [reqIndex]: (prev[reqIndex] || []).filter(item => item.product.id !== productId),
     }));
   };
 
@@ -204,7 +215,7 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
   };
 
   return (
-    <div className="w-full min-h-[calc(100vh-200px)]">
+    <div className="w-full min-h-[calc(100vh-200px)] pb-36 lg:pb-0">
       {/* 1. Selector de Cajas (usa la misma UI que Categories) */}
       <CategoryFilter
         categories={combos.map(b => ({ id: b.id, name: b.name, description: b.description, image: b.imageUrl }))}
@@ -261,8 +272,8 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
         )}
         </section>
 
-        {/* Right Side: Sidebar */}
-        <aside className="sticky top-[170px]  flex-shrink-0 bg-white/50 dark:bg-black/20 border border-black/10 dark:border-white/10 rounded-3xl p-6 shadow-sm flex flex-col gap-6">
+        {/* Right Side: Sidebar — desktop only */}
+        <aside className="hidden lg:flex sticky top-[170px] flex-shrink-0 bg-white/50 dark:bg-black/20 border border-black/10 dark:border-white/10 rounded-3xl p-6 shadow-sm flex-col gap-6">
           <h3 className="font-raleway text-xl font-bold text-[#063547] dark:text-[#f2eae6] border-b border-black/10 dark:border-white/10 pb-4">
              Resumen: {selectedBox.name}
           </h3>
@@ -353,6 +364,95 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
         </aside>
 
       </div>
+
+      {/* ── Mobile Sticky Bottom Bar ── */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-azul-socado shadow-[0_-4px_24px_rgba(6,53,71,0.35)]">
+
+        {/* Row 1: Box title + helper hint */}
+        <div className="flex items-baseline justify-between gap-2 px-4 pt-3 pb-1">
+          <p className="font-raleway text-[11px] font-bold lowercase tracking-[0.12em] text-white/60">
+            box {selectedBox.name}
+          </p>
+          {/* Clickability hint — muted secondary text on dark background */}
+          <p className="shrink-0 font-outfit text-[10px] text-white/40" aria-hidden="true">
+            toca una categoría para editar
+          </p>
+        </div>
+
+        {/* Row 2: Horizontal pill carousel + end chevron */}
+        <div className="flex items-center gap-2 px-4 pb-3">
+          {/* Snap carousel — hides scrollbar on all browsers */}
+          <div className="flex-1 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
+            <div className="flex gap-3 pr-1">
+              {selectedBox.requirements.map((req, idx) => {
+                const selectedQty = (selections[idx] || []).reduce((sum, item) => sum + item.quantity, 0);
+                const isMet = selectedQty === req.quantity;
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveSlotModal(idx)}
+                    aria-label={`Ver selección de ${req.subcategoryName}: ${selectedQty} de ${req.quantity}`}
+                    className={`inline-flex shrink-0 snap-start items-center gap-1 rounded-full border px-3 py-1.5 text-[11px] font-bold lowercase tracking-wide transition-colors active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 ${
+                      isMet
+                        ? "border-ivory bg-ivory text-azul-socado"
+                        : "border-white/20 bg-white/10 text-white/70"
+                    }`}
+                  >
+                    {req.subcategoryName}&nbsp;{selectedQty}/{req.quantity}
+                    <ChevronDown
+                      className={`h-3 w-3 shrink-0 ${isMet ? "text-azul-socado/45" : "text-white/35"}`}
+                      aria-hidden="true"
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* End chevron — scroll affordance */}
+          <ChevronRight className="h-5 w-5 shrink-0 text-white/35" aria-hidden="true" />
+        </div>
+
+        {/* Row 3: Add-to-cart button */}
+        <div className="px-4 pb-5">
+          <button
+            onClick={handleAddBoxToCart}
+            disabled={!isBoxComplete}
+            className={`h-[46px] w-full rounded-full font-outfit font-bold lowercase tracking-wider text-white transition-all ${
+              isBoxComplete
+                ? "bg-terra shadow-lg hover:bg-terra/90"
+                : "cursor-not-allowed bg-white/15"
+            }`}
+          >
+            añadir box al carrito
+          </button>
+        </div>
+
+      </div>
+
+      {/* ── Slot deselection modal (triggered by mobile pills) ── */}
+      <BoxSlotModal
+        isOpen={activeSlotModal !== null}
+        onClose={() => setActiveSlotModal(null)}
+        slotName={
+          activeSlotModal !== null
+            ? selectedBox.requirements[activeSlotModal]?.subcategoryName ?? ""
+            : ""
+        }
+        requiredQty={
+          activeSlotModal !== null
+            ? selectedBox.requirements[activeSlotModal]?.quantity ?? 0
+            : 0
+        }
+        items={activeSlotModal !== null ? (selections[activeSlotModal] ?? []) : []}
+        onRemoveAll={(productId) => {
+          if (activeSlotModal !== null) {
+            handleRemoveAllFromSlot(productId, activeSlotModal);
+          }
+        }}
+      />
+
     </div>
   );
 }

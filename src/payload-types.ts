@@ -80,6 +80,7 @@ export interface Config {
     stores: Store;
     'discount-rules': DiscountRule;
     taxes: Tax;
+    'home-menu-sections': HomeMenuSection;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -100,6 +101,7 @@ export interface Config {
     stores: StoresSelect<false> | StoresSelect<true>;
     'discount-rules': DiscountRulesSelect<false> | DiscountRulesSelect<true>;
     taxes: TaxesSelect<false> | TaxesSelect<true>;
+    'home-menu-sections': HomeMenuSectionsSelect<false> | HomeMenuSectionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -235,9 +237,21 @@ export interface Product {
    */
   description?: string | null;
   price: number;
-  macroCategory?: (number | null) | Macrocategory;
+  /**
+   * Sección destinada a la sección de individuales (boxes). Selecciona la categoría de catering a la que pertenece este producto para que aparezca en el constructor de boxes.
+   */
   categoryCatering?: (number | null) | CatCategory;
+  /**
+   * Grupo principal al que pertenece este producto (ej. Alimentos, Bebidas). Define el primer nivel de navegación en el catálogo público.
+   */
+  macroCategory?: (number | null) | Macrocategory;
+  /**
+   * Categoría dentro de la macrocategoría seleccionada. La lista se filtra automáticamente según la macrocategoría elegida.
+   */
   category?: (number | null) | Category;
+  /**
+   * Segmentación específica dentro de la categoría. Facilita el filtrado y la búsqueda del producto en el catálogo.
+   */
   subCategory?: (number | null) | Subcategory;
   image?: (number | null) | Media;
   gallery?: (number | Media)[] | null;
@@ -464,6 +478,30 @@ export interface Tax {
   createdAt: string;
 }
 /**
+ * Cards de categorías mostradas en la sección "Descubre nuestros productos" de la portada.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-menu-sections".
+ */
+export interface HomeMenuSection {
+  id: number;
+  title: string;
+  /**
+   * Texto que aparece al pasar el mouse por encima de la card en la portada.
+   */
+  description?: string | null;
+  /**
+   * Imagen de fondo de la card. Recomendado: proporción cuadrada o 3:4.
+   */
+  image?: (number | null) | Media;
+  /**
+   * Número menor aparece primero. Ej: 1, 2, 3 …
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -538,6 +576,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'taxes';
         value: number | Tax;
+      } | null)
+    | ({
+        relationTo: 'home-menu-sections';
+        value: number | HomeMenuSection;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -663,8 +705,8 @@ export interface ProductsSelect<T extends boolean = true> {
   name?: T;
   description?: T;
   price?: T;
-  macroCategory?: T;
   categoryCatering?: T;
+  macroCategory?: T;
   category?: T;
   subCategory?: T;
   image?: T;
@@ -827,6 +869,18 @@ export interface TaxesSelect<T extends boolean = true> {
   description?: T;
   value?: T;
   isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-menu-sections_select".
+ */
+export interface HomeMenuSectionsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  image?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }

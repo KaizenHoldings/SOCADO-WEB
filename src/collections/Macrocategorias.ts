@@ -2,6 +2,10 @@ import { CollectionConfig } from 'payload'
 
 export const Macrocategories: CollectionConfig = {
   slug: 'macrocategories',
+  labels: {
+    singular: 'Macrocategoría',
+    plural: 'Macrocategorías',
+  },
   admin: {
     useAsTitle: 'name',
     group: 'General',

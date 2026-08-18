@@ -2,9 +2,13 @@ import { CollectionConfig } from 'payload';
 
 export const Taxes: CollectionConfig = {
   slug: 'taxes',
+  labels: {
+    singular: 'Impuesto',
+    plural: 'Impuestos',
+  },
   admin: {
     useAsTitle: 'name',
-    group: 'Configs',
+    group: 'Configuraciones',
     components: {
       beforeListTable: ['@/components/admin/CsvActions#CsvActions'],
     },

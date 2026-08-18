@@ -31,12 +31,13 @@ const run = async () => {
 
     const user = users[0]
 
-    // Payload tiene la función unlock para colecciones con auth
-    const result = await payload.unlock({
+    // Payload tiene la función unlock para colecciones con auth.
+    // Se usan aserciones de tipo para omitir campos internos no requeridos en runtime.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = await (payload.unlock as any)({
       collection: 'users',
-      data: {
-        email: email,
-      },
+      data: { email },
+      overrideAccess: true,
     })
 
     if (result) {

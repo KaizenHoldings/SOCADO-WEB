@@ -28,6 +28,10 @@ export const OfertaTextoBlock: Block = {
 
 export const Promotions: CollectionConfig = {
   slug: 'promotions',
+  labels: {
+    singular: 'Promoción',
+    plural: 'Promociones',
+  },
   admin: {
     useAsTitle: 'internalName',
     group: 'General',

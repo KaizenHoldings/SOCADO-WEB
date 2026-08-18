@@ -2,9 +2,14 @@ import { CollectionConfig } from 'payload'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
+  labels: {
+    singular: 'Página',
+    plural: 'Páginas',
+  },
   admin: {
     // Esto hace que en el panel de administración la lista muestre el nombre de la página
-    useAsTitle: 'title', 
+    useAsTitle: 'title',
+    group: 'General',
   },
   fields: [
     {

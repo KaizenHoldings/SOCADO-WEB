@@ -3,6 +3,10 @@ import { CollectionConfig } from 'payload'
 
 export const CatCategories: CollectionConfig = {
   slug: 'cat-categories',
+  labels: {
+    singular: 'Categoría Catering',
+    plural: 'Categorías Catering',
+  },
   admin: {
     useAsTitle: 'name',
     group: 'Catering',

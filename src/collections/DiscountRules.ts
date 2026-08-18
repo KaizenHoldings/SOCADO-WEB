@@ -2,9 +2,13 @@ import { CollectionConfig } from 'payload';
 
 export const DiscountRules: CollectionConfig = {
   slug: 'discount-rules',
+  labels: {
+    singular: 'Regla de Descuento',
+    plural: 'Reglas de Descuento',
+  },
   admin: {
     useAsTitle: 'name',
-    group: 'Configs',
+    group: 'Configuraciones',
     description: 'Tabla de descuentos por volumen para cada subcategoría.',
     components: {
       beforeListTable: ['@/components/admin/CsvActions#CsvActions'],

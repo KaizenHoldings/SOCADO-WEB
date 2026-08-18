@@ -2,6 +2,10 @@ import { CollectionConfig } from 'payload'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
+  labels: {
+    singular: 'Categoría',
+    plural: 'Categorías',
+  },
   admin: {
     useAsTitle: 'name',
     group: 'General',

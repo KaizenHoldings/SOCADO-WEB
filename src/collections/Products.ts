@@ -2,6 +2,10 @@ import { CollectionConfig } from 'payload'
 
 export const Products: CollectionConfig = {
   slug: 'products',
+  labels: {
+    singular: 'Producto',
+    plural: 'Productos',
+  },
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['sku', 'name', 'status', 'price', 'category'],
@@ -14,6 +18,7 @@ export const Products: CollectionConfig = {
     read: () => true,
   },
   fields: [
+    // ─── Core product fields ──────────────────────────────────────────────────
     {
       name: 'status',
       type: 'select',
@@ -57,50 +62,102 @@ export const Products: CollectionConfig = {
         placeholder: '0.00',
       },
     },
+
+    // ─── Section heading for the two category collapsibles ───────────────────
+    // `ui` fields are purely presentational: no DB column, no type impact.
     {
-      name: 'macroCategory',
-      type: 'relationship',
-      relationTo: 'macrocategories',
-      label: 'Macrocategoría',
-      required: false,
-    },
-    {
-      name: 'categoryCatering',
-      type: 'relationship',
-      relationTo: 'cat-categories', // Apunta al prefijo correcto
-      required: false,
-      label: 'Categoría(Catering)',
-    },
-    {
-      name: 'category',
-      type: 'relationship',
-      relationTo: 'categories',
-      label: 'Categoría',
-      required: false,
-      filterOptions: ({ data }) => {
-        if (data.macroCategory) {
-          return {
-            macroCategory: { equals: data.macroCategory },
-          }
-        }
-        return false
+      type: 'ui',
+      name: 'categoriesSection',
+      admin: {
+        components: {
+          Field: '@/components/admin/CategorySectionHeader#CategorySectionHeader',
+        },
       },
     },
+
+    // ─── Collapsible 1: Individuales (catering boxes) ────────────────────────
     {
-      name: 'subCategory',
-      type: 'relationship',
-      relationTo: 'subcategories',
-      label: 'Subcategoría',
-      required: false,
-      filterOptions: ({ data }) => {
-        if (data.category) {
-          return {
-            parentCategory: { equals: data.category },
-          }
-        }
-        return false
+      type: 'collapsible',
+      label: 'Información de producto en individuales',
+      admin: {
+        initCollapsed: false,
       },
+      fields: [
+        {
+          name: 'categoryCatering',
+          type: 'relationship',
+          relationTo: 'cat-categories',
+          required: false,
+          label: 'Categoría para individuales',
+          admin: {
+            description:
+              'Sección destinada a la sección de individuales (boxes). Selecciona la categoría de catering a la que pertenece este producto para que aparezca en el constructor de boxes.',
+          },
+        },
+      ],
     },
+
+    // ─── Collapsible 2: Compartir (ecommerce / catálogo público) ─────────────
+    {
+      type: 'collapsible',
+      label: 'Información de producto para compartir',
+      admin: {
+        initCollapsed: false,
+      },
+      fields: [
+        {
+          name: 'macroCategory',
+          type: 'relationship',
+          relationTo: 'macrocategories',
+          label: 'Macrocategoría',
+          required: false,
+          admin: {
+            description:
+              'Grupo principal al que pertenece este producto (ej. Alimentos, Bebidas). Define el primer nivel de navegación en el catálogo público.',
+          },
+        },
+        {
+          name: 'category',
+          type: 'relationship',
+          relationTo: 'categories',
+          label: 'Categoría',
+          required: false,
+          admin: {
+            description:
+              'Categoría dentro de la macrocategoría seleccionada. La lista se filtra automáticamente según la macrocategoría elegida.',
+          },
+          filterOptions: ({ data }) => {
+            if (data.macroCategory) {
+              return {
+                macroCategory: { equals: data.macroCategory },
+              }
+            }
+            return false
+          },
+        },
+        {
+          name: 'subCategory',
+          type: 'relationship',
+          relationTo: 'subcategories',
+          label: 'Subcategoría',
+          required: false,
+          admin: {
+            description:
+              'Segmentación específica dentro de la categoría. Facilita el filtrado y la búsqueda del producto en el catálogo.',
+          },
+          filterOptions: ({ data }) => {
+            if (data.category) {
+              return {
+                parentCategory: { equals: data.category },
+              }
+            }
+            return false
+          },
+        },
+      ],
+    },
+
+    // ─── Media ───────────────────────────────────────────────────────────────
     {
       name: 'image',
       type: 'upload',
@@ -116,6 +173,8 @@ export const Products: CollectionConfig = {
       label: 'Galería de Imágenes (Hover Slide)',
       required: false,
     },
+
+    // ─── Variations ──────────────────────────────────────────────────────────
     {
       name: 'variations',
       type: 'array',
@@ -135,7 +194,8 @@ export const Products: CollectionConfig = {
           type: 'number',
           label: 'Precio Absoluto (Reemplaza el precio base del producto)',
           admin: {
-            description: 'Si defines un precio aquí, el producto costará esto cuando se seleccione esta opción.',
+            description:
+              'Si defines un precio aquí, el producto costará esto cuando se seleccione esta opción.',
           },
         },
         {
@@ -160,7 +220,8 @@ export const Products: CollectionConfig = {
           type: 'number',
           label: 'Ajuste de Precio',
           admin: {
-            description: 'Si esto es un extra (ej. Leche Almendras), usa este campo para sumar al total (ej. 2 para sumar $2).',
+            description:
+              'Si esto es un extra (ej. Leche Almendras), usa este campo para sumar al total (ej. 2 para sumar $2).',
           },
         },
       ],

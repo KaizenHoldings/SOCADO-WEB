@@ -2,9 +2,13 @@ import { CollectionConfig } from 'payload'
 
 export const Stores: CollectionConfig = {
   slug: 'stores',
+  labels: {
+    singular: 'Tienda',
+    plural: 'Tiendas',
+  },
   admin: {
     useAsTitle: 'title',
-    group: 'Configs',
+    group: 'Configuraciones',
     components: {
       beforeListTable: ['@/components/admin/CsvActions#CsvActions'],
     },
