@@ -151,16 +151,14 @@ export function LocationPicker({ onLocationChange }: LocationPickerProps) {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-bold text-[#063547] dark:text-[#f2eae6]">Latitud</label>
-          <input readOnly value={coords.lat.toFixed(6)} className="w-full min-w-0 rounded-lg border border-black/10 bg-black/5 px-3 py-2 text-sm text-[#063547] dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-bold text-[#063547] dark:text-[#f2eae6]">Longitud</label>
-          <input readOnly value={coords.lng.toFixed(6)} className="w-full min-w-0 rounded-lg border border-black/10 bg-black/5 px-3 py-2 text-sm text-[#063547] dark:border-white/10 dark:bg-white/5 dark:text-[#f2eae6]" />
-        </div>
-      </div>
+      {/*
+        Las coordenadas ya no se muestran, pero `coords` sigue actualizándose con
+        cada interacción del mapa y se envía al formulario mediante
+        `onLocationChange`, de modo que el payload no cambia.
+      */}
+      <p className="font-outfit text-sm text-[#6e7c7c] dark:text-[#b2b5a9] -mb-2">
+        No te preocupes si no te localizas exactamente en el mapa ya que esta localización es referencial.
+      </p>
 
       <div ref={mapRef} className="h-[300px] w-full rounded-xl border border-black/10 z-0"></div>
     </div>

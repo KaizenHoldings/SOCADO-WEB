@@ -4,12 +4,12 @@ import { CollectionConfig } from 'payload';
 export const CatCombos: CollectionConfig = {
   slug: 'cat-combos',
   labels: {
-    singular: 'Combo Catering',
-    plural: 'Combos Catering',
+    singular: 'Combo individual (box)',
+    plural: 'Combos individuales (box)',
   },
   admin: {
     useAsTitle: 'name',
-    group: 'Catering',
+    group: 'Combos individuales (box)',
     components: {
       beforeListTable: ['@/components/admin/CsvActions#CsvActions'],
     },

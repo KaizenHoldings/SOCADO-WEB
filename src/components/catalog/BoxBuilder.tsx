@@ -6,6 +6,7 @@ import { ProductCard } from "@/components/catalog/ProductCard";
 import { Product } from "@/lib/types/catalog";
 import { BoxDefinition, BoxRequirement } from "@/lib/types/boxes";
 import { useCartStore } from "@/lib/store/cart.store";
+import { visibleProducts } from "@/lib/utils/product.utils";
 import { CheckCircle, XCircle, ChevronRight, ChevronDown } from "lucide-react";
 import Swal from "sweetalert2";
 import Image from "next/image";
@@ -69,13 +70,17 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
     
     if (!requirement) return [];
 
+    // Oculta los productos inactivos o en borrador antes de aplicar las reglas
+    // del slot, para que ambas ramas partan del mismo catálogo visible.
+    const catalogoVisible = visibleProducts(products);
+
     // Si el slot tiene productos explícitos, filtramos por esos IDs
     if (requirement.allowedProductIds && requirement.allowedProductIds.length > 0) {
-      return products.filter(p => requirement.allowedProductIds!.includes(String(p.id)));
+      return catalogoVisible.filter(p => requirement.allowedProductIds!.includes(String(p.id)));
     }
 
     // Fallback: todos los productos de la categoría
-    return products.filter(p => {
+    return catalogoVisible.filter(p => {
       const pCatId = p.categoryCateringId;
       return pCatId && String(pCatId) === String(requirement.categoryId);
     });

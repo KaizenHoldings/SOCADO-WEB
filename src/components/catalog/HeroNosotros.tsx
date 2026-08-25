@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export function HeroNosotros() {
   return (
-    <section className="relative w-full h-[70vh] min-h-[480px] overflow-hidden">
+    <section className="relative w-full h-dvh overflow-hidden">
       <Image
         src="/images/hero_nosotros.jpg"
         alt="Socado Café — Nosotros"

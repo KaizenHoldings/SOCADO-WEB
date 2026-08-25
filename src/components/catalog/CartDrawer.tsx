@@ -4,10 +4,69 @@ import { useCartStore } from "@/lib/store/cart.store";
 import { X, Trash2, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { calculateDiscounts, getItemUnitPrice } from "@/lib/utils/discount.utils";
 import { motion, AnimatePresence } from "motion/react";
 import { ButtonDark } from "@/components/catalog/ButtonDark";
+
+/**
+ * Isolated quantity input that keeps a local draft string so the user can
+ * freely clear and retype the value without the controlled-input lock-up.
+ *
+ * - onChange  : updates the draft and eagerly writes valid values to the store
+ *               so totals stay live while typing.
+ * - onBlur    : commits the final value; falls back to 1 if the field is empty
+ *               or contains a non-positive number.
+ * - useEffect : syncs the draft when the quantity prop changes from outside
+ *               this input (e.g. addItem called elsewhere), but only while the
+ *               field is not focused to avoid fighting an in-progress edit.
+ */
+function CartItemQuantityInput({
+  itemId,
+  quantity,
+  onUpdate,
+}: {
+  itemId: string | number;
+  quantity: number;
+  onUpdate: (id: string | number, qty: number) => void;
+}) {
+  const [draft, setDraft] = useState<string>(String(quantity));
+  const focused = useRef(false);
+
+  useEffect(() => {
+    if (!focused.current) {
+      setDraft(String(quantity));
+    }
+  }, [quantity]);
+
+  return (
+    <input
+      type="number"
+      min={1}
+      value={draft}
+      onFocus={() => {
+        focused.current = true;
+      }}
+      onChange={(e) => {
+        const raw = e.target.value;
+        setDraft(raw);
+        // Eagerly push valid values so the price summary stays up-to-date
+        const n = parseInt(raw, 10);
+        if (Number.isFinite(n) && n > 0) {
+          onUpdate(itemId, n);
+        }
+      }}
+      onBlur={(e) => {
+        focused.current = false;
+        const n = parseInt(e.target.value, 10);
+        const safe = Number.isFinite(n) && n > 0 ? n : 1;
+        setDraft(String(safe));
+        onUpdate(itemId, safe);
+      }}
+      className="w-16 rounded-md border border-black/10 bg-transparent px-2 py-1 text-sm dark:border-white/10 dark:text-[#f2eae6]"
+    />
+  );
+}
 
 export function CartDrawer() {
   const { isDrawerOpen, closeDrawer, items, removeItem, updateQuantity, discountRules, fetchDiscountRules, taxes, fetchTaxes } = useCartStore();
@@ -23,9 +82,6 @@ export function CartDrawer() {
 
 
   const { totalOriginal, totalDiscount, totalTax, totalFinal, appliedRules, appliedTaxes } = calculateDiscounts(items, discountRules, taxes);
-
-  // Vista destacada de los últimos 3 productos agregados
-  const recentItems = [...items].reverse().slice(0, 3);
 
   const handleCheckout = () => {
     closeDrawer();
@@ -102,31 +158,6 @@ export function CartDrawer() {
             </div>
           ) : (
             <div className="space-y-8">
-              {/* Vista de últimos 3 productos (Requisito) */}
-              <div className="rounded-xl bg-black/5 p-4 dark:bg-white/5">
-                <h3 className="mb-3 text-sm font-bold lowercase tracking-wider text-[#b45b38]">
-                  Agregados Recientemente
-                </h3>
-                <div className="flex flex-wrap gap-3">
-                  {recentItems.map((item) => (
-                    <div key={item.id || item.product.id} className="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm dark:bg-[#063547]">
-                      <div className="relative h-10 w-10 overflow-hidden rounded-md">
-                        <Image 
-                          src={item.product.image} 
-                          alt={item.product.name} 
-                          fill 
-                          className={item.product.image.includes('isotipo.png') ? 'object-contain p-2 opacity-30 dark:opacity-50' : 'object-cover'} 
-                        />
-                      </div>
-                      <div className="text-xs">
-                        <p className="font-bold text-[#063547] line-clamp-1 dark:text-[#f2eae6]">{item.product.name}</p>
-                        <p className="text-[#6e7c7c] dark:text-[#b2b5a9]">Cant: {item.quantity}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               {/* Lista completa */}
               <div className="space-y-6">
                 {items.map((item) => (
@@ -164,12 +195,10 @@ export function CartDrawer() {
                         <label className="text-xs font-bold text-[#6e7c7c] dark:text-[#b2b5a9]">
                           Porciones:
                         </label>
-                        <input 
-                          type="number" 
-                          min={1}
-                          value={item.quantity}
-                          onChange={(e) => updateQuantity(item.id || item.product.id, parseInt(e.target.value) || 1)}
-                          className="w-16 rounded-md border border-black/10 bg-transparent px-2 py-1 text-sm dark:border-white/10 dark:text-[#f2eae6]"
+                        <CartItemQuantityInput
+                          itemId={item.id || item.product.id}
+                          quantity={item.quantity}
+                          onUpdate={updateQuantity}
                         />
                       </div>
                     </div>
@@ -191,10 +220,8 @@ export function CartDrawer() {
             
             {appliedRules.length > 0 && appliedRules.map((rule, idx) => (
               <div key={idx} className="mb-2 flex items-center justify-between text-sm text-[#b45b38]">
-                <span className="font-bold">{rule.ruleName} ({rule.percentage}%)</span>
-                <span className="font-bold">
-                  -REF {rule.discountAmount.toFixed(2)}
-                </span>
+                <span className="font-bold">{rule.ruleName}</span>
+                <span className="font-bold">-{rule.percentage}%</span>
               </div>
             ))}
 

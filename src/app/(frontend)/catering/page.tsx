@@ -140,6 +140,7 @@ export default function CateringPage() {
         const mappedProducts: Product[] = (dataProd.docs || []).map((p: any) => ({
           id: p.id,
           codigo: p.codigo || p.sku || "",
+          status: p.status,
           name: p.name,
           description: p.description || "", 
           price: p.price,

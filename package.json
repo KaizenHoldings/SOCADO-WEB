@@ -16,7 +16,8 @@
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" playwright test --config=playwright.config.ts",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
-    "unlock-user": "cross-env NODE_OPTIONS=--no-deprecation tsx unlock-user.ts"
+    "unlock-user": "cross-env NODE_OPTIONS=--no-deprecation tsx unlock-user.ts",
+    "report:visual": "cross-env NODE_OPTIONS=--no-deprecation playwright test --config=playwright.visual.config.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.85.0",

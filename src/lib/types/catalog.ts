@@ -23,6 +23,12 @@ export interface ProductVariationChoice {
 export interface Product {
   id: string;
   codigo?: string;
+  /**
+   * Estado editorial definido en el CMS. Opcional porque la UI tambien
+   * construye productos sinteticos (por ejemplo los boxes armados) que no
+   * provienen de la coleccion de productos.
+   */
+  status?: 'active' | 'inactive' | 'draft';
   name: string;
   description: string;
   price: number; // Precio unitario o por porción

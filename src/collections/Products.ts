@@ -1,4 +1,5 @@
 import { CollectionConfig } from 'payload'
+import { priceExportHandler, priceImportHandler } from '@/lib/endpoints/products-price'
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -11,12 +12,28 @@ export const Products: CollectionConfig = {
     defaultColumns: ['sku', 'name', 'status', 'price', 'category'],
     group: 'General',
     components: {
-      beforeListTable: ['@/components/admin/CsvActions#CsvActions'],
+      beforeListTable: [
+        '@/components/admin/CsvActions#CsvActions',
+        '@/components/admin/PriceActions#PriceActions',
+      ],
     },
   },
   access: {
     read: () => true,
   },
+  // Bulk price management: CSV export (id, name, price) and CSV import (price updates)
+  endpoints: [
+    {
+      path: '/price-export',
+      method: 'get',
+      handler: priceExportHandler,
+    },
+    {
+      path: '/price-import',
+      method: 'post',
+      handler: priceImportHandler,
+    },
+  ],
   fields: [
     // ─── Core product fields ──────────────────────────────────────────────────
     {
@@ -88,7 +105,7 @@ export const Products: CollectionConfig = {
           type: 'relationship',
           relationTo: 'cat-categories',
           required: false,
-          label: 'Categoría para individuales',
+          label: 'Categoría para individuales (box)',
           admin: {
             description:
               'Sección destinada a la sección de individuales (boxes). Selecciona la categoría de catering a la que pertenece este producto para que aparezca en el constructor de boxes.',

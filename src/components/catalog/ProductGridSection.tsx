@@ -1,5 +1,6 @@
 "use client";
 
+import { visibleProducts } from '@/lib/utils/product.utils'
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { Product } from "@/lib/types/catalog";
 import Image from "next/image";
@@ -31,6 +32,12 @@ export function ProductGridSection({
   onNextPage,
   onPrevPage,
 }: ProductGridSectionProps) {
+  // Oculta del catálogo público los productos inactivos o en borrador.
+  // Se calcula una sola vez para que el estado vacío y la grilla coincidan:
+  // filtrar únicamente dentro del .map() dejaría el contador en el total real
+  // y mostraría una grilla vacía en lugar del mensaje "sin productos".
+  const visibleFilteredProducts = visibleProducts(filteredProducts)
+
   return (
     <section className="mx-auto max-w-[1400px] px-6 lg:px-12">
       {/* Título de la categoría activa y Grid de Productos */}
@@ -48,10 +55,10 @@ export function ProductGridSection({
           <div className="flex justify-center py-20">
             <Image src="/images/socado-loader.svg" alt="Cargando productos..." width={180} height={40} priority className="animate-pulse" />
           </div>
-        ) : filteredProducts.length > 0 ? (
+        ) : visibleFilteredProducts.length > 0 ? (
           <>
             <div className="grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {filteredProducts.map((product) => (
+              {visibleFilteredProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
