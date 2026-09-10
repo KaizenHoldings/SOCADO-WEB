@@ -2,13 +2,52 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { motion, useReducedMotion } from "motion/react";
 
 interface PideAhoraStickerProps {
   onClick: () => void;
+  /**
+   * The same `revealDelay` the header applies to its own entry, in seconds.
+   * The sticker offsets from it so it always lands after the header settles.
+   */
+  revealDelay?: number;
 }
 
-export function PideAhoraSticker({ onClick }: PideAhoraStickerProps) {
+/**
+ * Resting scale of the floating stage. Motion composes its own `transform`, so
+ * this value has to travel with the animated values instead of living in the
+ * style block, otherwise the generated transform overwrites it.
+ */
+const STICKER_SCALE = 0.35;
+
+/**
+ * How long the header's entry runs once it starts.
+ *
+ * The header animates with a spring (stiffness 300 / damping 22) plus a
+ * separate 0.4s opacity tween. That spring settles in roughly 0.17s, so the
+ * opacity tween is what actually gates completion — hence 0.4s. Keep this in
+ * sync with the `transition` block in Header.tsx.
+ */
+const HEADER_ENTRY_DURATION = 0.4;
+
+/**
+ * Entry spring for the slide-in.
+ *
+ * Underdamped on purpose so the sticker overshoots once and settles back,
+ * giving the sticker a physical weight as it lands. At stiffness 220 /
+ * damping 12 the damping ratio is 0.405, which produces a ~25% overshoot
+ * (about 12px on the 50px travel) and a second rebound of only ~1.5% — one
+ * clear bounce rather than a visible wobble. Raising stiffness or dropping
+ * damping further pushes the rebound into cartoonish territory.
+ */
+const ENTRY_SPRING = { type: "spring", stiffness: 220, damping: 12 } as const;
+
+export function PideAhoraSticker({ onClick, revealDelay = 0 }: PideAhoraStickerProps) {
   const [hoverState, setHoverState] = useState({ px: 0, py: 0, hover: false });
+  const prefersReducedMotion = useReducedMotion();
+
+  // Starts exactly when the header has finished its entry sequence.
+  const entryDelay = revealDelay + HEADER_ENTRY_DURATION;
 
   const onMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -79,14 +118,24 @@ export function PideAhoraSticker({ onClick }: PideAhoraStickerProps) {
       `}</style>
       
       {/* Container simulating the stage */}
-      <div
+      <motion.div
         className="fixed bottom-6 right-6 z-[90] flex items-center justify-center pointer-events-none"
         style={{
           width: "200px", // bounded container for the bottom corner
           height: "250px",
           transformOrigin: "bottom right",
-          transform: "scale(0.35)", // make it smaller to match previous sticker size
         }}
+        // Slide-in from the right. `scale` is carried through every keyframe so
+        // the sticker keeps the size it had before the animation was added.
+        initial={{ x: prefersReducedMotion ? 0 : 50, opacity: 0, scale: STICKER_SCALE }}
+        whileInView={{ x: 0, opacity: 1, scale: STICKER_SCALE }}
+        viewport={{ once: false }}
+        transition={
+          prefersReducedMotion
+            ? // Reduced motion: plain crossfade, no travel and no bounce.
+              { duration: 0.3, ease: "easeOut", delay: entryDelay }
+            : { ...ENTRY_SPRING, delay: entryDelay }
+        }
       >
         <div style={{ position: "relative", width: "380px", height: "420px", display: "flex", alignItems: "center", justifyContent: "center", perspective: "800px" }}>
           
@@ -157,7 +206,7 @@ export function PideAhoraSticker({ onClick }: PideAhoraStickerProps) {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }

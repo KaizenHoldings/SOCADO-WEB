@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { Header } from "@/components/catalog/Header";
@@ -16,6 +16,8 @@ import { Product } from "@/lib/types/catalog";
 import { useCartStore } from "@/lib/store/cart.store";
 import { CartDrawer } from "@/components/catalog/CartDrawer";
 import { ButtonLightBack } from "@/components/catalog/ButtonLightBack";
+import { StickyCategoryBar } from "@/components/catalog/StickyCategoryBar";
+import { SubcategoryBar, getActiveSubcategories } from "@/components/catalog/SubcategoryBar";
 
 export default function CateringPage() {
   const [macrocategories, setMacrocategories] = useState<any[]>([]);
@@ -43,18 +45,29 @@ export default function CateringPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
-  const [showCategoryContext, setShowCategoryContext] = useState(false);
+  /**
+   * Elegir una categoria principal invalida la subcategoria anterior, que
+   * pertenece a otra categoria.
+   *
+   * Se limpia a null en vez de fijar aqui la primera: `subcategories` se pide
+   * por categoria, asi que en este instante todavia contiene las de la
+   * categoria anterior. El efecto de abajo elige la primera en cuanto llegan
+   * las nuevas.
+   */
+  const handleSelectCategory = (categoryId: string | number) => {
+    setSelectedCategory(categoryId);
+    setSelectedSubcategory(null);
+  };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      // El título mide aprox 150px-200px de alto con paddings.
-      setShowCategoryContext(window.scrollY > 150);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    // check inicial
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  /**
+   * Shared signal: true while the sticky category bar is docked. Owned here
+   * because three siblings depend on it — the bar reports it, the
+   * ViewModeToggle shrinks on it, and the subcategory bar re-docks on it.
+   */
+  const [isStickyNavActive, setIsStickyNavActive] = useState(false);
+
+  // Watched by StickyCategoryBar: the bar appears once this scrolls off the top.
+  const categorySelectorRef = useRef<HTMLDivElement>(null);
 
   // Efecto para buscar todas las categorías directamente desde el backend de Payload
   useEffect(() => {
@@ -177,6 +190,14 @@ export default function CateringPage() {
     };
   }, [selectedCategory, selectedSubcategory, viewMode, page]);
 
+  // Auto-seleccionar la primera subcategoria de la categoria activa.
+  useEffect(() => {
+    if (viewMode !== "libre") return;
+    if (selectedSubcategory !== null) return;
+    const first = getActiveSubcategories(subcategories, selectedCategory)[0];
+    if (first) setSelectedSubcategory(first.id);
+  }, [subcategories, selectedCategory, selectedSubcategory, viewMode]);
+
   // Reset page when filters change
   useEffect(() => {
     setPage(1);
@@ -267,32 +288,43 @@ export default function CateringPage() {
             
             <HowItWorksCatering />
             
-            <section className="min-h-screen flex flex-col">
+            {/*
+              `min-h-screen` only from `md`. On mobile the section hugs its
+              content, otherwise releasing the grid stretch below would leave a
+              tall empty gap under the two tiles.
+            */}
+            <section className="flex flex-col md:min-h-screen pb-4 md:pb-0">
               <div className="w-full text-center py-12 px-6">
                 <h2 className="font-raleway text-3xl md:text-4xl lowercase tracking-wider text-[#063547] dark:text-[#f2eae6]">
                   selecciona tu tipo de catering
                 </h2>
               </div>
               
-              <div className="flex flex-col md:flex-row w-full flex-1">
+              {/*
+                Strict two-column grid so the pair can never overflow the
+                viewport. On mobile the tiles are inset and separated; from `md`
+                the gutters collapse to nothing, restoring the original
+                edge-to-edge split.
+              */}
+              <div className="grid grid-cols-2 gap-2 w-full flex-1 overflow-hidden px-2 items-start md:items-stretch md:gap-0 md:px-0">
               {/* Mitad 1: Individuales */}
             <div
               onClick={() => { setViewMode("box"); setHasSelectedMode(true); }}
-              className="relative w-full md:w-1/2 min-h-[50vh] md:min-h-0 cursor-pointer group overflow-hidden"
+              className="relative min-w-0 aspect-square md:aspect-auto md:min-h-0 cursor-pointer group overflow-hidden"
             >
               <Image
                 src="/images/individuales.png"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 alt="Individuales"
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="50vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-              <div className="absolute inset-0 flex flex-col justify-end p-10 lg:p-14">
-                <h3 className="font-outfit text-4xl lg:text-5xl font-light text-white lowercase tracking-wide transition-transform duration-300 group-hover:translate-y-[-4px]">
+              <div className="absolute inset-0 flex flex-col justify-end items-center text-center p-2 md:items-start md:text-left md:p-10 lg:p-14">
+                <h3 className="font-outfit text-xs leading-tight tracking-normal md:text-4xl md:leading-normal md:tracking-wide lg:text-5xl font-light text-white lowercase transition-transform duration-300 group-hover:translate-y-[-4px]">
                   individuales
                 </h3>
-                <p className="font-outfit text-white/60 text-sm mt-2 lowercase tracking-widest">
+                <p className="font-outfit text-white/60 text-[9px] mt-0.5 leading-tight tracking-normal md:text-sm md:mt-2 md:tracking-widest lowercase">
                   boxes por persona
                 </p>
               </div>
@@ -301,21 +333,21 @@ export default function CateringPage() {
             {/* Mitad 2: Para compartir */}
             <div
               onClick={() => { setViewMode("libre"); setHasSelectedMode(true); }}
-              className="relative w-full md:w-1/2 min-h-[50vh] md:min-h-0 cursor-pointer group overflow-hidden"
+              className="relative min-w-0 aspect-square md:aspect-auto md:min-h-0 cursor-pointer group overflow-hidden"
             >
               <Image
                 src="/images/servicio.jpg"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 alt="Para compartir"
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="50vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-              <div className="absolute inset-0 flex flex-col justify-end p-10 lg:p-14">
-                <h3 className="font-outfit text-4xl lg:text-5xl font-light text-white lowercase tracking-wide transition-transform duration-300 group-hover:translate-y-[-4px]">
+              <div className="absolute inset-0 flex flex-col justify-end items-center text-center p-2 md:items-start md:text-left md:p-10 lg:p-14">
+                <h3 className="font-outfit text-xs leading-tight tracking-normal md:text-4xl md:leading-normal md:tracking-wide lg:text-5xl font-light text-white lowercase transition-transform duration-300 group-hover:translate-y-[-4px]">
                   para compartir
                 </h3>
-                <p className="font-outfit text-white/60 text-sm mt-2 lowercase tracking-widest">
+                <p className="font-outfit text-white/60 text-[9px] mt-0.5 leading-tight tracking-normal md:text-sm md:mt-2 md:tracking-widest lowercase">
                   bandejas y opciones grupales
                 </p>
               </div>
@@ -346,6 +378,7 @@ export default function CateringPage() {
               {/* Fila 1: Toggle (Ancho completo) */}
               <div className="w-full">
                 <ViewModeToggle 
+                  compact={isStickyNavActive}
                   viewMode={viewMode} 
                   onChange={setViewMode} 
                   selectedBoxName={viewMode === "box" ? selectedBoxName : undefined}
@@ -355,6 +388,18 @@ export default function CateringPage() {
 
         {viewMode === "libre" ? (
           <>
+            {/*
+              Persistent category context. Hidden until the selector below
+              scrolls off the top; rendered outside it so it is not clipped.
+            */}
+            <StickyCategoryBar
+              categories={filteredCategories}
+              selectedCategory={selectedCategory}
+              onSelectCategory={handleSelectCategory}
+              watchRef={categorySelectorRef}
+              onVisibilityChange={setIsStickyNavActive}
+            />
+
             {/* Filtros de Categoría (Edge-to-Edge Cards) */}
             <div className="w-full">
           {isLoadingCategories ? (
@@ -375,15 +420,31 @@ export default function CateringPage() {
               </div>
           ) : (
             <CategoryFilter
+              gridRef={categorySelectorRef}
+              renderSubcategories={false}
               categories={filteredCategories}
               subcategories={subcategories}
               selectedCategory={selectedCategory}
               selectedSubcategory={selectedSubcategory}
-              onSelectCategory={setSelectedCategory}
+              onSelectCategory={handleSelectCategory}
               onSelectSubcategory={setSelectedSubcategory}
             />
           )}
         </div>
+
+        {/*
+          Subcategorias: hermanas de la grilla de productos, no hijas de
+          CategoryFilter. `position: sticky` se limita a la caja del padre, y
+          dentro de CategoryFilter el padre terminaba justo donde terminan las
+          pildoras: sin recorrido, nunca se fijaban. Aqui el bloque contenedor
+          abarca toda la zona que hace scroll.
+        */}
+        <SubcategoryBar
+          compact={isStickyNavActive}
+          subcategories={getActiveSubcategories(subcategories, selectedCategory)}
+          selectedSubcategory={selectedSubcategory}
+          onSelectSubcategory={setSelectedSubcategory}
+        />
 
         {/* Contenedor Principal de Productos */}
         <ProductGridSection
@@ -406,6 +467,7 @@ export default function CateringPage() {
             products={products} 
             subcategories={subcategories} 
             onBoxChange={setSelectedBoxName}
+            onStickyNavChange={setIsStickyNavActive}
           />
         )}
 

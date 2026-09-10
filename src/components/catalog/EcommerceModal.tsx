@@ -203,9 +203,7 @@ export function EcommerceModal({ isOpen, onClose }: EcommerceModalProps) {
               {/* Header azul */}
               <div className="flex items-center justify-between px-8 py-6 bg-[#063547]">
                 <div>
-                  <p className="font-outfit text-[10px] lowercase tracking-[0.25em] text-white/50 mb-1">
-                    Socado Café
-                  </p>
+                 
                   <h2 className="font-raleway text-2xl font-bold text-white lowercase">
                     elige tu tienda
                   </h2>

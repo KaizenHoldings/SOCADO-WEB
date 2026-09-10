@@ -196,7 +196,10 @@ export function Header({
       />
 
       {activePage === "home" && (
-        <PideAhoraSticker onClick={() => setIsEcommerceModalOpen(true)} />
+        <PideAhoraSticker
+          onClick={() => setIsEcommerceModalOpen(true)}
+          revealDelay={revealDelay}
+        />
       )}
 
       {/* Menú Móvil Pantalla Completa */}

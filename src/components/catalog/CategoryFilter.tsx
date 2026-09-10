@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import Image from "next/image";
+import { SubcategoryBar, getActiveSubcategories } from "@/components/catalog/SubcategoryBar";
 
 interface CategoryFilterProps {
   categories: any[];
@@ -8,6 +9,19 @@ interface CategoryFilterProps {
   selectedSubcategory: string | number | null;
   onSelectCategory: (categoryId: string | number) => void;
   onSelectSubcategory: (subcategoryId: string | number | null) => void;
+  /**
+   * Attached to the category card grid only — deliberately excluding the
+   * subcategory pills below it. StickyCategoryBar observes this element, so
+   * its bottom edge is what decides when the docked bar appears.
+   */
+  gridRef?: React.RefObject<HTMLDivElement | null>;
+  /**
+   * Set false when the parent renders the subcategory bar itself. Sticky is
+   * constrained by the parent box, so on the catering page the bar must live
+   * higher up the tree to have any scroll travel. BoxBuilder keeps the
+   * default and is unaffected.
+   */
+  renderSubcategories?: boolean;
 }
 
 export function CategoryFilter({
@@ -17,6 +31,8 @@ export function CategoryFilter({
   selectedSubcategory,
   onSelectCategory,
   onSelectSubcategory,
+  gridRef,
+  renderSubcategories = true,
 }: CategoryFilterProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -33,21 +49,22 @@ export function CategoryFilter({
   };
 
   // Obtenemos las subcategorías de la categoría actual
-  const activeSubcategories = subcategories.filter((sub) => {
-    const parentId = sub.parentCategory?.id ?? sub.parentCategory;
-    return String(parentId) === String(selectedCategory);
-  }); 
+  const activeSubcategories = getActiveSubcategories(subcategories, selectedCategory);
   // Preseleccionar la primera subcategoría
   React.useEffect(() => {
+    // Solo cuando este componente es dueno de las pildoras. En catering las
+    // renderiza la pagina, que tiene su propio efecto; sin esta guarda ambos
+    // dispararian la misma seleccion.
+    if (!renderSubcategories) return;
     if (selectedSubcategory === null && activeSubcategories.length > 0) {
       onSelectSubcategory(activeSubcategories[0].id);
     }
-  }, [selectedSubcategory, selectedCategory, activeSubcategories.length, onSelectSubcategory]);
+  }, [renderSubcategories, selectedSubcategory, selectedCategory, activeSubcategories.length, onSelectSubcategory]);
 
   return (
     <div className="w-full">
       {/* Categories Horizontal Grid - Edge to Edge */}
-      <div className="group/slider relative w-full">
+      <div ref={gridRef} className="group/slider relative w-full">
         {/* Botón Izquierda */}
         {categories.length > 2 && (
           <button
@@ -78,12 +95,10 @@ export function CategoryFilter({
                     inline: "center",
                   });
                 }}
-                className={`group relative flex h-[350px] min-w-[280px] sm:min-w-[320px] flex-1 shrink-0 snap-start flex-col overflow-hidden transition-all sm:h-[400px] lg:h-[500px] ${
-                  isActive ? "opacity-100" : "opacity-95 hover:opacity-100"
-                }`}
+                className={`group relative flex h-[350px] min-w-[280px] sm:min-w-[320px] flex-1 shrink-0 snap-start flex-col overflow-hidden transition-all duration-300 ease-in-out sm:h-[400px] lg:h-[500px]`}
               >
                 {/* Category Image */}
-                <div className="absolute inset-0 bg-[#f2eae6] dark:bg-black/20">
+                <div className="absolute inset-0 bg-azul-socado ">
                   {imageUrl ? (
                     <Image
                       src={typeof imageUrl === 'string' ? imageUrl : ""}
@@ -101,18 +116,17 @@ export function CategoryFilter({
                 </div>
                 
                 {/* Gradient Overlay for Text */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#063547]/90 via-[#063547]/30 to-transparent transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-t from-azul-socado/90 via-azul-socado/30 to-transparent transition-opacity" />
 
                 {/* Category Name */}
                 <div className="absolute bottom-0 left-0 p-6 md:p-8 text-left w-full">
                   <span
-                    className={`font-outfit text-xl font-bold tracking-wide text-[#f2eae6] sm:text-xl lg:text-xl block w-full truncate lowercase`}
+                    className={`font-outfit text-xl tracking-wide sm:text-xl lg:text-xl block w-full truncate lowercase transition-all duration-300 ease-in-out ${
+                      isActive ? "text-[#f2eae6] font-bold" : "text-white/75 font-normal"
+                    }`}
                   >
                     {cat.name}
                   </span>
-                  {isActive && (
-                    <div className="mt-4 h-1.5 w-12 bg-[#b45b38] rounded-full" />
-                  )}
                 </div>
               </button>
             );
@@ -131,27 +145,17 @@ export function CategoryFilter({
         )}
       </div>
 
-      {/* Subcategories (Pills) */}
-      {activeSubcategories.length > 0 && (
-        <div className="mt-6 flex flex-wrap gap-2 md:gap-3 px-6">
-
-          {activeSubcategories.map((sub) => {
-            const isSubActive = selectedSubcategory === sub.id;
-            return (
-              <button
-                key={sub.id}
-                onClick={() => onSelectSubcategory(sub.id)}
-                className={`truncate max-w-[200px] sm:max-w-xs md:max-w-sm rounded-full px-5 py-2.5 text-xs font-bold lowercase tracking-wider transition-all md:text-sm ${
-                  isSubActive
-                    ? "bg-celeste-socado text-white shadow-md"
-                    : "bg-black/5 text-[#6e7c7c] hover:bg-black/10 hover:text-[#063547] dark:bg-white/5 dark:text-[#b2b5a9] dark:hover:bg-white/10 dark:hover:text-[#f2eae6]"
-                }`}
-              >
-                {sub.name}
-              </button>
-            );
-          })}
-        </div>
+      {/*
+        Subcategories (Pills). On the catering page the parent renders these
+        itself (renderSubcategories={false}) so that sticky has a tall enough
+        containing block; BoxBuilder still renders them here.
+      */}
+      {renderSubcategories && (
+        <SubcategoryBar
+          subcategories={activeSubcategories}
+          selectedSubcategory={selectedSubcategory}
+          onSelectSubcategory={onSelectSubcategory}
+        />
       )}
     </div>
   );

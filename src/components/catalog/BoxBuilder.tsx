@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CategoryFilter } from "@/components/catalog/CategoryFilter";
+import { StickyCategoryBar } from "@/components/catalog/StickyCategoryBar";
+import { SubcategoryBar } from "@/components/catalog/SubcategoryBar";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { Product } from "@/lib/types/catalog";
 import { BoxDefinition, BoxRequirement } from "@/lib/types/boxes";
@@ -17,11 +19,16 @@ interface BoxBuilderProps {
   products: Product[];
   subcategories: any[];
   onBoxChange?: (boxName: string) => void;
+  /** Mirrors the libre branch: lets the page shrink the ViewModeToggle. */
+  onStickyNavChange?: (active: boolean) => void;
 }
 
-export function BoxBuilder({ combos, products, subcategories, onBoxChange }: BoxBuilderProps) {
+export function BoxBuilder({ combos, products, subcategories, onBoxChange, onStickyNavChange }: BoxBuilderProps) {
   const [selectedBoxId, setSelectedBoxId] = useState<string | number>(combos[0]?.id || "");
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | number | null>(null);
+  /** Observed by StickyCategoryBar: the box cards grid. */
+  const boxGridRef = useRef<HTMLDivElement>(null);
+  const [isStickyNavActive, setIsStickyNavActive] = useState(false);
   
   // selections[reqIndex] = array of { product, quantity }
   const [selections, setSelections] = useState<{ [reqIndex: number]: { product: Product, quantity: number }[] }>({});
@@ -47,6 +54,21 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
     name: req.subcategoryName,
     parentCategory: selectedBox.id
   }));
+
+  // Report docking state so the page can shrink the ViewModeToggle.
+  useEffect(() => {
+    onStickyNavChange?.(isStickyNavActive);
+  }, [isStickyNavActive, onStickyNavChange]);
+
+  // Preseleccionar el primer requisito. CategoryFilter lo hacia mientras
+  // renderizaba las pildoras; ahora las renderiza SubcategoryBar, asi que la
+  // logica vive aqui para no cambiar el comportamiento existente.
+  useEffect(() => {
+    if (selectedSubcategory === null && reqSubcategories.length > 0) {
+      setSelectedSubcategory(reqSubcategories[0].id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSubcategory, selectedBoxId, reqSubcategories.length]);
 
   // Handle Box Category Change
   const handleSelectBox = (boxId: string | number) => {
@@ -221,13 +243,39 @@ export function BoxBuilder({ combos, products, subcategories, onBoxChange }: Box
 
   return (
     <div className="w-full min-h-[calc(100vh-200px)] pb-36 lg:pb-0">
+      {/*
+        Barra de boxes fija, equivalente a la de categorias en "para compartir".
+        Aqui las "categorias" son los combos y las "subcategorias" son los
+        requisitos del box seleccionado.
+      */}
+      <StickyCategoryBar
+        categories={combos.map(b => ({ id: b.id, name: b.name }))}
+        selectedCategory={selectedBoxId}
+        onSelectCategory={handleSelectBox}
+        watchRef={boxGridRef}
+        onVisibilityChange={setIsStickyNavActive}
+      />
+
       {/* 1. Selector de Cajas (usa la misma UI que Categories) */}
       <CategoryFilter
+        gridRef={boxGridRef}
+        renderSubcategories={false}
         categories={combos.map(b => ({ id: b.id, name: b.name, description: b.description, image: b.imageUrl }))}
         subcategories={reqSubcategories}
         selectedCategory={selectedBoxId}
         selectedSubcategory={selectedSubcategory}
         onSelectCategory={handleSelectBox}
+        onSelectSubcategory={setSelectedSubcategory}
+      />
+
+      {/*
+        Hermana de la grilla, no hija de CategoryFilter: sticky se limita a la
+        caja del padre y ahi no tendria recorrido.
+      */}
+      <SubcategoryBar
+        compact={isStickyNavActive}
+        subcategories={reqSubcategories}
+        selectedSubcategory={selectedSubcategory}
         onSelectSubcategory={setSelectedSubcategory}
       />
 

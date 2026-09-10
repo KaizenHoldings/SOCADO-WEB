@@ -94,9 +94,16 @@ export function Footer() {
 
       {/* Bottom bar — micro legal row */}
       <div className="border-t border-ivory/10">
-        <div className="section-shell py-5">
+        <div className="section-shell flex flex-col gap-1.5 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <p className="font-outfit text-[11px] lowercase tracking-[0.2em] text-ivory/40">
             &copy; {new Date().getFullYear()} Socado Café. todos los derechos reservados.
+          </p>
+          {/*
+            Sin `lowercase`, a diferencia de la línea de copyright: el RIF es un
+            identificador fiscal y debe conservar la "J" en mayúscula.
+          */}
+          <p className=" text-[14px] tracking-[0.2em] text-ivory/40">
+            <span className="font-raleway">RIF: </span> <span className="lowercase font-inter">J413179407</span>
           </p>
         </div>
       </div>
