@@ -11,7 +11,8 @@ export default function Nosotros() {
 
       <main className="flex-1">
         <HeroNosotros />
-        <OurStory />
+        {/* <OurStory /> 
+        <OurStory />*/}
         <RadialTimeline />
       </main>
 

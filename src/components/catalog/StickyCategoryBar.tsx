@@ -34,7 +34,9 @@ interface StickyCategoryBarProps {
  * The bar is fixed rather than sticky so appearing and disappearing never
  * reflows the product grid underneath it.
  */
-const TOP_OFFSET = "top-[153px] md:top-[166px]";
+// El header se retira mientras esta barra esta acoplada, asi que solo queda
+// el ViewModeToggle compacto encima: 77 / 90px.
+const TOP_OFFSET = "top-[77px] md:top-[90px]";
 
 // parametro de aparicion barra categoria
 /**

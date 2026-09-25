@@ -1,6 +1,7 @@
 "use client";
 
 import Image from 'next/image';
+import { CATERING_FORM_URL } from "@/lib/constants/links";
 import { motion } from 'motion/react';
 import { ButtonLight } from "@/components/catalog/ButtonLight";
 
@@ -51,7 +52,12 @@ export function CateringPromo2() {
                 viewport={{ once: false, amount: 0.4 }}
                 transition={{ duration: 0.5, delay: 0.28, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
-                <ButtonLight href="/catering" className="mt-8">
+                <ButtonLight
+                  href={CATERING_FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-8"
+                >
                   hacer un pedido
                 </ButtonLight>
               </motion.div>

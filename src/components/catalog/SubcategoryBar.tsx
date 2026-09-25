@@ -46,12 +46,12 @@ export function getActiveSubcategories(
 /**
  * Where this bar docks, depending on what is pinned above it.
  *
- *   compact  : header 76 + toggle 77/90 + category bar 44 = 197 / 210
- *   resting  : header 76 + toggle 96/112                  = 172 / 188
+ *   compact  : toggle 77/90 + category bar 44 = 121 / 134  (header oculto)
+ *   resting  : header 76 + toggle 96/112      = 172 / 188
  *
  * Literal strings so Tailwind emits both variants.
  */
-const TOP_COMPACT = "top-[197px] md:top-[210px]";
+const TOP_COMPACT = "top-[121px] md:top-[134px]";
 const TOP_RESTING = "top-[172px] md:top-[188px]";
 
 export function SubcategoryBar({

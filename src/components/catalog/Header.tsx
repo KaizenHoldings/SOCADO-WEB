@@ -8,6 +8,8 @@ import { motion } from "motion/react";
 import { useCartStore } from "@/lib/store/cart.store";
 import { EcommerceModal } from "@/components/catalog/EcommerceModal";
 import { PideAhoraSticker } from "@/components/catalog/PideAhoraSticker";
+import { useUIStore } from "@/lib/store/ui.store";
+import { CATERING_FORM_URL } from "@/lib/constants/links";
 
 interface HeaderProps {
   activePage?: "home" | "catering" | "nosotros";
@@ -97,18 +99,36 @@ export function Header({
   const navLinkInactive = `${textColor} font-normal opacity-90`;
   const navLinkActive = `${textColor} font-semibold`;
 
+  /**
+   * Set by the catering view while its category bar is docked. The header
+   * slides out of the way to hand that stack the top of the viewport.
+   */
+  const isCategoryNavDocked = useUIStore((state) => state.isCategoryNavDocked);
+
+  /**
+   * The entry reveal is a delayed spring; every later move is the quick
+   * hide/show. Without this flag the header would sit out `revealDelay`
+   * again each time it returned.
+   */
+  const [hasRevealed, setHasRevealed] = useState(false);
+
   return (
     <>
       <motion.header
         initial={{ y: "-100%", opacity: 0 }}
-        animate={{ y: "0%", opacity: 1 }}
-        transition={{
-          type: "spring",
-          stiffness: 300,
-          damping: 22,
-          delay: revealDelay,
-          opacity: { duration: 0.4, delay: revealDelay },
-        }}
+        animate={{ y: isCategoryNavDocked ? "-100%" : "0%", opacity: 1 }}
+        onAnimationComplete={() => setHasRevealed(true)}
+        transition={
+          hasRevealed
+            ? { duration: 0.3, ease: "easeInOut" }
+            : {
+                type: "spring",
+                stiffness: 300,
+                damping: 22,
+                delay: revealDelay,
+                opacity: { duration: 0.4, delay: revealDelay },
+              }
+        }
         className={`fixed top-0 left-0 z-50 w-full ${bgClass}`}
         style={{ transition: "background-color 500ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 500ms cubic-bezier(0.34, 1.56, 0.64, 1), backdrop-filter 500ms cubic-bezier(0.34, 1.56, 0.64, 1)" }}
       >
@@ -145,9 +165,14 @@ export function Header({
               <Link href="/nosotros" className={`${navLinkBase} ${activeSection === "nosotros" ? navLinkActive : navLinkInactive}`}>
                 nosotros
               </Link>
-              <Link href="/catering" className={`${navLinkBase} ${activeSection === "catering" ? navLinkActive : navLinkInactive}`}>
+              <a
+                href={CATERING_FORM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${navLinkBase} ${activeSection === "catering" ? navLinkActive : navLinkInactive}`}
+              >
                 catering
-              </Link>
+              </a>
             </nav>
           </div>
 
@@ -262,13 +287,15 @@ export function Header({
           >
             nosotros
           </Link>
-          <Link
-            href="/catering"
+          <a
+            href={CATERING_FORM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => setIsMobileMenuOpen(false)}
             className={`transition-colors hover:text-[#b45b38] ${activeSection === "catering" ? "text-[#b45b38]" : ""}`}
           >
             catering
-          </Link>
+          </a>
 
           {activePage === "home" && (
             <button

@@ -1,11 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CATERING_FORM_URL } from "@/lib/constants/links";
 
 const NAV_LINKS = [
   { label: "inicio", href: "/#inicio" },
   { label: "tiendas", href: "/#tiendas" },
   { label: "nosotros", href: "/#nosotros" },
-  { label: "catering", href: "/catering" },
+  // Externo: abre el formulario de JotForm en una pestana nueva.
+  { label: "catering", href: CATERING_FORM_URL, external: true },
 ];
 
 const STORES = [
@@ -58,12 +60,23 @@ export function Footer() {
               <ul className="flex flex-col gap-2.5">
                 {NAV_LINKS.map((link) => (
                   <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="font-raleway text-ivory/50 transition-colors duration-200 hover:text-celeste-socado"
-                    >
-                      {link.label}
-                    </Link>
+                    {link.external ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-raleway text-ivory/50 transition-colors duration-200 hover:text-celeste-socado"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="font-raleway text-ivory/50 transition-colors duration-200 hover:text-celeste-socado"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

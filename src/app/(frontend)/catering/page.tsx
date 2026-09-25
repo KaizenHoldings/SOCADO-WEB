@@ -18,6 +18,7 @@ import { CartDrawer } from "@/components/catalog/CartDrawer";
 import { ButtonLightBack } from "@/components/catalog/ButtonLightBack";
 import { StickyCategoryBar } from "@/components/catalog/StickyCategoryBar";
 import { SubcategoryBar, getActiveSubcategories } from "@/components/catalog/SubcategoryBar";
+import { useUIStore } from "@/lib/store/ui.store";
 
 export default function CateringPage() {
   const [macrocategories, setMacrocategories] = useState<any[]>([]);
@@ -65,6 +66,23 @@ export default function CateringPage() {
    * ViewModeToggle shrinks on it, and the subcategory bar re-docks on it.
    */
   const [isStickyNavActive, setIsStickyNavActive] = useState(false);
+
+  /**
+   * Mirror it into the UI store so the global Header — which lives outside this
+   * tree — can slide out of the way.
+   */
+  const setCategoryNavDocked = useUIStore((state) => state.setCategoryNavDocked);
+  useEffect(() => {
+    setCategoryNavDocked(isStickyNavActive);
+  }, [isStickyNavActive, setCategoryNavDocked]);
+
+  /**
+   * Release it on unmount. Without this the header would stay hidden after
+   * navigating away from catering while the bar happened to be docked.
+   */
+  useEffect(() => {
+    return () => setCategoryNavDocked(false);
+  }, [setCategoryNavDocked]);
 
   // Watched by StickyCategoryBar: the bar appears once this scrolls off the top.
   const categorySelectorRef = useRef<HTMLDivElement>(null);
@@ -374,7 +392,11 @@ export default function CateringPage() {
             </div>
 
             {/* Barra Sticky */}
-            <div className="sticky top-[76px] z-40 w-full">
+            <div
+              className={`sticky z-40 w-full transition-[top] duration-300 ${
+                isStickyNavActive ? "top-0" : "top-[76px]"
+              }`}
+            >
               {/* Fila 1: Toggle (Ancho completo) */}
               <div className="w-full">
                 <ViewModeToggle 
