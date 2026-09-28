@@ -110,18 +110,10 @@ export function StoreCard({
               <div className="flex min-w-0 flex-col gap-4">
                 <p className="whitespace-pre-line font-outfit text-sm leading-relaxed text-white/80">
                   <span className="mb-1 block font-raleway text-xs font-semibold tracking-wide text-white">
-                    ubicación
+                    dirección
                   </span>
-                  {store.location}
+                  {store.address || store.location}
                 </p>
-                {store.address && (
-                  <p className="whitespace-pre-line font-outfit text-sm leading-relaxed text-white/80">
-                    <span className="mb-1 block font-raleway text-xs font-semibold tracking-wide text-white">
-                      dirección
-                    </span>
-                    {store.address}
-                  </p>
-                )}
               </div>
               {onMore && (
                 <ButtonPlus

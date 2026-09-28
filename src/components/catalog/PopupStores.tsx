@@ -249,9 +249,8 @@ export function PopupStores({ store, open, onClose }: PopupStoresProps) {
   if (!store) return null;
 
   const sections = [
-    { label: "ubicación", text: store.location },
     { label: "horario", text: store.schedule },
-    { label: "dirección", text: store.address },
+    { label: "dirección", text: store.address || store.location },
   ].filter((s): s is { label: string; text: string } => Boolean(s.text));
 
   return (
