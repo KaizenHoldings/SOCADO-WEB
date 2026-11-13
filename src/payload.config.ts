@@ -20,6 +20,11 @@ import { Stores } from './collections/Stores'
 import { DiscountRules } from './collections/DiscountRules'
 import { Taxes } from './collections/Taxes'
 import { HomeMenuSections } from './collections/HomeMenuSections'
+import { PassTypes } from './collections/PassTypes'
+import { Plans } from './collections/Plans'
+import { WorkclubSettings } from './globals/WorkclubSettings'
+import { seedWorkclub } from './seed/workclub'
+import { seedWorkclubV2 } from './seed/workclub-v2'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
@@ -52,7 +57,24 @@ export default buildConfig({
       ],
     },
   },
-  collections: [Users, Media, Macrocategories, Categories, SubCategories, Products, Promotions, Quotes, CatCombos, CatCategories, Stores, DiscountRules, Taxes, HomeMenuSections],
+  collections: [Users, Media, Macrocategories, Categories, SubCategories, Products, Promotions, Quotes, CatCombos, CatCategories, Stores, DiscountRules, Taxes, HomeMenuSections, PassTypes, Plans],
+  globals: [WorkclubSettings],
+  /**
+   * Los registros por defecto de /workclub se crean al iniciar si faltan. El
+   * seed es idempotente: no duplica ni pisa lo editado en el admin. Se puede
+   * desactivar con SEED_WORKCLUB=false, y ejecutar a mano con
+   * `pnpm seed:workclub`.
+   */
+  onInit: async (payload) => {
+    if (process.env.SEED_WORKCLUB === 'false') return
+    try {
+      // Base content first: the versioned updates act on records that exist.
+      await seedWorkclub(payload)
+      await seedWorkclubV2(payload)
+    } catch (error) {
+      payload.logger.error({ err: error }, '[seed:workclub] no se pudo ejecutar el seed')
+    }
+  },
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

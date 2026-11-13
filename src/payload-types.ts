@@ -81,12 +81,18 @@ export interface Config {
     'discount-rules': DiscountRule;
     taxes: Tax;
     'home-menu-sections': HomeMenuSection;
+    'pass-types': PassType;
+    plans: Plan;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    'pass-types': {
+      plans: 'plans';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -102,6 +108,8 @@ export interface Config {
     'discount-rules': DiscountRulesSelect<false> | DiscountRulesSelect<true>;
     taxes: TaxesSelect<false> | TaxesSelect<true>;
     'home-menu-sections': HomeMenuSectionsSelect<false> | HomeMenuSectionsSelect<true>;
+    'pass-types': PassTypesSelect<false> | PassTypesSelect<true>;
+    plans: PlansSelect<false> | PlansSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -111,8 +119,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'workclub-settings': WorkclubSetting;
+  };
+  globalsSelect: {
+    'workclub-settings': WorkclubSettingsSelect<false> | WorkclubSettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -502,6 +514,265 @@ export interface HomeMenuSection {
   createdAt: string;
 }
 /**
+ * Cada tipo de pass es una pestaña en la sección "nuestros paquetes" de /workclub. Escribir los textos en minúscula.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pass-types".
+ */
+export interface PassType {
+  id: number;
+  /**
+   * En minúscula, sin espacios ni acentos. No se cambia una vez publicado.
+   */
+  slug: string;
+  /**
+   * Escribir en minúscula.
+   */
+  name: string;
+  /**
+   * Línea pequeña sobre el título de la sección. Escribir en minúscula.
+   */
+  eyebrow?: string | null;
+  /**
+   * Se muestra bajo el selector de pestañas. Escribir en minúscula.
+   */
+  description?: string | null;
+  /**
+   * Opcional. Línea junto al icono de check, bajo las pestañas. El diseño actual no la usa: lo que incluye el pass se escribe en la tarjeta "incluyen". Si se deja vacía, no se muestra.
+   */
+  note?: string | null;
+  /**
+   * Opcional. Se muestra en negrita al final de la nota, y solo si la nota tiene texto.
+   */
+  noteHighlight?: string | null;
+  /**
+   * Fondo de la franja superior de la sección mientras esta pestaña está abierta. En las franjas oscuras el texto se muestra en blanco y en las claras en verde oscuro; el tono se decide solo, no hay que elegirlo. Solo se ofrecen colores que cumplen contraste AA con su tono de texto.
+   */
+  bandColor?:
+    | ('wc-verde' | 'wc-verde-medio' | 'wc-verde-claro' | 'wc-marron' | 'wc-marron-medio' | 'wc-terracota')
+    | null;
+  /**
+   * Se muestran debajo de las tarjetas de precio, en el orden de esta lista; se reordenan arrastrando. Escribir los textos en minúscula.
+   */
+  infoCards?:
+    | (
+        | {
+            /**
+             * Escribir en minúscula.
+             */
+            title: string;
+            /**
+             * Cada beneficio se muestra con una línea vertical a la izquierda: el título en negrita y el detalle debajo.
+             */
+            items?:
+              | {
+                  /**
+                   * Escribir en minúscula.
+                   */
+                  title: string;
+                  /**
+                   * Escribir en minúscula.
+                   */
+                  detail?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'includes';
+          }
+        | {
+            /**
+             * Escribir en minúscula.
+             */
+            title: string;
+            /**
+             * Escribir en minúscula.
+             */
+            subtitle?: string | null;
+            layout: 'inline' | 'split';
+            /**
+             * Se muestran en el orden de esta lista; se reordenan arrastrando.
+             */
+            rows?:
+              | {
+                  /**
+                   * Escribir en minúscula.
+                   */
+                  label: string;
+                  /**
+                   * Escribir en minúscula. Los números se componen solos.
+                   */
+                  value: string;
+                  /**
+                   * Opcional, junto a la etiqueta y en letra fina. Solo se muestra en la disposición a los extremos.
+                   */
+                  note?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'table';
+          }
+      )[]
+    | null;
+  /**
+   * Parte en negrita de la nota centrada bajo las tarjetas. Si la etiqueta y el texto están vacíos, no se muestra nada.
+   */
+  footnoteLabel?: string | null;
+  /**
+   * Escribir en minúscula.
+   */
+  footnoteText?: string | null;
+  /**
+   * Lo heredan los planes de este tipo que no definan su propio texto. Escribir en minúscula.
+   */
+  ctaLabelDefault?: string | null;
+  /**
+   * Lo heredan los planes de este tipo que no definan su propio estilo.
+   */
+  ctaVariantDefault?: ('outline' | 'solid') | null;
+  /**
+   * Número menor aparece primero. La primera pestaña es la que se abre por defecto.
+   */
+  order?: number | null;
+  /**
+   * Si se desmarca, la pestaña desaparece de /workclub. Un tipo sin planes activos tampoco se muestra.
+   */
+  active?: boolean | null;
+  /**
+   * Planes que pertenecen a este tipo de pass. Se crean desde "Planes".
+   */
+  plans?: {
+    docs?: (number | Plan)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Tarjetas de precio de /workclub. Cada plan pertenece a un tipo de pass. Escribir los textos en minúscula.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "plans".
+ */
+export interface Plan {
+  id: number;
+  /**
+   * En minúscula, sin espacios ni acentos. Se envía al sistema de reservas como ?paquete=<slug>.
+   */
+  slug: string;
+  /**
+   * Pestaña bajo la que se muestra este plan.
+   */
+  passType: number | PassType;
+  /**
+   * Escribir en minúscula.
+   */
+  name: string;
+  /**
+   * Escribir en minúscula.
+   */
+  description?: string | null;
+  /**
+   * Dejar en "Precio único": la tarjeta siempre muestra una cifra grande. "Tarifas por sala" se conserva por los datos antiguos y la tarjeta la ignora; las tarifas se escriben en una tarjeta de tabla del tipo de pass.
+   */
+  priceMode: 'single' | 'rooms';
+  /**
+   * Texto delante de la cifra. Escribir en minúscula.
+   */
+  pricePrefix?: string | null;
+  /**
+   * Solo la cifra, sin símbolos.
+   */
+  price?: number | null;
+  /**
+   * Opcional. Se pega a la cifra, en un tamaño algo menor.
+   */
+  priceSuffix?: string | null;
+  /**
+   * Leyenda bajo la cifra: "por día", "por 30 días", "desde · según sala". Escribir en minúscula.
+   */
+  priceUnit?: string | null;
+  /**
+   * Se conservan por los datos antiguos. Las tarifas que ve el visitante se escriben en una tarjeta de tabla del tipo de pass.
+   */
+  rooms?:
+    | {
+        /**
+         * Escribir en minúscula.
+         */
+        name: string;
+        price: number;
+        /**
+         * Se pega a la cifra. Ej: /h
+         */
+        unit?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Letra pequeña bajo la tabla. Escribir en minúscula.
+   */
+  roomsNote?: string | null;
+  /**
+   * Etiquetas bajo la leyenda del precio, una debajo de otra, en el orden de esta lista; se reordenan arrastrando. Escribir en minúscula.
+   */
+  chips?:
+    | {
+        /**
+         * Escribir en minúscula.
+         */
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Opcional, bajo las píldoras y en letra fina. Escribir en minúscula.
+   */
+  secondaryLine?: string | null;
+  /**
+   * Se conserva por los datos antiguos, pero la tarjeta no la muestra: ese texto ahora va en una píldora.
+   */
+  highlight?: string | null;
+  /**
+   * La tarjeta ya no muestra esta lista: lo que incluye el pass se escribe en la tarjeta "incluyen" del tipo de pass. Se conserva por los datos antiguos.
+   */
+  features?:
+    | {
+        /**
+         * Escribir en minúscula.
+         */
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Si se deja vacío, se hereda del tipo de pass. Escribir en minúscula.
+   */
+  ctaLabel?: string | null;
+  /**
+   * Si se deja vacío, se hereda del tipo de pass.
+   */
+  ctaVariant?: ('outline' | 'solid') | null;
+  /**
+   * Si se deja vacío, se usa el enlace de reservas de la configuración con ?paquete=<slug>.
+   */
+  ctaUrl?: string | null;
+  /**
+   * Número menor aparece primero.
+   */
+  order?: number | null;
+  /**
+   * Si se desmarca, la tarjeta desaparece de /workclub.
+   */
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -580,6 +851,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'home-menu-sections';
         value: number | HomeMenuSection;
+      } | null)
+    | ({
+        relationTo: 'pass-types';
+        value: number | PassType;
+      } | null)
+    | ({
+        relationTo: 'plans';
+        value: number | Plan;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -886,6 +1165,108 @@ export interface HomeMenuSectionsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pass-types_select".
+ */
+export interface PassTypesSelect<T extends boolean = true> {
+  slug?: T;
+  name?: T;
+  eyebrow?: T;
+  description?: T;
+  note?: T;
+  noteHighlight?: T;
+  bandColor?: T;
+  infoCards?:
+    | T
+    | {
+        includes?:
+          | T
+          | {
+              title?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    detail?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        table?:
+          | T
+          | {
+              title?: T;
+              subtitle?: T;
+              layout?: T;
+              rows?:
+                | T
+                | {
+                    label?: T;
+                    value?: T;
+                    note?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  footnoteLabel?: T;
+  footnoteText?: T;
+  ctaLabelDefault?: T;
+  ctaVariantDefault?: T;
+  order?: T;
+  active?: T;
+  plans?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "plans_select".
+ */
+export interface PlansSelect<T extends boolean = true> {
+  slug?: T;
+  passType?: T;
+  name?: T;
+  description?: T;
+  priceMode?: T;
+  pricePrefix?: T;
+  price?: T;
+  priceSuffix?: T;
+  priceUnit?: T;
+  rooms?:
+    | T
+    | {
+        name?: T;
+        price?: T;
+        unit?: T;
+        id?: T;
+      };
+  roomsNote?: T;
+  chips?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  secondaryLine?: T;
+  highlight?: T;
+  features?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  ctaLabel?: T;
+  ctaVariant?: T;
+  ctaUrl?: T;
+  order?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -923,6 +1304,43 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Enlaces y textos compartidos por la página /workclub.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workclub-settings".
+ */
+export interface WorkclubSetting {
+  id: number;
+  /**
+   * Destino de los botones "reservar". Se le añade ?paquete=<slug> en cada tarjeta.
+   */
+  reservaUrl?: string | null;
+  /**
+   * Destino del botón "agenda una visita".
+   */
+  visitaUrl?: string | null;
+  seedVersion?: number | null;
+  /**
+   * Aclaración sobre lo que incluyen los pass. Escribir en minúscula.
+   */
+  footnote?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workclub-settings_select".
+ */
+export interface WorkclubSettingsSelect<T extends boolean = true> {
+  reservaUrl?: T;
+  visitaUrl?: T;
+  seedVersion?: T;
+  footnote?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sticker Bolsa v2 · demo</title>
+<style>
+  :root { color-scheme: light; }
+  body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px;
+    padding: 48px 16px; box-sizing: border-box; background: #f4ede2; color: #063747; font: 15px/1.5 system-ui, sans-serif; }
+  .stage { display: flex; align-items: center; justify-content: center; padding: 60px; }
+  pre { margin: 0; max-width: 100%; overflow-x: auto; padding: 16px 20px; border-radius: 12px; background: #063747; color: #e8f3f6; font: 13px/1.6 ui-monospace, Menlo, Consolas, monospace; }
+  p { margin: 0; max-width: 60ch; text-align: center; }
+</style>
+</head>
+<body>
+
+  <div class="stage">
+    <!-- Sin atributos = tus tweaks: Cromo · 0.75 · reflejo · 16° · flotación · llamado cada 6.5 s · entrada · sombra 0.4 · escala 1.4 -->
+    <sticker-bolsa id="sticker"></sticker-bolsa>
+  </div>
+
+  <p>Pasa el cursor, haz clic o enfócalo con Tab. El texto “pide aquí” se queda fijo; la bolsa se mueve por debajo.</p>
+
+  <pre>&lt;script src="sticker-bolsa.js"&gt;&lt;/script&gt;
+&lt;sticker-bolsa&gt;&lt;/sticker-bolsa&gt;</pre>
+
+  <script src="sticker-bolsa.js"></script>
+  <script>
+    document.getElementById('sticker').addEventListener('click', function () {
+      console.log('Clic en el sticker: aquí va tu acción (abrir el pedido, navegar, etc.)');
+    });
+  </script>
+</body>
+</html>

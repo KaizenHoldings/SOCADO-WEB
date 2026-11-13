@@ -11,6 +11,7 @@ import { CateringPromo2 } from "@/components/catalog/CateringPromo2";
 import { AboutUs } from "@/components/catalog/AboutUs";
 // import { Promotion } from "@/components/catalog/Promotion"; // temporarily hidden
 import { LoyaltyCard } from "@/components/catalog/LoyaltyCard";
+import { WorkclubPromo } from "@/components/home/WorkclubPromo";
 import { SocadoClub } from "@/components/catalog/SocadoClub";
 import { HomeMenuSectionsService } from "@/lib/services/home-menu-sections.service";
 
@@ -25,6 +26,7 @@ export default async function Home() {
       <main className="flex-1">
         <HeroLeft />
         {/* <Promotion /> — temporarily hidden, not deleted */}
+        <WorkclubPromo />
         <LoyaltyCard />
         <SocadoClub />
         <MenuCategories categories={menuCategories} />

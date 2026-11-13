@@ -92,6 +92,35 @@ Do not edit generated files manually.
 
 Fix the source collection or Payload configuration, then regenerate.
 
+## 5.1. Workclub default records
+
+The `/workclub` packages section reads its pass types, plans and settings from
+Payload. A fresh database is filled by an idempotent seed that creates what is
+missing and never overwrites what the admin edited.
+
+It runs on server start, and can also be run by hand:
+
+```bash
+pnpm seed:workclub
+```
+
+Set `SEED_WORKCLUB=false` to skip the automatic run.
+
+Creating records is idempotent by slug. A change to records that already exist
+is not, so it goes in a versioned step, recorded in the hidden `seedVersion`
+field of the `workclub-settings` global: the step runs once per database and
+never reverts a later edit in the admin. Such a step writes a field only while
+it is empty (`fill`) or while it still holds the value the previous version
+shipped (`replace`); anything else was edited in the admin, and it is kept with
+a warning in the log. Add a step with the next version number, and run the base
+seed before it.
+
+Applied steps: 2, band colour of the pass types; 3, v2 content of "nuestros
+paquetes" (info cards, chips, new copy).
+
+Sources: `src/seed/workclub.ts` (base and step 2) and `src/seed/workclub-v2.ts`
+(step 3).
+
 ## 6. Architecture
 
 All implementation must follow the layered architecture defined in [ARCHITECTURE.md](ARCHITECTURE.md).

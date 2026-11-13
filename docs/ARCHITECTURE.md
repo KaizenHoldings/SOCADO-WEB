@@ -324,6 +324,12 @@ Its responsibilities include:
 * Discount, promotion, and tax management.
 * Administrative user management.
 * Persistence of relevant business entities.
+* Editable content of public sections, such as the `/workclub` pass types
+  (`pass-types`), plans (`plans`) and settings (`workclub-settings`).
+
+Public sections backed by Payload keep a fallback in their service, so the page
+still renders when the CMS is unreachable, and revalidate their route from a
+collection hook so an edit is visible without a redeploy.
 
 Payload collections define persistence and administrative structures, but they do not replace the service layer.
 

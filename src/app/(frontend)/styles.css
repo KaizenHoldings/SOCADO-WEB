@@ -23,6 +23,42 @@
   --color-amarillo-tostado: #cf8a00;
   --color-verde-century: #b2b5a9;
 
+  /*
+    Workclub (coworking) palette — four families in three tones each.
+
+    Scoped by convention to the /workclub landing, where azul socado still
+    carries the global structure (header on scroll, footer, hero overlay).
+  */
+  --color-wc-verde: #494328; /* principal */
+  --color-wc-verde-medio: #68624a;
+  --color-wc-verde-claro: #bcb59b;
+
+  --color-wc-marron: #34251c;
+  --color-wc-marron-medio: #60493e;
+  --color-wc-marron-claro: #d6d0ce;
+
+  --color-wc-terracota: #763b21;
+  --color-wc-terracota-medio: #935d48;
+  --color-wc-terracota-claro: #ba9a91;
+
+  --color-wc-gris: #798986; /* gris azulado */
+  --color-wc-gris-medio: #9da5a4;
+  --color-wc-gris-claro: #c6cccb;
+
+  /*
+    Role aliases: components use these, never the hex values, so the cowork
+    area can be retinted from this block alone.
+
+    Contrast: white text is only legible on `workclub`, `workclub-dark` and
+    `workclub-accent`. On the light tones (`soft`, `mist`) use azul socado or
+    wc-verde for text.
+  */
+  --color-workclub: var(--color-wc-verde); /* primary buttons, navbar pill, accents */
+  --color-workclub-dark: var(--color-wc-marron); /* hover / pressed */
+  --color-workclub-soft: var(--color-wc-marron-claro); /* soft surfaces */
+  --color-workclub-mist: var(--color-wc-verde-claro); /* borders, separators */
+  --color-workclub-accent: var(--color-wc-terracota); /* small details, link hover */
+
   /* Font Families */
   --font-sans: var(--font-outfit), sans-serif;
   --font-raleway: var(--font-raleway), sans-serif;
@@ -100,10 +136,173 @@ html {
 :root {
   --section-gutter: 1.5rem;  /* 24px — mobile/tablet inset */
   --section-max: 87.5rem;    /* 1400px content rail */
+  /* Fixed header: what a full-height section must keep clear at the top. */
+  --header-h: 80px;
 }
 @media (min-width: 1024px) {
   :root {
     --section-gutter: 3rem;  /* 48px — desktop inset */
+  }
+}
+
+/* ===========================================================
+   Workclub packages — comfortable and compact vertical scale
+   ===========================================================
+   From `md` up the packages section is exactly one screen tall, with the
+   header height reserved at the top, so heading and cards must live inside
+   `100dvh - var(--header-h)`. The comfortable spacing needs roughly 810px of
+   that, which a 768px-tall laptop cannot give, so on short viewports the same
+   section tightens from here instead of pushing its cards past the fold.
+
+   Values are consumed as `p-[var(--pass-pad)]` and the like, so the fit is
+   tuned in one place. Phones keep the comfortable scale: there the section is
+   a normal stacked block, not a full screen. */
+.wc-packages {
+  --pass-head-pb: 2.5rem;   /* heading block, bottom */
+  --pass-tabs-mt: 1.5rem;   /* selector, above */
+  --pass-note-mt: 1rem;     /* inclusion note, above */
+  --pass-pad: 1.5rem;       /* card padding */
+  --pass-block-mt: 1.25rem; /* price, over its hairline */
+  --pass-small-mt: 0.75rem; /* chips, secondary line, info card bodies */
+  --pass-cta-pt: 1.5rem;    /* above the card button */
+  --pass-info-mt: 1.5rem;   /* info cards and footnote, above */
+  --pass-info-pad: 1.5rem;  /* info card padding */
+}
+@media (min-width: 768px) and (max-height: 950px) {
+  .wc-packages {
+    --pass-head-pb: 1rem;
+    --pass-tabs-mt: 0.75rem;
+    --pass-note-mt: 0.5rem;
+    --pass-pad: 1rem;
+    --pass-block-mt: 0.75rem;
+    --pass-small-mt: 0.5rem;
+    --pass-cta-pt: 1rem;
+    --pass-info-mt: 1rem;
+    --pass-info-pad: 1rem;
+  }
+}
+
+/* ===========================================================
+   Workclub nav link — periodic attention cue
+   ===========================================================
+   Cada 5s la palabra se tambalea durante ~0.9s mientras un reflejo plateado la
+   recorre, y queda quieta los ~4.1s restantes. La pausa está dentro de los
+   keyframes, así que no hace falta JavaScript ni temporizadores.
+
+   Los porcentajes de los keyframes son relativos al ciclo: si se cambia la
+   duración hay que reescalarlos, o el movimiento se estira con ella. Los de
+   aquí están calculados para que el tambaleo dure esos ~0.9s dentro de 5s
+   (0.9/5 = 18%), que es donde terminan las dos animaciones.
+
+   El reflejo NO se recorta sobre el texto real, sino sobre una copia oculta
+   superpuesta. Recortar un degradado sobre el propio texto obliga a pintarlo
+   con relleno transparente, y entonces el navegador lo dibuja con antialiasing
+   en escala de grises: la palabra se ve más fina y apagada que los enlaces de
+   al lado, incluso en reposo. Con la copia encima, el texto real se pinta como
+   cualquier otro enlace y lo único que aparece es la banda de luz.
+
+   El tambaleo solo usa `transform`, así que no desplaza a los enlaces vecinos
+   ni cambia el alto del navbar. */
+.wc-nav-attention {
+  position: relative;
+  display: inline-block; /* necesario para transformar un enlace en línea */
+  transform-origin: 50% 100%; /* pivota desde la base, como un balanceo */
+  animation: workclub-wiggle 5s ease-in-out infinite;
+}
+
+/* Copia superpuesta: sin fondo no pinta nada, así que fuera del barrido es
+   invisible y el enlace se ve exactamente igual que sus vecinos. */
+.wc-nav-shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  white-space: pre;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .wc-nav-shine {
+    --shine: #c0cad1; /* plateado frio: se lee sobre el texto blanco del hero
+                         y sobre el azul socado del header ivory */
+    background-image: linear-gradient(
+      110deg,
+      transparent 40%,
+      var(--shine) 50%,
+      transparent 60%
+    );
+    background-size: 250% 100%;
+    background-position: 100% 0;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: workclub-shine 5s linear infinite;
+  }
+}
+
+/* Con el puntero encima o con el foco, el enlace se queda quieto para poder
+   pulsarlo sin que se mueva. */
+a:hover > .wc-nav-attention,
+a:focus-visible > .wc-nav-attention,
+a:hover .wc-nav-shine,
+a:focus-visible .wc-nav-shine {
+  animation-play-state: paused;
+}
+
+@keyframes workclub-wiggle {
+  0% {
+    transform: rotate(0);
+  }
+  3.2% {
+    transform: rotate(-6deg) translateX(-1px);
+  }
+  6.4% {
+    transform: rotate(5deg) translateX(1px);
+  }
+  9.6% {
+    transform: rotate(-3deg);
+  }
+  12.8% {
+    transform: rotate(2deg);
+  }
+  16% {
+    transform: rotate(-1deg);
+  }
+  18%,
+  100% {
+    transform: rotate(0);
+  }
+}
+
+/* La banda está en el centro de una imagen 2.5 veces más ancha que la palabra:
+   moviendo el fondo de un extremo al otro, el brillo la cruza.
+
+   El recorrido se queda dentro de 100% → 0% a propósito. Con una posición
+   negativa, la imagen deja de cubrir el lado izquierdo del elemento y ahí no
+   queda fondo que recortar: como el relleno del texto es transparente, esas
+   letras se quedan literalmente sin pintar. En 0% la imagen sigue tapando toda
+   la palabra con su zona de `currentColor`, así que en reposo se ve del color
+   normal del navbar. */
+@keyframes workclub-shine {
+  0% {
+    background-position: 100% 0;
+    text-shadow: 0 0 8px rgb(192 202 209 / 0.45);
+  }
+  18%,
+  100% {
+    background-position: 0% 0;
+    text-shadow: 0 0 8px rgb(192 202 209 / 0);
+  }
+}
+
+/* Reduced motion: ni tambaleo ni reflejo. La copia se oculta del todo, así que
+   la palabra queda como cualquier otro enlace del navbar. */
+@media (prefers-reduced-motion: reduce) {
+  .wc-nav-attention {
+    animation: none;
+  }
+  .wc-nav-shine {
+    display: none;
   }
 }
 

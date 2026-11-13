@@ -9,10 +9,14 @@ import { useCartStore } from "@/lib/store/cart.store";
 import { EcommerceModal } from "@/components/catalog/EcommerceModal";
 import { PideAhoraSticker } from "@/components/catalog/PideAhoraSticker";
 import { useUIStore } from "@/lib/store/ui.store";
-import { CATERING_FORM_URL } from "@/lib/constants/links";
+import {
+  CATERING_SOLICITUD_PATH,
+  WORKCLUB_RESERVA_URL,
+  isExternalUrl,
+} from "@/lib/constants/links";
 
 interface HeaderProps {
-  activePage?: "home" | "catering" | "nosotros";
+  activePage?: "home" | "catering" | "nosotros" | "workclub";
   /** Si el fondo debajo del header transparente es oscuro, los textos se muestran en claro */
   heroIsDark?: boolean;
   /** Segundos de espera antes de revelar el navbar (para que aparezca tras la intro del hero) */
@@ -99,6 +103,17 @@ export function Header({
   const navLinkInactive = `${textColor} font-normal opacity-90`;
   const navLinkActive = `${textColor} font-semibold`;
 
+  /** Mobile menu entries: one place for the shared link classes. */
+  const mobileLinkClass = (section: string) =>
+    `transition-colors hover:text-[#b45b38] ${
+      activeSection === section ? "text-[#b45b38]" : ""
+    }`;
+
+  /** Booking system: opened in a new tab only when it is an external URL. */
+  const reservaLinkProps = isExternalUrl(WORKCLUB_RESERVA_URL)
+    ? { target: "_blank", rel: "noopener noreferrer" }
+    : {};
+
   /**
    * Set by the catering view while its category bar is docked. The header
    * slides out of the way to hand that stack the top of the viewport.
@@ -162,17 +177,43 @@ export function Header({
                 tiendas
               </a>
               
-              <Link href="/nosotros" className={`${navLinkBase} ${activeSection === "nosotros" ? navLinkActive : navLinkInactive}`}>
-                nosotros
+              {/*
+                Mismo estilo que el resto de enlaces. Fuera de /workclub, cada
+                2s la palabra se tambalea y un reflejo dorado la recorre; en la
+                propia ruta queda quieta. Todo el efecto vive en styles.css.
+              */}
+              <Link
+                href="/workclub"
+                className={`${navLinkBase} ${activeSection === "workclub" ? navLinkActive : navLinkInactive}`}
+              >
+                <span
+                  className={
+                    activeSection === "workclub" ? undefined : "wc-nav-attention"
+                  }
+                >
+                  workclub
+                  {/* Copia sobre la que viaja el reflejo; el texto de arriba
+                      se pinta como cualquier otro enlace. */}
+                  {activeSection !== "workclub" && (
+                    <span className="wc-nav-shine" aria-hidden="true">
+                      workclub
+                    </span>
+                  )}
+                </span>
               </Link>
-              <a
-                href={CATERING_FORM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+
+              {/* El formulario vive embebido en el sitio, no en JotForm. */}
+              <Link
+                href={CATERING_SOLICITUD_PATH}
                 className={`${navLinkBase} ${activeSection === "catering" ? navLinkActive : navLinkInactive}`}
               >
                 catering
-              </a>
+              </Link>
+
+              <Link href="/nosotros" className={`${navLinkBase} ${activeSection === "nosotros" ? navLinkActive : navLinkInactive}`}>
+                nosotros
+              </Link>
+
             </nav>
           </div>
 
@@ -200,6 +241,17 @@ export function Header({
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </button>
             )}
+            {/* Inside /workclub the corner CTA becomes the booking entry point. */}
+            {activePage === "workclub" && (
+              <a
+                href={WORKCLUB_RESERVA_URL}
+                {...reservaLinkProps}
+                className={`group hidden md:flex items-center gap-1.5 text-[14px] font-semibold tracking-wide transition-opacity hover:opacity-60 ${textColor}`}
+              >
+                reserva ahora
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
+            )}
 
             {/* Menu Hamburguesa (Móvil) */}
             <button
@@ -220,6 +272,13 @@ export function Header({
         onClose={() => setIsEcommerceModalOpen(false)}
       />
 
+      {/*
+        The floating sticker only exists on the home page, so it is already
+        absent inside /workclub and does not compete with "reserva ahora".
+        TODO: if a floating booking sticker is wanted for workclub, it needs its
+        own artwork — this one is the "pide aquí" coffee bag and cannot be
+        recoloured into the cowork palette.
+      */}
       {activePage === "home" && (
         <PideAhoraSticker
           onClick={() => setIsEcommerceModalOpen(true)}
@@ -269,33 +328,49 @@ export function Header({
           <a
             href="/#inicio"
             onClick={() => setIsMobileMenuOpen(false)}
-            className={`transition-colors hover:text-[#b45b38] ${activeSection === "inicio" ? "text-[#b45b38]" : ""}`}
+            className={mobileLinkClass("inicio")}
           >
             inicio
           </a>
-          <a 
-            href="/#tiendas" 
+          <a
+            href="/#tiendas"
             onClick={() => setIsMobileMenuOpen(false)}
-            className={`transition-colors hover:text-[#b45b38] ${activeSection === "tiendas" ? "text-[#b45b38]" : ""}`}
+            className={mobileLinkClass("tiendas")}
           >
             tiendas
           </a>
-          <Link 
-            href="/nosotros" 
+          <Link
+            href="/workclub"
             onClick={() => setIsMobileMenuOpen(false)}
-            className={`transition-colors hover:text-[#b45b38] ${activeSection === "nosotros" ? "text-[#b45b38]" : ""}`}
+            className={mobileLinkClass("workclub")}
+          >
+            <span
+              className={
+                activeSection === "workclub" ? undefined : "wc-nav-attention"
+              }
+            >
+              workclub
+              {activeSection !== "workclub" && (
+                <span className="wc-nav-shine" aria-hidden="true">
+                  workclub
+                </span>
+              )}
+            </span>
+          </Link>
+          <Link
+            href={CATERING_SOLICITUD_PATH}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={mobileLinkClass("catering")}
+          >
+            catering
+          </Link>
+          <Link
+            href="/nosotros"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={mobileLinkClass("nosotros")}
           >
             nosotros
           </Link>
-          <a
-            href={CATERING_FORM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={`transition-colors hover:text-[#b45b38] ${activeSection === "catering" ? "text-[#b45b38]" : ""}`}
-          >
-            catering
-          </a>
 
           {activePage === "home" && (
             <button
@@ -307,6 +382,17 @@ export function Header({
             >
               pide ahora <ArrowUpRight className="h-5 w-5" />
             </button>
+          )}
+
+          {activePage === "workclub" && (
+            <a
+              href={WORKCLUB_RESERVA_URL}
+              {...reservaLinkProps}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="mt-6 flex items-center gap-2 rounded-full border-2 border-[#063547] px-8 py-3 text-lg font-bold transition-all hover:bg-[#063547] hover:text-white dark:border-[#f2eae6] dark:hover:bg-[#f2eae6] dark:hover:text-[#042430]"
+            >
+              reserva ahora <ArrowUpRight className="h-5 w-5" />
+            </a>
           )}
         </nav>
       </div>

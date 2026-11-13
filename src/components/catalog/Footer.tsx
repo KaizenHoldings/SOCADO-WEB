@@ -1,13 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CATERING_FORM_URL } from "@/lib/constants/links";
+import { CATERING_SOLICITUD_PATH } from "@/lib/constants/links";
 
-const NAV_LINKS = [
+/** `external` abre en pestaña nueva; hoy ningún enlace del menú lo necesita. */
+const NAV_LINKS: { label: string; href: string; external?: boolean }[] = [
   { label: "inicio", href: "/#inicio" },
   { label: "tiendas", href: "/#tiendas" },
+  { label: "workclub", href: "/workclub" },
+  // Interno: el formulario de JotForm va embebido en esa pagina.
+  { label: "catering", href: CATERING_SOLICITUD_PATH },
   { label: "nosotros", href: "/#nosotros" },
-  // Externo: abre el formulario de JotForm en una pestana nueva.
-  { label: "catering", href: CATERING_FORM_URL, external: true },
 ];
 
 const STORES = [
