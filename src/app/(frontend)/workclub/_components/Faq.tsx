@@ -18,7 +18,7 @@ export function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="border-t border-wc-gris-claro bg-white py-24 lg:py-28">
+    <section className="border-t border-wc-gris-claro bg-white py-16 md:py-24 lg:py-28">
       <div className="section-shell">
         {/*
           The display moment of the page: the letters arrive spread out and
@@ -90,7 +90,7 @@ export function Faq() {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="pb-6 pr-10 font-outfit text-base font-light leading-relaxed text-wc-marron/75 lowercase">
+                    <p className="pb-6 pr-0 font-outfit sm:pr-10 text-base font-light leading-relaxed text-wc-marron/75 lowercase">
                       <Num>{item.answer}</Num>
                     </p>
                   </div>

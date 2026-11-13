@@ -29,7 +29,7 @@ export function Descripcion() {
       stacking level, so scrolling pulls it up like a curtain. Like every
       section here, its background must stay opaque.
     */
-    <section className="relative z-10 rounded-t-[32px] bg-white py-24 lg:py-28">
+    <section className="relative z-10 rounded-t-[32px] bg-white py-16 md:py-24 lg:py-28">
       <div className="section-shell">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-16">
           {/* Caption phrase */}
@@ -87,7 +87,13 @@ export function Descripcion() {
 
         {/* Quick figures */}
         <Reveal delay={0.1}>
-          <dl className="mt-16 grid grid-cols-1 gap-8 border-t border-wc-verde-claro pt-10 sm:grid-cols-3">
+          {/*
+            Three columns from the narrowest screen: each figure is one or two
+            characters and a two-word label, so stacking them one per row spent
+            three rows on three small numbers. At 390px a column is ~100px and
+            the label simply wraps onto a second line.
+          */}
+          <dl className="mt-12 grid grid-cols-3 gap-4 border-t border-wc-verde-claro pt-8 sm:gap-8 md:mt-16 md:pt-10">
             {quickFacts.map((fact) => (
               <div key={fact.label} className="flex flex-col gap-1">
                 <dt className="font-raleway text-3xl font-light text-wc-verde md:text-4xl">

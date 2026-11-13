@@ -47,7 +47,7 @@ export function Cierre() {
   return (
     <section
       ref={sectionRef}
-      className="relative z-20 bg-white  pt-20"
+      className="relative z-20 bg-white pt-12 md:pt-20"
     >
       <motion.div
         // Reduced motion: no scroll-driven growth, just the full-bleed frame.

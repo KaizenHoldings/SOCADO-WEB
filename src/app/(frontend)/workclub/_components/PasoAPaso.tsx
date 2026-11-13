@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowDown, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useInView, useReducedMotion } from "motion/react";
 import { VISITA_URL, steps } from "../data";
 import { Num } from "./Num";
@@ -9,7 +9,12 @@ import { Reveal } from "./Reveal";
 import { ReservaButton } from "./ReservaButton";
 
 /**
- * How to book, as a row of five connected cards.
+ * How to book: a divided list on the phone, a row of five connected cards
+ * from `md` up.
+ *
+ * Five cards one under another spent some 1.200px on five one-line steps, so
+ * below `md` the card flattens into a row — index on the left, step on the
+ * right — and the hairline between them carries the sequence.
  *
  * While the section is on screen the steps light up one after another, and the
  * top bar of the active card fills from left to right like a progress bar for
@@ -59,7 +64,7 @@ export function PasoAPaso() {
   };
 
   return (
-    <section ref={sectionRef} className="bg-wc-marron-claro py-24">
+    <section ref={sectionRef} className="bg-wc-marron-claro py-16 md:py-24">
       <div className="section-shell">
         <Reveal>
           <h2 className="font-raleway text-4xl tracking-tight text-wc-verde lowercase md:text-5xl">
@@ -68,7 +73,7 @@ export function PasoAPaso() {
           </h2>
         </Reveal>
 
-        <ol className="mt-10 grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-5">
+        <ol className="mt-8 grid grid-cols-1 gap-0 md:mt-10 md:grid-cols-2 md:gap-10 lg:grid-cols-5">
           {steps.map((step, index) => {
             const isActive = activeIndex === index;
             const isLast = index === steps.length - 1;
@@ -88,16 +93,16 @@ export function PasoAPaso() {
                     setPaused(true);
                   }}
                   onMouseLeave={() => setPaused(false)}
-                  className={`relative flex h-full min-h-[210px] flex-col border border-t-[6px] border-wc-gris-claro border-t-wc-verde-claro px-5 pb-8 pt-5 transition-[transform,background-color,box-shadow] duration-300 ease-out motion-reduce:transition-none ${
+                  className={`relative grid grid-cols-[2.25rem_1fr] items-start gap-x-3 border-b border-wc-verde-claro/70 py-4 transition-[transform,background-color,box-shadow] duration-300 ease-out motion-reduce:transition-none md:flex md:h-full md:min-h-[210px] md:flex-col md:border md:border-t-[6px] md:border-wc-gris-claro md:border-t-wc-verde-claro md:px-5 md:pb-8 md:pt-5 ${
                     isActive
-                      ? "-translate-y-1.5 bg-white shadow-[0_12px_30px_-12px_rgb(73_67_40_/_0.25)] motion-reduce:translate-y-0"
-                      : "bg-white/60"
+                      ? "md:-translate-y-1.5 md:bg-white md:shadow-[0_12px_30px_-12px_rgb(73_67_40_/_0.25)] md:motion-reduce:translate-y-0"
+                      : "md:bg-white/60"
                   }`}
                 >
                   {/* Progress bar over the top border */}
                   <span
                     aria-hidden="true"
-                    className="pointer-events-none absolute -left-px -right-px -top-[6px] h-[6px] origin-left bg-wc-verde"
+                    className="pointer-events-none absolute -left-px -right-px -top-[6px] hidden h-[6px] origin-left bg-wc-verde md:block"
                     style={{
                       transform: isActive ? "scaleX(1)" : "scaleX(0)",
                       transition: barTransition(isActive),
@@ -105,7 +110,7 @@ export function PasoAPaso() {
                   />
 
                   <p
-                    className={`font-outfit text-2xl font-semibold text-wc-terracota transition-transform duration-300 ease-out motion-reduce:transition-none ${
+                    className={`row-span-2 font-outfit text-xl font-semibold text-wc-terracota transition-transform md:text-2xl duration-300 ease-out motion-reduce:transition-none ${
                       isActive
                         ? "translate-x-1 motion-reduce:translate-x-0"
                         : "opacity-80"
@@ -113,38 +118,30 @@ export function PasoAPaso() {
                   >
                     {step.index}
                   </p>
-                  <h3 className="mt-3 font-raleway text-lg font-semibold text-wc-verde lowercase">
+                  <h3 className="font-raleway text-lg font-semibold text-wc-verde lowercase md:mt-3">
                     {step.title}
                   </h3>
-                  <p className="mt-2.5 font-raleway text-sm font-light leading-snug text-wc-marron/80 lowercase">
+                  <p className="mt-1 font-raleway text-sm font-light leading-snug text-wc-marron/80 lowercase md:mt-2.5">
                     <Num>{step.description}</Num>
                   </p>
                 </article>
 
                 {/*
-                  Connectors. Horizontal on the five-column row, vertical on the
-                  single-column stack; the two-column tablet grid gets none,
-                  because there the next card is not the next step.
+                  Connector, only on the five-column row. The two-column tablet
+                  grid gets none, because there the next card is not the next
+                  step, and the phone list no longer needs one: the hairline
+                  between rows already reads as the sequence, and an arrow
+                  would land on top of it.
                 */}
                 {!isLast && (
-                  <>
-                    <ArrowRight
-                      aria-hidden="true"
-                      className={`absolute left-full top-1/2 ml-2.5 hidden h-5 w-5 -translate-y-1/2 transition-[color,transform] duration-300 lg:block motion-reduce:transition-none ${
-                        isActive
-                          ? "translate-x-1 text-wc-verde motion-reduce:translate-x-0"
-                          : "text-wc-verde-claro"
-                      }`}
-                    />
-                    <ArrowDown
-                      aria-hidden="true"
-                      className={`absolute left-1/2 top-full mt-2.5 block h-5 w-5 -translate-x-1/2 transition-[color,transform] duration-300 md:hidden motion-reduce:transition-none ${
-                        isActive
-                          ? "translate-y-1 text-wc-verde motion-reduce:translate-y-0"
-                          : "text-wc-verde-claro"
-                      }`}
-                    />
-                  </>
+                  <ArrowRight
+                    aria-hidden="true"
+                    className={`absolute left-full top-1/2 ml-2.5 hidden h-5 w-5 -translate-y-1/2 transition-[color,transform] duration-300 lg:block motion-reduce:transition-none ${
+                      isActive
+                        ? "translate-x-1 text-wc-verde motion-reduce:translate-x-0"
+                        : "text-wc-verde-claro"
+                    }`}
+                  />
                 )}
               </Reveal>
             );
@@ -153,7 +150,7 @@ export function PasoAPaso() {
 
         {/* Section CTAs */}
         <Reveal delay={0.1}>
-          <div className="mt-12 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+          <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center md:mt-12">
             <ReservaButton>reserva ahora</ReservaButton>
             <ReservaButton href={VISITA_URL} variant="outline">
               agenda una visita

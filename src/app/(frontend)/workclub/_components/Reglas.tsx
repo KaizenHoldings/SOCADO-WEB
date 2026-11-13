@@ -12,15 +12,15 @@ import { Reveal } from "./Reveal";
  */
 export function Reglas() {
   return (
-    <section className="border-t border-wc-gris-claro bg-white py-24 lg:py-28">
+    <section className="border-t border-wc-gris-claro bg-white py-16 md:py-24 lg:py-28">
       <div className="section-shell">
         <Reveal>
-          <h2 className="mb-12 font-raleway text-4xl font-light tracking-tight text-wc-verde lowercase sm:text-5xl lg:text-6xl">
+          <h2 className="mb-8 font-raleway text-4xl sm:mb-12 font-light tracking-tight text-wc-verde lowercase sm:text-5xl lg:text-6xl">
             reglas de convivencia
           </h2>
         </Reveal>
 
-        <ul className="grid grid-cols-2 gap-x-8 gap-y-10 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-x-5 gap-y-8 sm:gap-x-8 sm:gap-y-10 lg:grid-cols-4">
           {reglas.map((regla, index) => (
             <Reveal
               key={regla.index}

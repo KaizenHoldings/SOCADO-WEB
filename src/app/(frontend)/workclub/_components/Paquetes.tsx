@@ -202,7 +202,7 @@ export function Paquetes({ groups }: PaquetesProps) {
       {/* Heading, in the upper half */}
       {/* On mobile the band is a block of its own; from md the layer owns it */}
       <div
-        className={`${band.bg} ${BAND_FADE} pb-28 pt-20 md:flex md:items-end md:justify-center md:bg-transparent md:pt-0 md:pb-[var(--pass-head-pb)]`}
+        className={`${band.bg} ${BAND_FADE} pb-28 pt-14 md:flex md:items-end md:justify-center md:bg-transparent md:pt-0 md:pb-[var(--pass-head-pb)]`}
       >
         <div className="section-shell flex flex-col items-center text-center">
           <Reveal>
@@ -500,7 +500,7 @@ function PassCard({
         )}
 
         {pass.chips.length > 0 && (
-          <ul className="mt-[var(--pass-small-mt)] flex flex-col items-center gap-2">
+          <ul className="mt-[var(--pass-small-mt)] flex flex-wrap items-center justify-center gap-2 md:flex-col">
             {pass.chips.map((chip) => (
               <li
                 key={chip}
