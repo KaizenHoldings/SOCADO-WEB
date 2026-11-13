@@ -14,7 +14,13 @@ import { createRoot, type Root } from 'react-dom/client'
  * useInView gives up on a null ref and its effect never runs again.
  *
  * Both failures are the same shape: nothing observed, so the text stays at
- * opacity 0. That is what these assert.
+ * opacity 0. That is what the first two assert.
+ *
+ * The third is a different one: the space between words used to be the last
+ * child inside the first word's span, where CSS drops it — white space at the
+ * end of a line is removed, and the end of an inline-block is the end of a
+ * line — so the heading read as one run-together word. It has to be a sibling
+ * of the word spans.
  *
  * Lives in tests/int because that is the suite the runner is configured for;
  * it needs no database. Mounted through react-dom directly rather than with
@@ -102,6 +108,23 @@ describe('AssembleTitle', () => {
 
     expect(observed).toHaveLength(1)
     expect(observed[0].textContent).toBe(TEXT)
+  })
+
+  it('separa las palabras con un espacio que el css no se come', () => {
+    const container = mount(heading())
+    const letters = container.querySelector('[aria-hidden="true"]')!
+
+    // Hermano de las palabras, no ultimo hijo dentro de una de ellas
+    const kinds = Array.from(letters.childNodes).map((node) =>
+      node.nodeType === node.TEXT_NODE ? node.textContent : 'PALABRA',
+    )
+    expect(kinds).toEqual(['PALABRA', ' ', 'PALABRA'])
+
+    // Y ninguna palabra termina en texto suelto, que es donde se perdia
+    for (const word of Array.from(letters.children)) {
+      const last = word.childNodes[word.childNodes.length - 1]
+      expect(last.nodeType).not.toBe(last.TEXT_NODE)
+    }
   })
 
   it('expone el texto una vez cuando las letras toman el relevo', () => {

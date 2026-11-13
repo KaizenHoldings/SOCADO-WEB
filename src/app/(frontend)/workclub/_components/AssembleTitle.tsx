@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import { useMounted } from "./useMounted";
 
@@ -31,6 +31,13 @@ import { useMounted } from "./useMounted";
  *    up and never looks again. Returning early for the plain-text state — as
  *    this component used to — left the ref empty on that pass and the heading
  *    never appeared at all.
+ *
+ * 3. The space between words is a sibling of the word spans, never the last
+ *    child inside one. CSS drops white space at the end of a line, and the end
+ *    of an inline-block's content is the end of a line, so a trailing space
+ *    inside the word is simply not painted — which ran the two words of this
+ *    heading together. Between two inline-blocks it survives, and it is also
+ *    what lets the heading wrap onto a second line.
  */
 
 /** Horizontal displacement per character, in px, before the word closes up. */
@@ -87,37 +94,37 @@ export function AssembleTitle({ text, className }: AssembleTitleProps) {
         {still
           ? text
           : words.map((word, wordPosition) => (
-              <span
-                key={`${wordPosition}-${word}`}
-                className="inline-block whitespace-nowrap"
-              >
-                {Array.from(word).map((character, position) => {
-                  const index = characterIndex;
-                  characterIndex += 1;
+              <Fragment key={`${wordPosition}-${word}`}>
+                <span className="inline-block whitespace-nowrap">
+                  {Array.from(word).map((character, position) => {
+                    const index = characterIndex;
+                    characterIndex += 1;
 
-                  return (
-                    <motion.span
-                      key={`${position}-${character}`}
-                      className="inline-block"
-                      initial={spread(index)}
-                      animate={
-                        inView
-                          ? { x: 0, y: 0, rotate: 0, opacity: 1 }
-                          : spread(index)
-                      }
-                      transition={{
-                        duration: 0.9,
-                        // Outer letters settle last, so the word closes inwards.
-                        delay: Math.abs(index - centre) * 0.02,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                    >
-                      {character}
-                    </motion.span>
-                  );
-                })}
+                    return (
+                      <motion.span
+                        key={`${position}-${character}`}
+                        className="inline-block"
+                        initial={spread(index)}
+                        animate={
+                          inView
+                            ? { x: 0, y: 0, rotate: 0, opacity: 1 }
+                            : spread(index)
+                        }
+                        transition={{
+                          duration: 0.9,
+                          // Outer letters settle last, so the word closes inwards.
+                          delay: Math.abs(index - centre) * 0.02,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                      >
+                        {character}
+                      </motion.span>
+                    );
+                  })}
+                </span>
+                {/* Outside the word: see note 3 above */}
                 {wordPosition < words.length - 1 && " "}
-              </span>
+              </Fragment>
             ))}
       </span>
     </>
