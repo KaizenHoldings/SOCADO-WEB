@@ -74,6 +74,50 @@ Combined:
 pnpm build && pnpm start
 ```
 
+### 4.1. Database schema in production
+
+The postgres adapter only pushes the schema outside production:
+
+```js
+if (process.env.NODE_ENV !== 'production' && process.env.PAYLOAD_MIGRATING !== 'true' && this.push !== false) {
+  await pushDevSchema(this)
+}
+```
+
+`pnpm dev` therefore keeps the local database in step with the collections on
+every start, and `pnpm build` never does — it sets `NODE_ENV=production`. A new
+collection or global that works locally will fail on the server with
+`relation "..." does not exist` until its table is created there.
+
+So on the server, run the migrations before building:
+
+```bash
+pnpm payload migrate
+pnpm build
+```
+
+`pnpm payload migrate` may ask for confirmation, warning that data loss will
+occur. That prompt fires whenever the database carries the marker Payload
+writes when it has been pushed in dev mode; it is about that situation, not
+about the migration in front of it. Read the migration's `up` before answering.
+
+To add a migration after changing a collection:
+
+```bash
+pnpm payload migrate:create <name>
+```
+
+Then **read the generated `up`** and keep it additive: `CREATE TABLE IF NOT
+EXISTS`, `ADD COLUMN IF NOT EXISTS`, `CREATE INDEX IF NOT EXISTS`, and enum or
+foreign-key statements wrapped in a block that swallows the duplicate, since
+postgres has no `IF NOT EXISTS` for those. `src/migrations/20261113_140852_workclub_tables.ts`
+is the worked example. Two reasons it matters: the server's real schema is not
+guaranteed to match the last snapshot, and a migration that only creates can be
+re-run without consequence.
+
+Migrations are not wired into the server's start-up on purpose (`prodMigrations`
+is not set). Running them is a deliberate deployment step.
+
 ## 5. Payload code generation
 
 After changing any Payload collection:
