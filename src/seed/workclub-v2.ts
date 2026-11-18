@@ -12,14 +12,25 @@ import type { PassType } from '@/payload-types'
  * - `replace` writes a field only while it still holds the value v1 shipped.
  *   Anything else means somebody edited it in the admin: the value stays and a
  *   warning says so.
+ * - `replaceText` swaps one phrase wherever it sits inside a field, which is
+ *   the only way to reach the copy inside a blocks field: Payload gives every
+ *   row an id, so the stored array never equals the one written here and a
+ *   whole-value `replace` could not match it.
  *
- * It is seed step 3, not 2: step 2 was the band colour, which shipped first.
+ * It is seed step 6: step 2 was the band colour, step 3 the v2 content, step 4
+ * the shorter pages line, step 5 a phrase inside the member info cards, and
+ * step 6 the "más información" button with the detail list behind it, and
+ * step 7 the monitor neither member plan turned out to have.
+ * Raising the number
+ * replays the whole table, which is safe — `fill` passes over a field that has
+ * something in it, and `replace` passes over one already at its target.
+ *
  * The step number lives in `workclub-settings.seedVersion`, so this runs once
  * per database. There is no migration file to go with it — the project runs
  * Payload with `push: true` and keeps no migration flow.
  */
 
-export const WORKCLUB_V2_SEED_VERSION = 3
+export const WORKCLUB_V2_SEED_VERSION = 7
 
 type InfoCards = NonNullable<PassType['infoCards']>
 
@@ -29,6 +40,10 @@ type Op =
   | { kind: 'fill'; field: string; value: unknown }
   /** Only while the field still holds the value v1 shipped. */
   | { kind: 'replace'; field: string; from: unknown; to: unknown }
+  /** Swaps one phrase anywhere inside the field, however deeply nested. */
+  | { kind: 'replaceText'; field: string; from: string; to: string }
+  /** Drops the rows of a list field whose text reads as this one. */
+  | { kind: 'removeItem'; field: string; text: string }
 
 interface RecordOps {
   slug: string
@@ -66,7 +81,7 @@ const MEMBER_INFO_CARDS: InfoCards = [
     items: [
       { title: '15% de descuento', detail: 'en productos socado' },
       { title: '5 cafés socado', detail: 'por período de membresía' },
-      { title: 'acceso a café socado by socado', detail: 'a precio especial' },
+      { title: 'acceso a café socado by socado', detail: 'precio especial' },
       { title: '20% off', detail: 'en alquiler de salas' },
     ],
   },
@@ -96,6 +111,8 @@ const PASS_TYPES: RecordOps[] = [
       // The band no longer carries the inclusion line: it is the "incluyen" card.
       { kind: 'replace', field: 'note', from: 'todos los pass incluyen', to: '' },
       { kind: 'replace', field: 'noteHighlight', from: '1 café básico de socado', to: '' },
+      // The card button now opens the modal, so it no longer says "reservar".
+      { kind: 'replace', field: 'ctaLabelDefault', from: 'reservar', to: 'más información' },
     ],
   },
   {
@@ -104,6 +121,15 @@ const PASS_TYPES: RecordOps[] = [
       { kind: 'fill', field: 'bandColor', value: 'wc-marron-medio' },
       { kind: 'replace', field: 'bandColor', from: RETIRED_BAND_COLOR, to: 'wc-marron-medio' },
       { kind: 'fill', field: 'infoCards', value: MEMBER_INFO_CARDS },
+      // The cards shipped saying "a precio especial"; the copy dropped the "a".
+      {
+        kind: 'replaceText',
+        field: 'infoCards',
+        from: 'a precio especial',
+        to: 'precio especial',
+      },
+      // Same as the other group: the button opens the modal now.
+      { kind: 'replace', field: 'ctaLabelDefault', from: 'unirme', to: 'más información' },
       { kind: 'fill', field: 'footnoteLabel', value: 'cafés socado:' },
       {
         kind: 'fill',
@@ -124,6 +150,22 @@ const PASS_TYPES: RecordOps[] = [
 function chips(...texts: string[]) {
   return texts.map((text) => ({ text }))
 }
+
+/** Same shape as `chips`: the admin stores a list of rows with one text each. */
+function details(...texts: string[]) {
+  return texts.map((text) => ({ text }))
+}
+
+/**
+ * Written as it arrived from the client.
+ *
+ * "lunes y viernes" says two separate days, not a range; it is almost certainly
+ * meant to be "lunes a viernes". An opening time is a fact, not a wording, so
+ * it is not ours to correct — it is flagged for them to confirm, and changed in
+ * the admin or with a `replaceText` step once they answer.
+ */
+const WEEK_ACCESS = 'acceso lunes y viernes de 7 am a 9 pm'
+const WEEKEND_ACCESS = 'acceso fines de semana y feriado de 8 am a 8 pm'
 
 const PLANS: RecordOps[] = [
   {
@@ -170,7 +212,13 @@ const PLANS: RecordOps[] = [
     slug: 'hot-desk-member',
     ops: [
       { kind: 'fill', field: 'chips', value: chips('2 créditos incluidos') },
-      { kind: 'fill', field: 'secondaryLine', value: '10 páginas b/n incluidas por período' },
+      { kind: 'fill', field: 'secondaryLine', value: '10 páginas por período' },
+      {
+        kind: 'replace',
+        field: 'secondaryLine',
+        from: '10 páginas por período',
+        to: '10 páginas por período',
+      },
       {
         kind: 'replace',
         field: 'description',
@@ -183,7 +231,25 @@ const PLANS: RecordOps[] = [
     slug: 'spot-member',
     ops: [
       { kind: 'fill', field: 'chips', value: chips('4 créditos incluidos') },
-      { kind: 'fill', field: 'secondaryLine', value: '20 páginas b/n incluidas por período' },
+      { kind: 'fill', field: 'secondaryLine', value: '20 páginas por período' },
+      {
+        kind: 'fill',
+        field: 'details',
+        value: details(
+          'arturito personal',
+          'internet de alta velocidad',
+          WEEK_ACCESS,
+          WEEKEND_ACCESS,
+        ),
+      },
+      // Seeded in step 6; neither member plan has one.
+      { kind: 'removeItem', field: 'details', text: 'monitor' },
+      {
+        kind: 'replace',
+        field: 'secondaryLine',
+        from: '20 páginas b/n incluidas por período',
+        to: '20 páginas por período',
+      },
       {
         kind: 'replace',
         field: 'description',
@@ -196,7 +262,24 @@ const PLANS: RecordOps[] = [
     slug: 'studio-member',
     ops: [
       { kind: 'fill', field: 'chips', value: chips('6 créditos incluidos') },
-      { kind: 'fill', field: 'secondaryLine', value: '30 páginas b/n incluidas por período' },
+      { kind: 'fill', field: 'secondaryLine', value: '30 páginas por período' },
+      {
+        kind: 'fill',
+        field: 'details',
+        value: details(
+          'oficina privada con acceso exclusivo',
+          'internet de alta velocidad',
+          WEEK_ACCESS,
+          WEEKEND_ACCESS,
+        ),
+      },
+      { kind: 'removeItem', field: 'details', text: 'tv monitor' },
+      {
+        kind: 'replace',
+        field: 'secondaryLine',
+        from: '30 páginas b/n incluidas por período',
+        to: '30 páginas por período',
+      },
       {
         kind: 'replace',
         field: 'description',
@@ -231,6 +314,33 @@ function matches(current: unknown, expected: unknown): boolean {
   }
 
   return current === expected
+}
+
+/**
+ * A copy of `value` with every string that reads as `from` swapped for `to`.
+ *
+ * Walks arrays and objects, so it reaches a phrase sitting inside a blocks
+ * field without needing to know its shape — and it leaves the ids and every
+ * other field Payload stores exactly where they were.
+ *
+ * A phrase that has been rewritten in the admin no longer reads as `from`, so
+ * it is passed over: the same promise the other operations make.
+ */
+function replaceText(value: unknown, from: string, to: string): unknown {
+  if (typeof value === 'string') return matches(value, from) ? to : value
+
+  if (Array.isArray(value)) return value.map((item) => replaceText(item, from, to))
+
+  if (value !== null && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([key, item]) => [
+        key,
+        replaceText(item, from, to),
+      ]),
+    )
+  }
+
+  return value
 }
 
 interface Stats {
@@ -273,10 +383,39 @@ async function applyOps(
   const patch: Record<string, unknown> = {}
 
   for (const op of record.ops) {
-    const current = doc[op.field]
+    /*
+      What an earlier operation already wrote wins over what is stored: two
+      operations can name the same field — a `fill` for an empty database and a
+      `replace` for one that carries the previous copy — and the second has to
+      see the first. Reading the document every time, the `replace` of a field
+      the `fill` just set would find it empty, match neither `from` nor `to`,
+      and warn about an edit that never happened.
+    */
+    const current = op.field in patch ? patch[op.field] : doc[op.field]
 
     if (op.kind === 'fill') {
       if (isEmpty(current)) patch[op.field] = op.value
+      continue
+    }
+
+    if (op.kind === 'removeItem') {
+      // Only a list has rows to drop; anything else is left alone.
+      if (!Array.isArray(current)) continue
+
+      const kept = current.filter((row) => {
+        const text = (row as { text?: unknown } | null)?.text
+        return !matches(text, op.text)
+      })
+
+      if (kept.length !== current.length) patch[op.field] = kept
+      continue
+    }
+
+    if (op.kind === 'replaceText') {
+      const next = replaceText(current, op.from, op.to)
+      // Nothing to say when the phrase is not there: it was already changed,
+      // or an editor rewrote the line and it is theirs now.
+      if (JSON.stringify(next) !== JSON.stringify(current)) patch[op.field] = next
       continue
     }
 

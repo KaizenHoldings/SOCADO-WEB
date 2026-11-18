@@ -81,6 +81,19 @@ export const descriptionParagraphs: string[] = [
   "socado workclub existe para elevar tu día a día de trabajo, con un entorno y un equipo que te inspiran a crecer, conectar y avanzar con foco, efectividad y tranquilidad.",
 ];
 
+/**
+ * Fragments of `descriptionParagraphs` set in semibold: the promise and what it
+ * delivers, lifted out of the sentence that carries them.
+ *
+ * Each has to be a literal fragment of one of the paragraphs, the same contract
+ * as `caption.highlight` — the copy stays one authored sentence, with no markup
+ * in it, and a fragment that stops matching is simply not emphasised.
+ */
+export const descriptionEmphasis: string[] = [
+  "elevar tu día a día de trabajo",
+  "foco, efectividad y tranquilidad",
+];
+
 /** Heading of the list that follows the description. */
 export const somosTitle = "somos";
 

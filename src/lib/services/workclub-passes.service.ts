@@ -61,6 +61,8 @@ export interface Pass {
   chips: string[]
   /** One thin line under the pills. */
   secondaryLine?: string
+  /** Lines of the "más información" modal; empty when the plan has none. */
+  details: string[]
   /** Button label. */
   cta: string
   ctaVariant: CtaVariant
@@ -160,11 +162,36 @@ const FALLBACK_FOOTNOTE =
  * these records are written on a fresh database by `src/seed/workclub.ts` and
  * `src/seed/workclub-v2.ts`.
  */
+/**
+ * Lo que muestra el modal de spot y studio member, tal y como lo pidieron.
+ *
+ * Literal: "lunes y viernes" es lo que llegó en la petición. Dicho así son dos
+ * días sueltos, no un rango — casi seguro querían "lunes a viernes", pero un
+ * horario es un dato, no una redacción, y no es mío para corregirlo. Está
+ * marcado en la entrega para que lo confirmen.
+ */
+const WEEK_ACCESS = 'acceso lunes y viernes de 7 am a 9 pm'
+const WEEKEND_ACCESS = 'acceso fines de semana y feriado de 8 am a 8 pm'
+
+const SPOT_DETAILS = [
+  'arturito personal',
+  'internet de alta velocidad',
+  WEEK_ACCESS,
+  WEEKEND_ACCESS,
+]
+
+const STUDIO_DETAILS = [
+  'oficina privada con acceso exclusivo',
+  'internet de alta velocidad',
+  WEEK_ACCESS,
+  WEEKEND_ACCESS,
+]
+
 export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
   {
     id: 'workclub-pass',
     name: 'workclub pass',
-    eyebrow: 'socado',
+    eyebrow: '',
     description: 'acceso por día, por paquete de días o por hora de sala',
     note: '',
     bandColor: 'wc-verde-claro',
@@ -177,7 +204,8 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
         pricePrefix: DEFAULT_PRICE_PREFIX,
         period: 'por día',
         chips: ['1 café socado'],
-        cta: 'reservar',
+        details: [],
+        cta: 'más información',
         ctaVariant: 'outline',
         ctaHref: WORKCLUB_RESERVA_URL,
         ctaPaquete: 'day-pass',
@@ -190,7 +218,8 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
         pricePrefix: DEFAULT_PRICE_PREFIX,
         period: 'por paquete',
         chips: ['utilizable en 60 días', '1 café socado'],
-        cta: 'reservar',
+        details: [],
+        cta: 'más información',
         ctaVariant: 'outline',
         ctaHref: WORKCLUB_RESERVA_URL,
         ctaPaquete: '10-pack',
@@ -204,7 +233,8 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
         priceSuffix: '/h',
         period: 'desde · según sala',
         chips: ['catering exclusivo socado', '1 café socado'],
-        cta: 'reservar',
+        details: [],
+        cta: 'más información',
         ctaVariant: 'outline',
         ctaHref: WORKCLUB_RESERVA_URL,
         ctaPaquete: 'reserva-de-sala',
@@ -251,8 +281,9 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
         pricePrefix: DEFAULT_PRICE_PREFIX,
         period: 'por 30 días',
         chips: ['2 créditos incluidos'],
-        secondaryLine: '10 páginas b/n incluidas por período',
-        cta: 'unirme',
+        secondaryLine: '10 páginas por período',
+        details: [],
+        cta: 'más información',
         ctaVariant: 'solid',
         ctaHref: WORKCLUB_RESERVA_URL,
         ctaPaquete: 'hot-desk-member',
@@ -265,8 +296,9 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
         pricePrefix: DEFAULT_PRICE_PREFIX,
         period: 'por 30 días',
         chips: ['4 créditos incluidos'],
-        secondaryLine: '20 páginas b/n incluidas por período',
-        cta: 'unirme',
+        secondaryLine: '20 páginas por período',
+        details: SPOT_DETAILS,
+        cta: 'más información',
         ctaVariant: 'solid',
         ctaHref: WORKCLUB_RESERVA_URL,
         ctaPaquete: 'spot-member',
@@ -279,8 +311,9 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
         pricePrefix: DEFAULT_PRICE_PREFIX,
         period: 'por 30 días',
         chips: ['6 créditos incluidos'],
-        secondaryLine: '30 páginas b/n incluidas por período',
-        cta: 'unirme',
+        secondaryLine: '30 páginas por período',
+        details: STUDIO_DETAILS,
+        cta: 'más información',
         ctaVariant: 'solid',
         ctaHref: WORKCLUB_RESERVA_URL,
         ctaPaquete: 'studio-member',
@@ -293,7 +326,7 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
         items: [
           { title: '15% de descuento', detail: 'en productos socado' },
           { title: '5 cafés socado', detail: 'por período de membresía' },
-          { title: 'acceso a café socado by socado', detail: 'a precio especial' },
+          { title: 'acceso a café socado by socado', detail: 'precio especial' },
           { title: '20% off', detail: 'en alquiler de salas' },
         ],
       },
@@ -358,6 +391,9 @@ function mapPass(
     period: trimmed(plan.priceUnit) ?? '',
     chips: (plan.chips ?? []).map((chip) => chip.text?.trim()).filter((text): text is string => !!text),
     secondaryLine: trimmed(plan.secondaryLine),
+    details: (plan.details ?? [])
+      .map((detail) => detail.text?.trim())
+      .filter((text): text is string => !!text),
     cta: trimmed(plan.ctaLabel) ?? group.ctaLabel,
     ctaVariant: (plan.ctaVariant as CtaVariant | null | undefined) ?? group.ctaVariant,
     ctaHref: ownUrl ?? group.reservaUrl,

@@ -159,7 +159,7 @@ describe('WorkclubPassesService', () => {
             { id: 'a', text: '2 créditos incluidos' },
             { id: 'b', text: '  ' },
           ],
-          secondaryLine: '10 páginas b/n incluidas por período',
+          secondaryLine: '10 páginas por período',
         }),
       ],
       settings: null,
@@ -168,7 +168,7 @@ describe('WorkclubPassesService', () => {
     const [member] = (await WorkclubPassesService.get()).groups[0].passes
 
     expect(member.chips).toEqual(['2 créditos incluidos'])
-    expect(member.secondaryLine).toBe('10 páginas b/n incluidas por período')
+    expect(member.secondaryLine).toBe('10 páginas por período')
   })
 
   it('aplana las tarjetas informativas y descarta los bloques sin contenido', async () => {

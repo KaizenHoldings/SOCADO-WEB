@@ -212,9 +212,31 @@ export const Plans: CollectionConfig = {
       type: 'text',
       label: 'Línea secundaria',
       admin: {
-        placeholder: 'Ej: 10 páginas b/n incluidas por período',
+        placeholder: 'Ej: 10 páginas por período',
         description: 'Opcional, bajo las píldoras y en letra fina. Escribir en minúscula.',
       },
+    },
+    {
+      name: 'details',
+      type: 'array',
+      label: 'Detalles del modal',
+      labels: { singular: 'Detalle', plural: 'Detalles' },
+      admin: {
+        description:
+          'Lista que se muestra dentro del modal de "más información", en el orden de esta lista; se reordenan arrastrando. Si se deja vacía, el modal enseña solo lo que ya tiene la tarjeta y lo que incluye el tipo de pass. Escribir en minúscula.',
+      },
+      fields: [
+        {
+          name: 'text',
+          type: 'text',
+          label: 'Texto',
+          required: true,
+          admin: {
+            placeholder: 'Ej: internet de alta velocidad',
+            description: 'Escribir en minúscula.',
+          },
+        },
+      ],
     },
     {
       name: 'highlight',

@@ -2,6 +2,7 @@
 
 import {
   caption,
+  descriptionEmphasis,
   descriptionParagraphs,
   quickFacts,
   somosItems,
@@ -51,17 +52,19 @@ export function Descripcion() {
             {/* Explanation, read word by word as the section scrolls */}
             <WordReveal
               paragraphs={descriptionParagraphs}
+              emphasis={descriptionEmphasis}
               className="font-outfit text-lg font-light leading-relaxed lowercase"
             />
 
             {/* What Workclub is made of */}
             <Reveal delay={0.1}>
-              <h3 className="mt-8 font-raleway text-2xl font-light text-wc-verde lowercase">
+              {/* Separado del parrafo: el listado empieza una idea despues */}
+              <h3 className="mt-12 font-raleway text-2xl font-light text-wc-verde lowercase">
                 {somosTitle}
               </h3>
             </Reveal>
 
-            <ul className="mt-4">
+            <ul className="">
               {somosItems.map((item, index) => (
                 <Reveal
                   key={item}

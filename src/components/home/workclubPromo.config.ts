@@ -31,14 +31,21 @@ export const workclubPromoMedia: MediaConfig = {
  * - `a`, strips: a title band, the medium, and a band that is the link.
  * - `b`, overlay: the medium full bleed with the words and a pill on top.
  *
- * While `showSwitch` is true both are rendered and a small control in the top
- * right corner swaps them, so they can be compared on the real page. Setting it
- * to false leaves `defaultVariant` alone, and then `WorkclubPromo.tsx` and the
- * option that was not chosen can be deleted.
+ * The overlay is the one chosen, and the switch is off: the block is that
+ * option on its own, with no comparison control and nothing read from the URL
+ * or from storage, so a visitor who tried `a` while it was open is not left
+ * with it.
+ *
+ * Alone on the page it no longer borrows the strips' height — `PROMO_MIN_HEIGHT`
+ * is what decides it, which is what that floor was there for.
+ *
+ * `WorkclubPromoBands.tsx` and the `WorkclubPromo.tsx` switch are now dead
+ * weight; turning `showSwitch` back on is all it takes to compare them again,
+ * so they are kept until the decision has been seen on the real page.
  */
 export const workclubPromoConfig = {
-  defaultVariant: "a" as "a" | "b",
-  showSwitch: true,
+  defaultVariant: "b" as "a" | "b",
+  showSwitch: false,
   /** Only the overlay option shows it. Empty: the block has no subtitle. */
   subtitle: "",
 };

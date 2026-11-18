@@ -734,6 +734,18 @@ export interface Plan {
    */
   secondaryLine?: string | null;
   /**
+   * Lista que se muestra dentro del modal de "más información", en el orden de esta lista; se reordenan arrastrando. Si se deja vacía, el modal enseña solo lo que ya tiene la tarjeta y lo que incluye el tipo de pass. Escribir en minúscula.
+   */
+  details?:
+    | {
+        /**
+         * Escribir en minúscula.
+         */
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * Se conserva por los datos antiguos, pero la tarjeta no la muestra: ese texto ahora va en una píldora.
    */
   highlight?: string | null;
@@ -1250,6 +1262,12 @@ export interface PlansSelect<T extends boolean = true> {
         id?: T;
       };
   secondaryLine?: T;
+  details?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
   highlight?: T;
   features?:
     | T

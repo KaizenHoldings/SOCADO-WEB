@@ -115,9 +115,17 @@ export function WorkclubPromoOverlay() {
         )}
 
         <motion.div {...rise(0.15)} className="mt-8">
+          {/*
+            Rectangular, with the corner taken off: `rounded-lg` is 8px on a
+            48px button, enough to read as a rectangle without the hard edge.
+
+            Filled white rather than the outline the other home ctas use —
+            an outline in azul socado has nothing to sit against on a
+            photograph. The size is theirs: the same `px-8 py-3`.
+          */}
           <Link
             href={PROMO_COPY.href}
-            className="group/cta inline-flex items-center gap-2 rounded-full bg-white px-8 py-3 font-raleway text-base font-semibold text-wc-verde lowercase transition-colors duration-300 hover:bg-wc-verde-claro focus-visible:bg-wc-verde-claro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:text-lg"
+            className="group/cta inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3 font-raleway text-base font-semibold text-wc-verde lowercase transition-colors duration-300 hover:bg-wc-verde-claro focus-visible:bg-wc-verde-claro focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:text-lg"
           >
             {PROMO_COPY.cta}
             <ArrowRight

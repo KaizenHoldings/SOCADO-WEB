@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+import { WORKCLUB_RESERVA_ACCEPTS_PAQUETE } from "@/lib/constants/links";
 import { RESERVA_URL, isExternalUrl } from "../data";
 
 /**
@@ -12,10 +13,13 @@ import { RESERVA_URL, isExternalUrl } from "../data";
 /**
  * Appends the package id the booking system can preselect.
  *
- * Only applied to a real external URL: while `RESERVA_URL` is still the `#`
- * placeholder, a query string would produce a nonsense href.
+ * Off by default: see `WORKCLUB_RESERVA_ACCEPTS_PAQUETE`. Nobody has confirmed
+ * the coworking site reads the parameter, and a link carrying one it does not
+ * know is worse than a clean one. The check on the URL stays as well, so a
+ * placeholder href never grows a query string.
  */
 function withPaquete(url: string, paquete?: string): string {
+  if (!WORKCLUB_RESERVA_ACCEPTS_PAQUETE) return url;
   if (!paquete || !isExternalUrl(url)) return url;
   const separator = url.includes("?") ? "&" : "?";
   return `${url}${separator}paquete=${encodeURIComponent(paquete)}`;
@@ -39,6 +43,12 @@ interface ReservaButtonProps {
   className?: string;
   /** Hides the trailing arrow when the label already carries one. */
   hideArrow?: boolean;
+  /**
+   * Renders a `<button>` instead of a link, for the CTAs that open a dialog
+   * rather than leave the page. The look is the same on purpose: these sit
+   * next to the real links and have to read as the same control.
+   */
+  onClick?: () => void;
 }
 
 export function ReservaButton({
@@ -49,6 +59,7 @@ export function ReservaButton({
   block = false,
   className,
   hideArrow = false,
+  onClick,
 }: ReservaButtonProps) {
   const destination = withPaquete(href, paquete);
   const external = isExternalUrl(destination);
@@ -64,14 +75,12 @@ export function ReservaButton({
       "border border-wc-terracota-claro text-wc-verde hover:bg-wc-verde hover:text-white focus-visible:outline-wc-verde",
   }[variant];
 
-  return (
-    <a
-      href={destination}
-      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className={`group inline-flex items-center justify-center gap-2 rounded-full px-7 py-3 font-raleway text-[15px] font-light lowercase transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 ${variantClasses} ${
-        block ? "w-full" : ""
-      } ${className ?? ""}`}
-    >
+  const classes = `group inline-flex items-center justify-center gap-2 rounded-full px-7 py-3 font-raleway text-[15px] font-light lowercase transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 ${variantClasses} ${
+    block ? "w-full" : ""
+  } ${className ?? ""}`;
+
+  const content = (
+    <>
       {children}
       {!hideArrow && (
         <ArrowUpRight
@@ -79,6 +88,24 @@ export function ReservaButton({
           aria-hidden="true"
         />
       )}
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={`cursor-pointer ${classes}`}>
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <a
+      href={destination}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      className={classes}
+    >
+      {content}
     </a>
   );
 }

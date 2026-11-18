@@ -109,6 +109,39 @@ html {
   background-color: #063547;
 }
 
+/* ===========================================================
+   Scroll de los paneles de workclub
+   ===========================================================
+   Las reglas de arriba pintan la barra en azul socado y a 10px, con el track
+   del fondo de la pagina. Dentro de un panel calido y redondeado eso canta:
+   es el azul de la tienda y un grosor pensado para la ventana entera.
+
+   Fuera de `@layer` a proposito: las reglas globales de arriba tampoco estan
+   en una capa, y lo que vive en una capa pierde siempre contra lo que no. */
+.wc-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-wc-verde-claro) transparent;
+}
+
+.wc-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.wc-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.wc-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-wc-verde-claro);
+  border: 0;
+  border-radius: 999px;
+}
+
+.wc-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-wc-verde-medio);
+}
+
 /* Utilities */
 @layer utilities {
   .scrollbar-hide::-webkit-scrollbar {

@@ -51,7 +51,7 @@ const PASS_TYPES: PassTypeSeed[] = [
   {
     slug: 'workclub-pass',
     name: 'workclub pass',
-    eyebrow: 'socado',
+    eyebrow: '',
     description: 'acceso por día, por paquete de días o por hora de sala',
     note: 'todos los pass incluyen',
     noteHighlight: '1 café básico de socado',
@@ -63,7 +63,7 @@ const PASS_TYPES: PassTypeSeed[] = [
   {
     slug: 'member-pass',
     name: 'member pass',
-    eyebrow: 'socado',
+    eyebrow: '',
     description: 'membresías de 30 días con beneficios socado incluidos',
     note: 'todas las membresías incluyen beneficios en café socado',
     bandColor: 'wc-marron-medio',

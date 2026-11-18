@@ -9,6 +9,7 @@ import type {
   PassGroup,
 } from "@/lib/services/workclub-passes.service";
 import { InfoCards } from "./InfoCards";
+import { PassDetailModal } from "./PassDetailModal";
 import { Num } from "./Num";
 import { Reveal } from "./Reveal";
 import { ReservaButton } from "./ReservaButton";
@@ -135,6 +136,9 @@ export function Paquetes({ groups }: PaquetesProps) {
   );
   /** Card under the pointer or holding keyboard focus. */
   const [focusedCard, setFocusedCard] = useState<number | null>(null);
+
+  /** The pass whose modal is open; `null` while none is. */
+  const [openPass, setOpenPass] = useState<Pass | null>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const activeGroup =
@@ -206,18 +210,12 @@ export function Paquetes({ groups }: PaquetesProps) {
       >
         <div className="section-shell flex flex-col items-center text-center">
           <Reveal>
-            {activeGroup.eyebrow && (
-              <p
-                className={`font-outfit text-xs tracking-[0.3em] lowercase ${tone.eyebrow} ${BAND_FADE}`}
-              >
-                {activeGroup.eyebrow}
-              </p>
-            )}
+            
             {/* From md the size follows the viewport height, capped at the
                 48px of `text-5xl`, so a short screen loses height, not
                 hierarchy. */}
             <h2
-              className={`mt-2 font-raleway text-4xl font-light tracking-tight lowercase md:text-[clamp(2rem,5dvh,3rem)]/[1.05] ${tone.title} ${BAND_FADE}`}
+              className={`  mb-4 font-raleway text-4xl font-light tracking-tight lowercase md:text-[clamp(2rem,5dvh,3rem)]/[1.05] ${tone.title} ${BAND_FADE}`}
             >
               nuestros paquetes
             </h2>
@@ -328,6 +326,7 @@ export function Paquetes({ groups }: PaquetesProps) {
                       key={pass.slug}
                       pass={pass}
                       index={index}
+                      onOpen={() => setOpenPass(pass)}
                       isFocused={focusedCard === index}
                       isDimmed={focusedCard !== null && focusedCard !== index}
                       onFocusChange={(focused) =>
@@ -381,6 +380,16 @@ export function Paquetes({ groups }: PaquetesProps) {
 
       {/* Lower half of the grid, so the cards stay centred on the line */}
       <div className="hidden md:block" aria-hidden="true" />
+
+      {/*
+        Outside the grid and the tab panel: it is fixed to the viewport, and
+        the section clips its overflow.
+      */}
+      <PassDetailModal
+        pass={openPass}
+        groupCards={activeGroup.infoCards}
+        onClose={() => setOpenPass(null)}
+      />
     </section>
   );
 }
@@ -388,6 +397,8 @@ export function Paquetes({ groups }: PaquetesProps) {
 interface PassCardProps {
   pass: Pass;
   index: number;
+  /** Opens the modal of this pass. */
+  onOpen: () => void;
   /** Pointer over the card, or keyboard focus inside it. */
   isFocused: boolean;
   /** Another card holds the attention. */
@@ -400,6 +411,7 @@ interface PassCardProps {
 function PassCard({
   pass,
   index,
+  onOpen,
   isFocused,
   isDimmed,
   onFocusChange,
@@ -466,8 +478,14 @@ function PassCard({
           Two lines reserved: with the name on one line, that keeps the price
           and the button of the three cards at the same height without a
           subgrid. The copy is written to fit those two lines.
+
+          `text-balance` shares the words evenly between them. Greedy wrapping
+          filled the first line and left whatever did not fit alone on the
+          second — "desk." under a full line, "días." under another — so the
+          three cards read as three different shapes. A browser without it
+          wraps as before, which is the state this replaces.
         */}
-        <p className="mt-2 min-h-[2.4rem] font-outfit text-sm font-light leading-snug text-wc-marron/70 lowercase">
+        <p className="mt-2 min-h-[2.4rem] text-balance font-outfit text-sm font-light leading-snug text-wc-marron/70 lowercase">
           {pass.description}
         </p>
 
@@ -525,10 +543,11 @@ function PassCard({
             the look — the plan does, or the pass type it inherits from.
           */}
           <ReservaButton
-            href={pass.ctaHref}
-            paquete={pass.ctaPaquete}
+            onClick={onOpen}
             variant={pass.ctaVariant === "solid" ? "solid" : "outlineSoft"}
             block
+            // The arrow means "this leaves the site"; this one opens a dialog.
+            hideArrow
             className={
               pass.ctaVariant === "solid"
                 ? undefined

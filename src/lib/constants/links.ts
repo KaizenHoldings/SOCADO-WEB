@@ -33,9 +33,21 @@ export const CATERING_SOLICITUD_PATH = "/catering/solicitud";
  * header lo necesita para su CTA dentro de `/workclub` y no debe depender de
  * una carpeta de ruta. `data.ts` lo reexporta como `RESERVA_URL`.
  *
- * TODO: reemplazar por la URL real del sistema de reservas.
  */
-export const WORKCLUB_RESERVA_URL = "#";
+export const WORKCLUB_RESERVA_URL = "https://workclub.socadocafe.com/";
+
+/**
+ * Si el sistema de coworking sabe preseleccionar un paquete con `?paquete=<slug>`.
+ *
+ * En `false` todos los botones llevan a la portada del sistema, limpia. El
+ * código para añadir el parámetro sigue en `ReservaButton`, listo: poner esto
+ * en `true` lo activa de golpe en toda la landing, y el slug que viaja es el
+ * del plan (`day-pass`, `spot-member`, …).
+ *
+ * Está apagado porque nadie ha confirmado que esa web lea el parámetro, y uno
+ * que no reconoce puede acabar en un 404. Confírmalo antes de encenderlo.
+ */
+export const WORKCLUB_RESERVA_ACCEPTS_PAQUETE = false;
 
 /**
  * Agendar una visita al espacio antes de reservar.
