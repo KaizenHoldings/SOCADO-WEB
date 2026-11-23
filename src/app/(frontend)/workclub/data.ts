@@ -275,7 +275,7 @@ export const reglas: Regla[] = [
 /* ------------------------------------------------------------------ *
  * Closing block
  * ------------------------------------------------------------------ */
-
+//cambio
 export const cierre = {
   title: "¿listo para trabajar?",
   description:
