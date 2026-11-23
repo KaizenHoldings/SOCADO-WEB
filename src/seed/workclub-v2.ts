@@ -20,7 +20,8 @@ import type { PassType } from '@/payload-types'
  * It is seed step 6: step 2 was the band colour, step 3 the v2 content, step 4
  * the shorter pages line, step 5 a phrase inside the member info cards, and
  * step 6 the "más información" button with the detail list behind it, and
- * step 7 the monitor neither member plan turned out to have.
+ * step 7 the monitor neither member plan turned out to have, and step 8 the
+ * rooms and rates in the booking modal — which carries no café socado.
  * Raising the number
  * replays the whole table, which is safe — `fill` passes over a field that has
  * something in it, and `replace` passes over one already at its target.
@@ -30,7 +31,7 @@ import type { PassType } from '@/payload-types'
  * Payload with `push: true` and keeps no migration flow.
  */
 
-export const WORKCLUB_V2_SEED_VERSION = 7
+export const WORKCLUB_V2_SEED_VERSION = 9
 
 type InfoCards = NonNullable<PassType['infoCards']>
 
@@ -50,10 +51,28 @@ interface RecordOps {
   ops: Op[]
 }
 
+/**
+ * Heading of the card that lists what a pass type gives every plan under it.
+ *
+ * It used to name the group — "todos los workclub pass incluyen:" — and the
+ * client asked for the short form. `INCLUDES_CARD_TITLE` is the value, so the
+ * copy lives in one place: the cards below write it on a fresh database and
+ * this operation renames it on one that already carries the old heading.
+ *
+ * `replaceText` walks the blocks field, so it reaches the title without
+ * knowing its shape, and it only writes a heading that still reads as `from`:
+ * one rewritten in the admin is left alone.
+ */
+const INCLUDES_CARD_TITLE = 'incluye:'
+
+function renameIncludesCard(from: string): Op {
+  return { kind: 'replaceText', field: 'infoCards', from, to: INCLUDES_CARD_TITLE }
+}
+
 const WORKCLUB_INFO_CARDS: InfoCards = [
   {
     blockType: 'includes',
-    title: 'todos los workclub pass incluyen:',
+    title: INCLUDES_CARD_TITLE,
     items: [
       {
         title: '1 café socado',
@@ -77,7 +96,7 @@ const WORKCLUB_INFO_CARDS: InfoCards = [
 const MEMBER_INFO_CARDS: InfoCards = [
   {
     blockType: 'includes',
-    title: 'todos los member pass incluyen:',
+    title: INCLUDES_CARD_TITLE,
     items: [
       { title: '15% de descuento', detail: 'en productos socado' },
       { title: '5 cafés socado', detail: 'por período de membresía' },
@@ -108,7 +127,9 @@ const PASS_TYPES: RecordOps[] = [
       { kind: 'fill', field: 'bandColor', value: 'wc-verde-claro' },
       { kind: 'replace', field: 'bandColor', from: RETIRED_BAND_COLOR, to: 'wc-verde-claro' },
       { kind: 'fill', field: 'infoCards', value: WORKCLUB_INFO_CARDS },
-      // The band no longer carries the inclusion line: it is the "incluyen" card.
+      renameIncludesCard('todos los workclub pass incluyen:'),
+      renameIncludesCard('incluyen:'),
+      // The band no longer carries the inclusion line: it is the "incluye" card.
       { kind: 'replace', field: 'note', from: 'todos los pass incluyen', to: '' },
       { kind: 'replace', field: 'noteHighlight', from: '1 café básico de socado', to: '' },
       // The card button now opens the modal, so it no longer says "reservar".
@@ -121,6 +142,7 @@ const PASS_TYPES: RecordOps[] = [
       { kind: 'fill', field: 'bandColor', value: 'wc-marron-medio' },
       { kind: 'replace', field: 'bandColor', from: RETIRED_BAND_COLOR, to: 'wc-marron-medio' },
       { kind: 'fill', field: 'infoCards', value: MEMBER_INFO_CARDS },
+      renameIncludesCard('todos los member pass incluyen:'),
       // The cards shipped saying "a precio especial"; the copy dropped the "a".
       {
         kind: 'replaceText',
@@ -187,10 +209,35 @@ const PLANS: RecordOps[] = [
   {
     slug: 'reserva-de-sala',
     ops: [
+      /*
+        The exception of its pass type: booking a room does not come with the
+        café socado the other two workclub passes carry. The claim was in two
+        places — a chip of its own and the type's "incluyen" card — so the chip
+        goes and the card is hidden for this plan only.
+      */
+      { kind: 'removeItem', field: 'chips', text: '1 café socado' },
+      { kind: 'fill', field: 'excludesGroupBenefits', value: true },
+      // The rates of the card below, plus the capacity that does not fit there.
+      { kind: 'fill', field: 'detailsTitle', value: 'salas y tarifas' },
+      {
+        kind: 'fill',
+        field: 'details',
+        value: details(
+          'sala 1: hasta 4 personas · ref. 25/h',
+          'sala 2: hasta 8 personas · ref. 35/h',
+          'sala eventos: mínimo 2 horas · ref. 50/h',
+        ),
+      },
+      /*
+        Only the catering chip. The list shipped with '1 café socado' in it,
+        which `removeItem` above takes out of a database that already has it —
+        but on an empty one that operation has nothing to drop and this `fill`
+        is what writes the chips, so the claim has to be gone from here too.
+      */
       {
         kind: 'fill',
         field: 'chips',
-        value: chips('catering exclusivo socado', '1 café socado'),
+        value: chips('catering exclusivo socado'),
       },
       // The rates moved to the `table` block of the pass type: the card now
       // shows the cheapest room as a single price with its suffix.
@@ -247,7 +294,7 @@ const PLANS: RecordOps[] = [
       {
         kind: 'replace',
         field: 'secondaryLine',
-        from: '20 páginas b/n incluidas por período',
+        from: '20 impresiones por período',
         to: '20 páginas por período',
       },
       {
@@ -277,7 +324,7 @@ const PLANS: RecordOps[] = [
       {
         kind: 'replace',
         field: 'secondaryLine',
-        from: '30 páginas b/n incluidas por período',
+        from: '30 impresiones por período',
         to: '30 páginas por período',
       },
       {

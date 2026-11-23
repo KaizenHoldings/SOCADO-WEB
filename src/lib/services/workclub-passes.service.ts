@@ -63,6 +63,13 @@ export interface Pass {
   secondaryLine?: string
   /** Lines of the "más información" modal; empty when the plan has none. */
   details: string[]
+  /** Heading over those lines. Empty falls back to "incluye" in the modal. */
+  detailsTitle?: string
+  /**
+   * This plan is an exception to what its pass type gives everyone, so the
+   * modal does not repeat the type's "incluyen" card for it.
+   */
+  excludesGroupBenefits: boolean
   /** Button label. */
   cta: string
   ctaVariant: CtaVariant
@@ -173,6 +180,19 @@ const FALLBACK_FOOTNOTE =
 const WEEK_ACCESS = 'acceso lunes y viernes de 7 am a 9 pm'
 const WEEKEND_ACCESS = 'acceso fines de semana y feriado de 8 am a 8 pm'
 
+/**
+ * Salas y tarifas dentro del modal de "reserva de sala".
+ *
+ * Repite las tarifas de la tarjeta "tarifas de salas" de la página y añade el
+ * aforo, que allí no cabe. La tarjeta se queda como está: es información del
+ * tipo de pass, y esto es lo que se lee sin salir del modal.
+ */
+const ROOM_DETAILS = [
+  'sala 1: hasta 4 personas · ref. 25/h',
+  'sala 2: hasta 8 personas · ref. 35/h',
+  'sala eventos: mínimo 2 horas · ref. 50/h',
+]
+
 const SPOT_DETAILS = [
   'arturito personal',
   'internet de alta velocidad',
@@ -205,6 +225,7 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
         period: 'por día',
         chips: ['1 café socado'],
         details: [],
+        excludesGroupBenefits: false,
         cta: 'más información',
         ctaVariant: 'outline',
         ctaHref: WORKCLUB_RESERVA_URL,
@@ -219,6 +240,7 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
         period: 'por paquete',
         chips: ['utilizable en 60 días', '1 café socado'],
         details: [],
+        excludesGroupBenefits: false,
         cta: 'más información',
         ctaVariant: 'outline',
         ctaHref: WORKCLUB_RESERVA_URL,
@@ -232,8 +254,11 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
         pricePrefix: DEFAULT_PRICE_PREFIX,
         priceSuffix: '/h',
         period: 'desde · según sala',
-        chips: ['catering exclusivo socado', '1 café socado'],
-        details: [],
+        // Sin café socado: este plan es la excepción del tipo de pass.
+        chips: ['catering exclusivo socado'],
+        details: ROOM_DETAILS,
+        detailsTitle: 'salas y tarifas',
+        excludesGroupBenefits: true,
         cta: 'más información',
         ctaVariant: 'outline',
         ctaHref: WORKCLUB_RESERVA_URL,
@@ -243,7 +268,7 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
     infoCards: [
       {
         type: 'includes',
-        title: 'todos los workclub pass incluyen:',
+        title: 'incluye:',
         items: [
           {
             title: '1 café socado',
@@ -283,6 +308,7 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
         chips: ['2 créditos incluidos'],
         secondaryLine: '10 páginas por período',
         details: [],
+        excludesGroupBenefits: false,
         cta: 'más información',
         ctaVariant: 'solid',
         ctaHref: WORKCLUB_RESERVA_URL,
@@ -298,6 +324,7 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
         chips: ['4 créditos incluidos'],
         secondaryLine: '20 páginas por período',
         details: SPOT_DETAILS,
+        excludesGroupBenefits: false,
         cta: 'más información',
         ctaVariant: 'solid',
         ctaHref: WORKCLUB_RESERVA_URL,
@@ -313,6 +340,7 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
         chips: ['6 créditos incluidos'],
         secondaryLine: '30 páginas por período',
         details: STUDIO_DETAILS,
+        excludesGroupBenefits: false,
         cta: 'más información',
         ctaVariant: 'solid',
         ctaHref: WORKCLUB_RESERVA_URL,
@@ -322,7 +350,7 @@ export const WORKCLUB_PASSES_FALLBACK: PassGroup[] = [
     infoCards: [
       {
         type: 'includes',
-        title: 'todos los member pass incluyen:',
+        title: 'incluye:',
         items: [
           { title: '15% de descuento', detail: 'en productos socado' },
           { title: '5 cafés socado', detail: 'por período de membresía' },
@@ -394,6 +422,8 @@ function mapPass(
     details: (plan.details ?? [])
       .map((detail) => detail.text?.trim())
       .filter((text): text is string => !!text),
+    detailsTitle: trimmed(plan.detailsTitle),
+    excludesGroupBenefits: plan.excludesGroupBenefits === true,
     cta: trimmed(plan.ctaLabel) ?? group.ctaLabel,
     ctaVariant: (plan.ctaVariant as CtaVariant | null | undefined) ?? group.ctaVariant,
     ctaHref: ownUrl ?? group.reservaUrl,

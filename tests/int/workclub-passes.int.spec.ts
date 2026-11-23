@@ -181,7 +181,7 @@ describe('WorkclubPassesService', () => {
             {
               id: 'a',
               blockType: 'includes',
-              title: 'todos los workclub pass incluyen:',
+              title: 'incluyen:',
               items: [{ id: 'a1', title: '1 café socado', detail: 'espresso, americano…' }],
             },
             // Sin filas: no se muestra una tarjeta vacía.
@@ -206,7 +206,7 @@ describe('WorkclubPassesService', () => {
     expect(group.infoCards).toHaveLength(2)
     expect(group.infoCards[0]).toEqual({
       type: 'includes',
-      title: 'todos los workclub pass incluyen:',
+      title: 'incluyen:',
       items: [{ title: '1 café socado', detail: 'espresso, americano…' }],
     })
     expect(group.infoCards[1]).toMatchObject({

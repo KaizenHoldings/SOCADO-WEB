@@ -277,8 +277,8 @@ export const reglas: Regla[] = [
  * ------------------------------------------------------------------ */
 
 export const cierre = {
-  title: "¿listo para trabajar distinto?",
+  title: "¿listo para trabajar?",
   description:
-    "reserva tu lugar en socado workclub y empieza a trabajar con el café al lado.",
+    "reserva tu lugar en socado workclub",
   cta: "reserva ahora",
 } as const;

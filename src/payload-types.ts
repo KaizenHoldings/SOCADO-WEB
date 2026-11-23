@@ -538,7 +538,7 @@ export interface PassType {
    */
   description?: string | null;
   /**
-   * Opcional. Línea junto al icono de check, bajo las pestañas. El diseño actual no la usa: lo que incluye el pass se escribe en la tarjeta "incluyen". Si se deja vacía, no se muestra.
+   * Opcional. Línea junto al icono de check, bajo las pestañas. El diseño actual no la usa: lo que incluye el pass se escribe en la tarjeta "incluye:". Si se deja vacía, no se muestra.
    */
   note?: string | null;
   /**
@@ -558,7 +558,7 @@ export interface PassType {
     | (
         | {
             /**
-             * Escribir en minúscula.
+             * Encabezado de la tarjeta. Si dice lo mismo que el título de los detalles de un plan, el modal de ese plan no lo repite: enseña sus beneficios bajo el encabezado que ya puso. Escribir en minúscula.
              */
             title: string;
             /**
@@ -734,6 +734,14 @@ export interface Plan {
    */
   secondaryLine?: string | null;
   /**
+   * Encabezado de la lista de detalles dentro del modal. Si se deja vacío pone "incluye:", igual que la tarjeta del tipo de pass, y entonces el modal enseña las dos listas bajo un solo encabezado. Cámbialo cuando la lista no sean beneficios (por ejemplo "salas y tarifas"). Escribir en minúscula.
+   */
+  detailsTitle?: string | null;
+  /**
+   * Marcar cuando este plan sea una excepción: el modal deja de mostrar la tarjeta "incluye:" de su tipo de pass. La tarjeta sigue visible bajo las tarjetas de precio, que es información del tipo, no del plan.
+   */
+  excludesGroupBenefits?: boolean | null;
+  /**
    * Lista que se muestra dentro del modal de "más información", en el orden de esta lista; se reordenan arrastrando. Si se deja vacía, el modal enseña solo lo que ya tiene la tarjeta y lo que incluye el tipo de pass. Escribir en minúscula.
    */
   details?:
@@ -750,7 +758,7 @@ export interface Plan {
    */
   highlight?: string | null;
   /**
-   * La tarjeta ya no muestra esta lista: lo que incluye el pass se escribe en la tarjeta "incluyen" del tipo de pass. Se conserva por los datos antiguos.
+   * La tarjeta ya no muestra esta lista: lo que incluye el pass se escribe en la tarjeta "incluye:" del tipo de pass. Se conserva por los datos antiguos.
    */
   features?:
     | {
@@ -1262,6 +1270,8 @@ export interface PlansSelect<T extends boolean = true> {
         id?: T;
       };
   secondaryLine?: T;
+  detailsTitle?: T;
+  excludesGroupBenefits?: T;
   details?:
     | T
     | {

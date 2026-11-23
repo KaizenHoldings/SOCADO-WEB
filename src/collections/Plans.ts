@@ -217,6 +217,25 @@ export const Plans: CollectionConfig = {
       },
     },
     {
+      name: 'detailsTitle',
+      type: 'text',
+      label: 'Título de los detalles',
+      admin: {
+        placeholder: 'incluye:',
+        description:
+          'Encabezado de la lista de detalles dentro del modal. Si se deja vacío pone "incluye:", igual que la tarjeta del tipo de pass, y entonces el modal enseña las dos listas bajo un solo encabezado. Cámbialo cuando la lista no sean beneficios (por ejemplo "salas y tarifas"). Escribir en minúscula.',
+      },
+    },
+    {
+      name: 'excludesGroupBenefits',
+      type: 'checkbox',
+      label: 'No incluye los beneficios del tipo de pass',
+      admin: {
+        description:
+          'Marcar cuando este plan sea una excepción: el modal deja de mostrar la tarjeta "incluye:" de su tipo de pass. La tarjeta sigue visible bajo las tarjetas de precio, que es información del tipo, no del plan.',
+      },
+    },
+    {
       name: 'details',
       type: 'array',
       label: 'Detalles del modal',
@@ -255,7 +274,7 @@ export const Plans: CollectionConfig = {
       labels: { singular: 'Beneficio', plural: 'Beneficios' },
       admin: {
         description:
-          'La tarjeta ya no muestra esta lista: lo que incluye el pass se escribe en la tarjeta "incluyen" del tipo de pass. Se conserva por los datos antiguos.',
+          'La tarjeta ya no muestra esta lista: lo que incluye el pass se escribe en la tarjeta "incluye:" del tipo de pass. Se conserva por los datos antiguos.',
       },
       fields: [
         {

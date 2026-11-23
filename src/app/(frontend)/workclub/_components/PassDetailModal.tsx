@@ -35,6 +35,30 @@ interface PassDetailModalProps {
   onClose: () => void;
 }
 
+/**
+ * Heading over the plan's own detail lines when it does not carry one.
+ *
+ * The same words as the pass type's card, which is deliberate: the reader is
+ * looking at one list of what they get. `sameHeading` is what keeps them from
+ * being printed twice.
+ */
+const DEFAULT_DETAILS_TITLE = "incluye:";
+
+/**
+ * Whether two headings read the same, which is what matters here: the pass
+ * type's card and a plan's list both say "incluye", and the colon, the case or
+ * a stray space are not a reason to repeat the word.
+ */
+function sameHeading(a: string, b: string): boolean {
+  const normalize = (text: string) =>
+    text
+      .trim()
+      .toLowerCase()
+      .replace(/[\s:.]+$/, "");
+
+  return normalize(a) === normalize(b);
+}
+
 /** Only the benefits card: the rate tables are reference for the page, not for one pass. */
 function includesCards(cards: InfoCard[]) {
   return cards.filter(
@@ -90,8 +114,17 @@ export function PassDetailModal({
   // Only ever true after a click, so `document` is there when the portal opens.
   if (!pass) return null;
 
-  const cards = includesCards(groupCards);
+  /*
+    A plan can be an exception to what its type gives everyone — room booking
+    carries no café socado — and then repeating the type's card here would
+    promise something this plan does not have. The card stays on the page
+    under the price cards: there it describes the type, not one plan.
+  */
+  const cards = pass.excludesGroupBenefits ? [] : includesCards(groupCards);
   const titleId = `pass-modal-${pass.slug}`;
+
+  const detailsTitle = pass.detailsTitle ?? DEFAULT_DETAILS_TITLE;
+  const hasDetails = pass.details.length > 0;
 
   return createPortal(
     <div
@@ -178,10 +211,11 @@ export function PassDetailModal({
           )}
 
           {/* What this plan gives, written for it */}
-          {pass.details.length > 0 && (
+          {hasDetails && (
             <>
               <h3 className="mt-6 font-raleway text-base font-semibold text-wc-verde lowercase">
-                incluye
+                {/* "incluye" only fits a list of benefits; rates need their own */}
+                {detailsTitle}
               </h3>
               <ul className="mt-3 flex flex-col gap-2">
                 {pass.details.map((detail, index) => (
@@ -209,32 +243,47 @@ export function PassDetailModal({
           )}
 
           {/* And what every plan of this type gives, which is just as true here */}
-          {cards.map((card, cardIndex) => (
-            <section key={`${card.title}-${cardIndex}`} className="mt-6">
-              {card.title && (
-                <h3 className="font-raleway text-base font-semibold text-wc-verde lowercase">
-                  <Num>{card.title}</Num>
-                </h3>
-              )}
-              <ul className="mt-3 flex flex-col gap-3">
-                {card.items.map((item, index) => (
-                  <li
-                    key={`${item.title}-${index}`}
-                    className="border-l-2 border-wc-terracota-medio pl-3"
-                  >
-                    <p className="font-raleway text-sm font-semibold text-wc-verde lowercase">
-                      <Num>{item.title}</Num>
-                    </p>
-                    {item.detail && (
-                      <p className="font-outfit text-sm font-light leading-snug text-wc-marron/80 lowercase">
-                        <Num>{item.detail}</Num>
+          {cards.map((card, cardIndex) => {
+            /*
+              Both lists answer "what do I get", and the pass type's card now
+              says "incluye:" — the same heading a plan's own list carries. Two
+              of them, one under the other, read as a mistake, so the second is
+              dropped and its items continue the list above. Compared instead
+              of hardcoded: either heading is editable in the admin, and the
+              moment they differ the card speaks for itself again.
+            */
+            const repeatsHeading = hasDetails && sameHeading(card.title, detailsTitle);
+
+            return (
+              <section
+                key={`${card.title}-${cardIndex}`}
+                className={repeatsHeading ? "mt-3" : "mt-6"}
+              >
+                {card.title && !repeatsHeading && (
+                  <h3 className="font-raleway text-base font-semibold text-wc-verde lowercase">
+                    <Num>{card.title}</Num>
+                  </h3>
+                )}
+                <ul className="mt-3 flex flex-col gap-3">
+                  {card.items.map((item, index) => (
+                    <li
+                      key={`${item.title}-${index}`}
+                      className="border-l-2 border-wc-terracota-medio pl-3"
+                    >
+                      <p className="font-raleway text-sm font-semibold text-wc-verde lowercase">
+                        <Num>{item.title}</Num>
                       </p>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
+                      {item.detail && (
+                        <p className="font-outfit text-sm font-light leading-snug text-wc-marron/80 lowercase">
+                          <Num>{item.detail}</Num>
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })}
         </div>
 
         {/*

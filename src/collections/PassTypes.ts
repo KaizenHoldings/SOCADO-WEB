@@ -97,7 +97,7 @@ export const PassTypes: CollectionConfig = {
       admin: {
         placeholder: 'Ej: todos los pass incluyen',
         description:
-          'Opcional. Línea junto al icono de check, bajo las pestañas. El diseño actual no la usa: lo que incluye el pass se escribe en la tarjeta "incluyen". Si se deja vacía, no se muestra.',
+          'Opcional. Línea junto al icono de check, bajo las pestañas. El diseño actual no la usa: lo que incluye el pass se escribe en la tarjeta "incluye:". Si se deja vacía, no se muestra.',
       },
     },
     {
@@ -153,8 +153,9 @@ export const PassTypes: CollectionConfig = {
               label: 'Título',
               required: true,
               admin: {
-                placeholder: 'Ej: todos los member pass incluyen:',
-                description: 'Escribir en minúscula.',
+                placeholder: 'Ej: incluye:',
+                description:
+                  'Encabezado de la tarjeta. Si dice lo mismo que el título de los detalles de un plan, el modal de ese plan no lo repite: enseña sus beneficios bajo el encabezado que ya puso. Escribir en minúscula.',
               },
             },
             {
